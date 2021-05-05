@@ -1,4 +1,6 @@
 # SWT-UML-Application
+Week 1
+
 ## Benjamin - Organization:
 - project administration
 - code assistence, verification, improvement
