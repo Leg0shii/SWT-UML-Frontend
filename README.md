@@ -1,7 +1,7 @@
 # SWT-UML-Application
 Benjamin:
 - project administration
-- code assistence, verification, improvement
+- code assistence, verification, improvement\\
 Daniel, Joost: 
 - window API, skeleton for creating windows
 - classes for windowtypes (accept window, drawing window)
