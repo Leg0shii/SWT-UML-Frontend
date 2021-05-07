@@ -13,7 +13,6 @@ Week 1
 - client/server communication
 - usage of RMI for interprocesscommunication?
 - serialization of objects
-- Testing Git
 
 ## Andre, Mats - Drawing:
 - draggable objects
