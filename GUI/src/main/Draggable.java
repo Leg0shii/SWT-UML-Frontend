@@ -7,6 +7,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
+//https://stackoverflow.com/questions/874360/swing-creating-a-draggable-component
+
 public class Draggable extends JComponent {
 
     private volatile int screenX;
