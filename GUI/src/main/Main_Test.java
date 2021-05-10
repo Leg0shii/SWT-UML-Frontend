@@ -1,6 +1,7 @@
 package main;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class Main_Test extends JFrame {
 
@@ -15,20 +16,20 @@ public class Main_Test extends JFrame {
 
 
     public static void main(String[] args) {
-        JFrame f = new JFrame("Swing Hello World");
+        Main_Test f = new Main_Test("Draggable and mby drawable", 500);
 
         // by doing this, we prevent Swing from resizing
         // our nice component
         f.setLayout(null);
 
-        Draggable mc = new Draggable();
-        f.add(mc);
+        Drawable mc = new Drawable(100,100, Color.blue);
+        Drawable vc = new Drawable(100,200, Color.GREEN);
 
-        f.setSize(500, 500);
+        f.add(mc);
+        f.add(vc);
 
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        f.setVisible(true);
-        LoginGUI lg = new LoginGUI();
-        f.add(lg.$$$getRootComponent$$$());
+
+        System.out.println("Hello Yoost!");
     }
 }
