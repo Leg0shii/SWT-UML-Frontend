@@ -28,9 +28,7 @@ public class Main_Test extends JFrame {
 
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         f.setVisible(true);
-
-
-
-        System.out.println("Hello Yoost!");
+        LoginGUI lg = new LoginGUI();
+        f.add(lg.$$$getRootComponent$$$());
     }
 }
