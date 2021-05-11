@@ -3,22 +3,32 @@ import java.awt.*;
 
 public class Main_Test extends JFrame {
 
-    Main_Test(String name, int size){
+    Main_Test(String name, int size) {
         setTitle(name);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(0,0,size, size);
+        setBounds(0, 0, size, size);
         setLocationRelativeTo(null);
         setResizable(true);
-        setVisible(true);
     }
 
 
     public static void main(String[] args) {
         Main_Test f = new Main_Test("Draggable and mby drawable", 500);
 
-        LoginGUI lg = new LoginGUI();
+        String[] schools = new String[3];
+        schools[0] = "Schule A";
+        schools[1] = "Schule B";
+        schools[2] = "Schule C";
+        Color[] colors = new Color[4];
+        colors[0] = Color.decode("#EDEAE5");
+        colors[1] = Color.decode("#FEF9C7");
+        colors[2] = Color.decode("#000000");
+        colors[3] = Color.decode("#9FEDD7");
+        LoginGUI lg = new LoginGUI("Anmeldung", "Nutzername:", "Passwort:", "Schule:", "Anmelden", schools, colors);
 
         f.add(lg.$$$getRootComponent$$$());
+        f.setVisible(true);
+
 
         // by doing this, we prevent Swing from resizing
         // our nice component
@@ -29,9 +39,6 @@ public class Main_Test extends JFrame {
 
         //f.add(mc);
         //f.add(vc);
-
-        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
         System.out.println("Hello Yoost!");
     }
 }

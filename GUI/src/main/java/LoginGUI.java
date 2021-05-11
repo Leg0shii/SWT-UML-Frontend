@@ -3,29 +3,60 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
+import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Locale;
 
 public class LoginGUI {
     private JPanel loginpanel;
     private JButton loginbt;
     private JTextField usernametf;
     private JPasswordField passwordf;
-    private JComboBox schooldropdown;
+    private JComboBox<String> schooldropdown;
     private JLabel loginlb;
-    private JPanel loginsubpanel;
     private JLabel passwordlb;
     private JLabel schoollb;
     private JLabel usernamelb;
+    private JPanel subpanel;
 
-    public LoginGUI() {
+    public LoginGUI(String login, String username, String password, String school, String button, String[] schools, Color[] colors) {
+        loginlb.setText(login);
+        usernamelb.setText(username);
+        passwordlb.setText(password);
+        schoollb.setText(school);
+        loginbt.setText(button);
+        for (String temp : schools) {
+            schooldropdown.addItem(temp);
+        }
+        loginpanel.setBackground(colors[0]);
+        subpanel.setBackground(colors[1]);
+        usernamelb.setForeground(colors[2]);
+        loginlb.setForeground(colors[2]);
+        passwordlb.setForeground(colors[2]);
+        schoollb.setForeground(colors[2]);
+        loginbt.setForeground(colors[2]);
+        loginbt.setBackground(colors[3]);
         loginbt.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
             }
         });
+    }
+
+    public String get_password() {
+        return new String(passwordf.getPassword());
+    }
+
+    public String get_username() {
+        return usernametf.getText();
+    }
+
+    public String get_school() {
+        return (String) schooldropdown.getSelectedItem();
     }
 
     {
@@ -44,39 +75,93 @@ public class LoginGUI {
      */
     private void $$$setupUI$$$() {
         loginpanel = new JPanel();
-        loginpanel.setLayout(new GridLayoutManager(4, 3, new Insets(0, 0, 0, 0), -1, -1));
-        loginlb = new JLabel();
-        loginlb.setText("Anmelden");
-        loginpanel.add(loginlb, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        loginsubpanel = new JPanel();
-        loginsubpanel.setLayout(new GridLayoutManager(4, 4, new Insets(0, 0, 0, 0), -1, -1));
-        loginpanel.add(loginsubpanel, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        passwordlb = new JLabel();
-        passwordlb.setText("Passwort");
-        loginsubpanel.add(passwordlb, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        schoollb = new JLabel();
-        schoollb.setText("Schule");
-        loginsubpanel.add(schoollb, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        usernametf = new JTextField();
-        loginsubpanel.add(usernametf, new GridConstraints(0, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        schooldropdown = new JComboBox();
-        loginsubpanel.add(schooldropdown, new GridConstraints(2, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        passwordf = new JPasswordField();
-        loginsubpanel.add(passwordf, new GridConstraints(1, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        usernamelb = new JLabel();
-        usernamelb.setText("Nutzername");
-        loginsubpanel.add(usernamelb, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        loginbt = new JButton();
-        loginbt.setText("Anmelden");
-        loginsubpanel.add(loginbt, new GridConstraints(3, 0, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        loginpanel.setLayout(new GridLayoutManager(3, 3, new Insets(0, 0, 0, 0), -1, -1));
+        loginpanel.setBackground(new Color(-14605532));
+        loginpanel.setEnabled(true);
+        loginpanel.setForeground(new Color(-4336675));
         final Spacer spacer1 = new Spacer();
-        loginpanel.add(spacer1, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        loginpanel.add(spacer1, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         final Spacer spacer2 = new Spacer();
-        loginpanel.add(spacer2, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        loginpanel.add(spacer2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         final Spacer spacer3 = new Spacer();
         loginpanel.add(spacer3, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         final Spacer spacer4 = new Spacer();
-        loginpanel.add(spacer4, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        loginpanel.add(spacer4, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        subpanel = new JPanel();
+        subpanel.setLayout(new GridLayoutManager(7, 6, new Insets(0, 0, 0, 0), -1, -1));
+        subpanel.setBackground(new Color(-14605532));
+        loginpanel.add(subpanel, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        loginlb = new JLabel();
+        Font loginlbFont = this.$$$getFont$$$(null, Font.BOLD, 16, loginlb.getFont());
+        if (loginlbFont != null) loginlb.setFont(loginlbFont);
+        loginlb.setForeground(new Color(-2500653));
+        loginlb.setHorizontalAlignment(0);
+        loginlb.setHorizontalTextPosition(0);
+        loginlb.setText("Label");
+        subpanel.add(loginlb, new GridConstraints(1, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer5 = new Spacer();
+        subpanel.add(spacer5, new GridConstraints(0, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        final Spacer spacer6 = new Spacer();
+        subpanel.add(spacer6, new GridConstraints(6, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        final Spacer spacer7 = new Spacer();
+        subpanel.add(spacer7, new GridConstraints(0, 5, 7, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        final Spacer spacer8 = new Spacer();
+        subpanel.add(spacer8, new GridConstraints(0, 0, 7, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        passwordlb = new JLabel();
+        passwordlb.setForeground(new Color(-2500653));
+        passwordlb.setHorizontalAlignment(4);
+        passwordlb.setHorizontalTextPosition(4);
+        passwordlb.setText("Label");
+        subpanel.add(passwordlb, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        schoollb = new JLabel();
+        schoollb.setForeground(new Color(-2500653));
+        schoollb.setHorizontalAlignment(4);
+        schoollb.setText("Label");
+        subpanel.add(schoollb, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        usernametf = new JTextField();
+        subpanel.add(usernametf, new GridConstraints(2, 2, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        schooldropdown = new JComboBox();
+        final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
+        schooldropdown.setModel(defaultComboBoxModel1);
+        subpanel.add(schooldropdown, new GridConstraints(4, 2, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        passwordf = new JPasswordField();
+        subpanel.add(passwordf, new GridConstraints(3, 2, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, 1, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        usernamelb = new JLabel();
+        usernamelb.setForeground(new Color(-2500653));
+        usernamelb.setHorizontalAlignment(4);
+        usernamelb.setHorizontalTextPosition(4);
+        usernamelb.setText("Label");
+        usernamelb.setVerticalAlignment(0);
+        usernamelb.setVerticalTextPosition(0);
+        subpanel.add(usernamelb, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        loginbt = new JButton();
+        loginbt.setText("Button");
+        subpanel.add(loginbt, new GridConstraints(5, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        passwordlb.setLabelFor(passwordf);
+        schoollb.setLabelFor(schooldropdown);
+        usernamelb.setLabelFor(usernametf);
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private Font $$$getFont$$$(String fontName, int style, int size, Font currentFont) {
+        if (currentFont == null) return null;
+        String resultName;
+        if (fontName == null) {
+            resultName = currentFont.getName();
+        } else {
+            Font testFont = new Font(fontName, Font.PLAIN, 10);
+            if (testFont.canDisplay('a') && testFont.canDisplay('1')) {
+                resultName = fontName;
+            } else {
+                resultName = currentFont.getName();
+            }
+        }
+        Font font = new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
+        boolean isMac = System.getProperty("os.name", "").toLowerCase(Locale.ENGLISH).startsWith("mac");
+        Font fontWithFallback = isMac ? new Font(font.getFamily(), font.getStyle(), font.getSize()) : new StyleContext().getFont(font.getFamily(), font.getStyle(), font.getSize());
+        return fontWithFallback instanceof FontUIResource ? fontWithFallback : new FontUIResource(fontWithFallback);
     }
 
     /**
