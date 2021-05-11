@@ -32,7 +32,7 @@ public class Main_Test extends JFrame {
             System.out.println(lg.get_school() + " " + lg.get_username() + " " + lg.get_password());
         });
 
-        f.add(lg.$$$getRootComponent$$$());
+        f.add(lg.loginpanel);
         f.setVisible(true);
 
 
