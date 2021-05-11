@@ -1,5 +1,8 @@
+import jdk.jfr.Event;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.Function;
 
 public class Main_Test extends JFrame {
 
@@ -13,7 +16,7 @@ public class Main_Test extends JFrame {
 
 
     public static void main(String[] args) {
-        Main_Test f = new Main_Test("Draggable and mby drawable", 500);
+        Main_Test f = new Main_Test("Gruppe 31", 500);
 
         String[] schools = new String[3];
         schools[0] = "Schule A";
@@ -25,6 +28,9 @@ public class Main_Test extends JFrame {
         colors[2] = Color.decode("#000000");
         colors[3] = Color.decode("#9FEDD7");
         LoginGUI lg = new LoginGUI("Anmeldung", "Nutzername:", "Passwort:", "Schule:", "Anmelden", schools, colors);
+        lg.loginbt.addActionListener(e -> {
+            System.out.println(lg.get_school() + " " + lg.get_username() + " " + lg.get_password());
+        });
 
         f.add(lg.$$$getRootComponent$$$());
         f.setVisible(true);
