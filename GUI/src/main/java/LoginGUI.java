@@ -3,11 +3,11 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Locale;
 
 public class LoginGUI {
@@ -39,12 +39,11 @@ public class LoginGUI {
         schoollb.setForeground(colors[2]);
         loginbt.setForeground(colors[2]);
         loginbt.setBackground(colors[3]);
-        loginbt.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
+        subpanel.setBorder(BorderFactory.createRaisedSoftBevelBorder());
+        loginbt.addActionListener(e -> {
+            System.out.println(this.get_school() + " " + this.get_username() + " " + this.get_password());
         });
+
     }
 
     public String get_password() {
@@ -90,7 +89,7 @@ public class LoginGUI {
         subpanel = new JPanel();
         subpanel.setLayout(new GridLayoutManager(7, 6, new Insets(0, 0, 0, 0), -1, -1));
         subpanel.setBackground(new Color(-14605532));
-        loginpanel.add(subpanel, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        loginpanel.add(subpanel, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, true));
         loginlb = new JLabel();
         Font loginlbFont = this.$$$getFont$$$(null, Font.BOLD, 16, loginlb.getFont());
         if (loginlbFont != null) loginlb.setFont(loginlbFont);
@@ -136,7 +135,7 @@ public class LoginGUI {
         subpanel.add(usernamelb, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         loginbt = new JButton();
         loginbt.setText("Button");
-        subpanel.add(loginbt, new GridConstraints(5, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        subpanel.add(loginbt, new GridConstraints(5, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         passwordlb.setLabelFor(passwordf);
         schoollb.setLabelFor(schooldropdown);
         usernamelb.setLabelFor(usernametf);
