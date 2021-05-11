@@ -1,11 +1,11 @@
-package main;
-
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class LoginGUI {
     private JPanel loginpanel;
@@ -20,6 +20,12 @@ public class LoginGUI {
     private JLabel usernamelb;
 
     public LoginGUI() {
+        loginbt.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
     }
 
     {
