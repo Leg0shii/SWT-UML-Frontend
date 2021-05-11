@@ -7,6 +7,7 @@
     <groupId>GUI</groupId>
     <artifactId>GUI</artifactId>
     <version>1.0-SNAPSHOT</version>
+
     <repositories>
         <repository>
             <id>central</id>
