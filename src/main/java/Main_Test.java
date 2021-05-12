@@ -32,7 +32,6 @@ public class Main_Test extends JFrame {
         LoginGUI lg = new LoginGUI("german", schools, colors);
 
         f.add(lg);
-        f.setVisible(true);
         String[] grades = new String[3];
         grades[0] = "Klasse 10";
         grades[1] = "Klasse 11";
@@ -45,9 +44,7 @@ public class Main_Test extends JFrame {
             p[0] = pf.getPopup(lg, ccp, f.getX() + lg.loginbt.getX(), f.getY() + lg.loginbt.getY());
             p[0].show();
         });
-        ccp.donebt.addActionListener(e -> {
-            p[0].hide();
-        });
+        ccp.donebt.addActionListener(e -> p[0].hide());
 
         f.setVisible(true);
         // by doing this, we prevent Swing from resizing
