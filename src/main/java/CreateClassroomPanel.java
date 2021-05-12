@@ -18,6 +18,7 @@ public class CreateClassroomPanel extends JPanel {
     private JLabel studentlb;
 
     public CreateClassroomPanel(Language language, String[] grades, Color[] colors) {
+
         this.setLayout(new BoxLayout(this, 2));
         this.add(createclassroompanel);
         this.setBorder(BorderFactory.createEtchedBorder());
