@@ -5,8 +5,8 @@ import com.intellij.uiDesigner.core.Spacer;
 import javax.swing.*;
 import java.awt.*;
 
-public class LoginGUI {
-    public JPanel loginpanel;
+public class LoginGUI extends JPanel {
+    private JPanel loginpanel;
     public JButton loginbt;
     private JTextField usernametf;
     private JPasswordField passwordf;
@@ -17,12 +17,17 @@ public class LoginGUI {
     private JLabel usernamelb;
     private JPanel subpanel;
 
-    public LoginGUI(String login, String username, String password, String school, String button, String[] schools, Color[] colors) {
-        loginlb.setText(login);
-        usernamelb.setText(username);
-        passwordlb.setText(password);
-        schoollb.setText(school);
-        loginbt.setText(button);
+    public LoginGUI(String language, String[] schools, Color[] colors) {
+        this.setLayout(new BoxLayout(this, 2));
+        this.add(loginpanel);
+        switch (language) {
+            case "german":
+                this.setupGUI("Anmeldung", "Nutzername:", "Passwort:", "Schule:", "Anmelden");
+                break;
+            case "english":
+                this.setupGUI("Login", "Username:", "Password:", "School:", "Login");
+                break;
+        }
         for (String temp : schools) {
             schooldropdown.addItem(temp);
         }
@@ -37,16 +42,24 @@ public class LoginGUI {
         subpanel.setBorder(BorderFactory.createRaisedSoftBevelBorder());
     }
 
-    public String get_password() {
+    public String getPassword() {
         return new String(passwordf.getPassword());
     }
 
-    public String get_username() {
+    public String getUsername() {
         return usernametf.getText();
     }
 
-    public String get_school() {
+    public String getSchool() {
         return (String) schooldropdown.getSelectedItem();
+    }
+
+    private void setupGUI(String login, String username, String password, String school, String button) {
+        loginlb.setText(login);
+        usernamelb.setText(username);
+        passwordlb.setText(password);
+        schoollb.setText(school);
+        loginbt.setText(button);
     }
 
 
