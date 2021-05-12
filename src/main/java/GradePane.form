@@ -32,7 +32,7 @@
               <text value="Herr Müller"/>
             </properties>
           </component>
-          <component id="9d532" class="javax.swing.JLabel" binding="lehrerLabel">
+          <component id="9d532" class="javax.swing.JLabel" binding="teacherLabel">
             <constraints>
               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -40,7 +40,7 @@
               <text value="Lehrer:"/>
             </properties>
           </component>
-          <component id="c98d7" class="javax.swing.JLabel" binding="terminLabel">
+          <component id="c98d7" class="javax.swing.JLabel" binding="dateLabel">
             <constraints>
               <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -56,7 +56,7 @@
               <text value="Mo. 0915 - 1045"/>
             </properties>
           </component>
-          <component id="e99f3" class="javax.swing.JButton" binding="beitretenButton" default-binding="true">
+          <component id="e99f3" class="javax.swing.JButton" binding="enterButton">
             <constraints>
               <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -64,7 +64,7 @@
               <text value="Beitreten"/>
             </properties>
           </component>
-          <component id="e61ad" class="javax.swing.JButton" binding="bearbeitenButton" default-binding="true">
+          <component id="e61ad" class="javax.swing.JButton" binding="editButton">
             <constraints>
               <grid row="3" column="2" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
