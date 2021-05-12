@@ -29,14 +29,14 @@ public class Main_Test extends JFrame {
         colors2[1] = Color.decode("#85DCB"); // Second Background
         colors2[2] = Color.decode("#FFFFFF"); // Text
         colors2[3] = Color.decode("#C38D9E"); // Button Background
-        LoginGUI lg = new LoginGUI("german", schools, colors);
+        LoginGUI lg = new LoginGUI(Language.german, schools, colors);
 
         f.add(lg);
         String[] grades = new String[3];
         grades[0] = "Klasse 10";
         grades[1] = "Klasse 11";
         grades[2] = "Klasse 12";
-        CreateClassroomPanel ccp = new CreateClassroomPanel("german", grades, colors);
+        CreateClassroomPanel ccp = new CreateClassroomPanel(Language.german, grades, colors);
         PopupFactory pf = new PopupFactory();
         Popup[] p = new Popup[1];
 
