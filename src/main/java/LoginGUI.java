@@ -13,14 +13,14 @@ public class LoginGUI extends JPanel {
     private JLabel usernamelb;
     private JPanel subpanel;
 
-    public LoginGUI(String language, String[] schools, Color[] colors) {
+    public LoginGUI(Language language, String[] schools, Color[] colors) {
         this.setLayout(new BoxLayout(this, 2));
         this.add(mainpanel);
         switch (language) {
-            case "german":
+            case german:
                 this.setupGUI("Anmeldung", "Nutzername:", "Passwort:", "Schule:", "Anmelden");
                 break;
-            case "english":
+            case english:
                 this.setupGUI("Login", "Username:", "Password:", "School:", "Login");
                 break;
         }

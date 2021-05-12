@@ -17,15 +17,15 @@ public class CreateClassroomPanel extends JPanel {
     private JLabel datelb;
     private JLabel studentlb;
 
-    public CreateClassroomPanel(String language, String[] grades, Color[] colors) {
+    public CreateClassroomPanel(Language language, String[] grades, Color[] colors) {
         this.setLayout(new BoxLayout(this, 2));
         this.add(mainpanel);
         this.setBorder(BorderFactory.createEtchedBorder());
         switch (language) {
-            case "german":
+            case german:
                 this.setupGUI("Klassenstufe", "Klassenname", "Lehrer", "Termin", "Schüler", "Hinzufügen", "Fertig", "Abbrechen");
                 break;
-            case "english":
+            case english:
                 this.setupGUI("Grade", "Grade name", "Teacher", "Date", "Student", "Add", "Done", "Cancel");
                 break;
         }
