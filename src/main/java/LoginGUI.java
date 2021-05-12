@@ -1,12 +1,8 @@
-import com.intellij.uiDesigner.core.GridConstraints;
-import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
-
 import javax.swing.*;
 import java.awt.*;
 
 public class LoginGUI extends JPanel {
-    private JPanel loginpanel;
+    private JPanel mainpanel;
     public JButton loginbt;
     private JTextField usernametf;
     private JPasswordField passwordf;
@@ -19,7 +15,7 @@ public class LoginGUI extends JPanel {
 
     public LoginGUI(String language, String[] schools, Color[] colors) {
         this.setLayout(new BoxLayout(this, 2));
-        this.add(loginpanel);
+        this.add(mainpanel);
         switch (language) {
             case "german":
                 this.setupGUI("Anmeldung", "Nutzername:", "Passwort:", "Schule:", "Anmelden");
@@ -31,7 +27,7 @@ public class LoginGUI extends JPanel {
         for (String temp : schools) {
             schooldropdown.addItem(temp);
         }
-        loginpanel.setBackground(colors[0]);
+        mainpanel.setBackground(colors[0]);
         subpanel.setBackground(colors[1]);
         usernamelb.setForeground(colors[2]);
         loginlb.setForeground(colors[2]);

@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class CreateClassroomPanel extends JPanel {
-    private JPanel createclassroompanel;
+    private JPanel mainpanel;
     private JComboBox<String> gradecb;
     private JTextField gradenametf;
     private JTextField teachertf;
@@ -19,7 +19,7 @@ public class CreateClassroomPanel extends JPanel {
 
     public CreateClassroomPanel(String language, String[] grades, Color[] colors) {
         this.setLayout(new BoxLayout(this, 2));
-        this.add(createclassroompanel);
+        this.add(mainpanel);
         this.setBorder(BorderFactory.createEtchedBorder());
         switch (language) {
             case "german":
@@ -32,7 +32,7 @@ public class CreateClassroomPanel extends JPanel {
         for (String temp : grades) {
             this.gradecb.addItem(temp);
         }
-        this.createclassroompanel.setBackground(colors[0]);
+        this.mainpanel.setBackground(colors[0]);
         this.gradelb.setForeground(colors[2]);
         this.gradenamelb.setForeground(colors[2]);
         this.teacherlb.setForeground(colors[2]);
