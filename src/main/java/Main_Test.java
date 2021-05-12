@@ -29,6 +29,8 @@ public class Main_Test extends JFrame {
         colors2[1] = Color.decode("#85DCB"); // Second Background
         colors2[2] = Color.decode("#FFFFFF"); // Text
         colors2[3] = Color.decode("#C38D9E"); // Button Background
+
+        /*
         LoginGUI lg = new LoginGUI(Language.german, schools, colors);
 
         f.add(lg);
@@ -49,6 +51,22 @@ public class Main_Test extends JFrame {
             p[0] = pf.getPopup(lg, a, f.getX() + lg.getX(), f.getY() + lg.getY());
             p[0].show();
         });
+        ccp.donebt.addActionListener(e -> p[0].hide());
+*/
+
+        GradePane gp = new GradePane("Klasse 10 a", "Herr irgendwer", "heute");
+        GradePane gp11 = new GradePane("Klasse 10 a", "Herr irgendwer", "heute");
+        GradePane gp111 = new GradePane("Klasse 10 a", "Herr irgendwer", "heute");
+        GradePane gp1 = new GradePane("Klasse 10 a", "Herr irgendwer", "heute");
+        GradePane gp2 = new GradePane("Klasse 10 a", "Herr irgendwer", "heute");
+        GradePane[] gpl10 = {gp,gp11,gp111};
+        GradePane[] gpl11 = {gp1};
+        GradePane[] gpl12 = {gp2};
+
+
+        ClassroomGUI cr = new ClassroomGUI(gpl10, gpl11, gpl12);
+        f.add(cr.panel1);
+
 
         f.setVisible(true);
         // by doing this, we prevent Swing from resizing

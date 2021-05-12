@@ -2,7 +2,7 @@ import javax.swing.*;
 
 public class GradePane {
     public JPanel panel1;
-    private JPanel subpanel;
+    public JPanel subpanel;
     private JButton enterButton;
     private JButton editButton;
     private JLabel dateLabel;
@@ -11,6 +11,14 @@ public class GradePane {
     private JLabel thisteacherlabel;
     private JLabel gradeheader;
 
+    public GradePane(String grade, String thisteacher, String nextdate){
+
+        setupLanguage(Language.german);
+        this.gradeheader.setText(grade);
+        this.thisteacherlabel.setText(thisteacher);
+        this.nextdatelabel.setText(nextdate);
+        this.subpanel.setBorder(BorderFactory.createRaisedSoftBevelBorder());
+    }
     public GradePane(Language language, String grade, String thisteacher, String nextdate){
 
         setupLanguage(language);
