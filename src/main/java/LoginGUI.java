@@ -14,7 +14,7 @@ public class LoginGUI extends JPanel {
     private JPanel subpanel;
 
     public LoginGUI(Language language, String[] schools, Color[] colors) {
-        this.setLayout(new BoxLayout(this, 2));
+        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainpanel);
         switch (language) {
             case german:

@@ -36,15 +36,19 @@ public class Main_Test extends JFrame {
         grades[0] = "Klasse 10";
         grades[1] = "Klasse 11";
         grades[2] = "Klasse 12";
-        CreateClassroomPanel ccp = new CreateClassroomPanel(Language.german, grades, colors);
+        String[] students = new String[4];
+        students[0] = "Yoost";
+        students[1] = "Daniel";
+        students[2] = "Yoosta";
+        students[3] = "Daniela";
+        AdminEditClassroomPanel a = new AdminEditClassroomPanel(Language.english, colors);
         PopupFactory pf = new PopupFactory();
-        Popup[] p = new Popup[1];
+        Popup[] p = new Popup[2];
 
         lg.loginbt.addActionListener(e -> {
-            p[0] = pf.getPopup(lg, ccp, f.getX() + lg.loginbt.getX(), f.getY() + lg.loginbt.getY());
+            p[0] = pf.getPopup(lg, a, f.getX() + lg.getX(), f.getY() + lg.getY());
             p[0].show();
         });
-        ccp.donebt.addActionListener(e -> p[0].hide());
 
         f.setVisible(true);
         // by doing this, we prevent Swing from resizing
