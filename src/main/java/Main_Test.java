@@ -29,11 +29,6 @@ public class Main_Test extends JFrame {
         colors2[1] = Color.decode("#85DCB"); // Second Background
         colors2[2] = Color.decode("#FFFFFF"); // Text
         colors2[3] = Color.decode("#C38D9E"); // Button Background
-
-        /*
-        LoginGUI lg = new LoginGUI(Language.german, schools, colors);
-
-        f.add(lg);
         String[] grades = new String[3];
         grades[0] = "Klasse 10";
         grades[1] = "Klasse 11";
@@ -43,16 +38,7 @@ public class Main_Test extends JFrame {
         students[1] = "Daniel";
         students[2] = "Yoosta";
         students[3] = "Daniela";
-        AdminEditClassroomPanel a = new AdminEditClassroomPanel(Language.english, colors);
-        PopupFactory pf = new PopupFactory();
-        Popup[] p = new Popup[2];
 
-        lg.loginbt.addActionListener(e -> {
-            p[0] = pf.getPopup(lg, a, f.getX() + lg.getX(), f.getY() + lg.getY());
-            p[0].show();
-        });
-        ccp.donebt.addActionListener(e -> p[0].hide());
-*/
 
         GradePanel gp = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors);
         GradePanel gp11 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors);
@@ -62,9 +48,10 @@ public class Main_Test extends JFrame {
         GradePanel[] gpl10 = {gp,gp11,gp111};
         GradePanel[] gpl11 = {gp1};
         GradePanel[] gpl12 = {gp2};
+        GradePanel[][] gradePanels = {gpl10, gpl11, gpl12};
 
 
-        ClassroomGUI cr = new ClassroomGUI(Language.german,gpl10, gpl11, gpl12, colors);
+        ClassroomGUI cr = new ClassroomGUI(Language.german,gradePanels, grades, colors);
         f.add(cr);
 
 

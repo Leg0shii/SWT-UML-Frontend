@@ -47,4 +47,13 @@ public class CreateClassroomPanel extends GUIHelper {
         this.cancelbt.setText(cancel);
     }
 
+    // TODO : Other Group adds this Function!
+    public void doneFunction(){
+
+    }
+
+    // TODO: Other Group adds this Function
+    public void addFunction() {
+
+    }
 }

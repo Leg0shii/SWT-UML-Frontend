@@ -18,29 +18,32 @@ public class GUI extends JFrame {
         this.language = language;
     }
 
-    public void setupGUIS(String[] schools, GradePanel[][] gradePanels) {
+    public void setupGUIS(String[] schools, GradePanel[][] gradePanels, String[] grades, String[] students) {
         this.loginGUI = new LoginGUI(language, schools, colorScheme);
-        this.classroomGUI = new ClassroomGUI(language, gradePanels[0], gradePanels[1], gradePanels[2], colorScheme);
+        this.classroomGUI = new ClassroomGUI(language, gradePanels, grades, colorScheme);
+        setAllStudents(students, gradePanels);
+    }
+
+    public void updateGUIS(GradePanel[][] gradePanels, String[] students) {
+        this.classroomGUI.updateGUI(gradePanels);
+        setAllStudents(students, gradePanels);
+    }
+
+    public void setAllStudents(String[] students, GradePanel[][] gradePanels) {
+        for (GradePanel[] gradePanelGroup : gradePanels) {
+            for (GradePanel gradePanel : gradePanelGroup) {
+                gradePanel.setStudents(students);
+            }
+        }
     }
 
     public void switchToLoginGUI() {
-        //this.removeComponents();
         this.setContentPane(loginGUI);
         this.setVisible(true);
     }
 
     public void switchToClassRoomGUI() {
-        //this.removeComponents();
         this.setContentPane(classroomGUI);
         this.setVisible(true);
-    }
-
-    private void removeComponents() {
-        for (Component component : this.getRootPane().getComponents()) {
-            System.out.println(component.getClass().getSimpleName());
-            if (!component.getClass().getSimpleName().equals("JLayeredPane")) {
-                this.getRootPane().remove(component);
-            }
-        }
     }
 }

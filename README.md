@@ -1,24 +1,14 @@
-# SWT 31 UML-Application
-Week 1
+# Richtlinien für GUI
 
-## Benjamin - Organization:
-- project administration
-- code assistence, verification, improvement
+## Klassen:
+- alle Panels extenden GUIHelper
 
-## Daniel, Joost - GUI:
-- window API, skeleton for creating windows
-- classes for windowtypes (accept window, drawing window)
+# Routine
+- Mit IntelliJ GUI Designer Layout machen
+- gebundene Klasse extendet GUIHelper, also setLayout Boxlayout (siehe andere Klassen)
+- Hauptpanel vom Layout zu der gebundenen Klasse hinzufügen
+- Alles wird mit colorComponents (aus GUIHelper) eingefärbt 
+- Beispiele finden sich im Code anderer Klassen
+- Sprachen Variabel halten. Siehe andere Klassen!
+- Implementation der Panels dann in GUI. Siehe Beispiele da
 
-## Jakob, Patrick - S/C Communication:
-- client/server communication
-- usage of RMI for interprocesscommunication?
-- serialization of objects
-
-## Andre, Mats - Drawing:
-- draggable objects
-- create/delete objects on sidebar
-- ability to drag them onto empty screen
-
-## Yazar, Norbert - Logic:
-- logic for classroom creation + adding students
-- logic for group creation + adding students

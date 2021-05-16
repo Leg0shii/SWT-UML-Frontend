@@ -44,4 +44,8 @@ public class EditClassroomPanel extends GUIHelper {
         this.donebt.setText(done);
         this.cancelbt.setText(cancel);
     }
+
+    // TODO: Other Group adds this Function
+    public void doneFunction() {
+    }
 }

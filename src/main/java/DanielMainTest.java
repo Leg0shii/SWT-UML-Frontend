@@ -37,7 +37,7 @@ public class DanielMainTest {
         GradePanel[][] gradePanels = {gpl10, gpl11, gpl12};
 
         GUI gui = new GUI(colors, Language.german);
-        gui.setupGUIS(schools, gradePanels);
+        gui.setupGUIS(schools, gradePanels, grades, students);
         gui.switchToLoginGUI();
         gui.switchToClassRoomGUI();
 
