@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ClassroomGUI extends GUIHelper {
     private JPanel mainpanel;
@@ -16,6 +17,7 @@ public class ClassroomGUI extends GUIHelper {
     private JPanel gradepanel10;
     public Popup[] popups;
     private int[] popupCounter;
+    public GUI gui;
 
     public ClassroomGUI(Language language, GradePanel[][] gradePanels, String[] grades, Color[] colors) {
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -55,22 +57,22 @@ public class ClassroomGUI extends GUIHelper {
                 popups[0].show();
             }
         });
-        this.createClassroomButton.addActionListener(e -> {
+        this.createClassroomButton.addActionListener(e1 -> {
             popupCounter[1]++;
             if (popupCounter[1] % 2 == 0) {
                 popups[1].hide();
             } else {
                 CreateClassroomPanel createClassroomPanel = new CreateClassroomPanel(language, grades, colors);
-                createClassroomPanel.cancelbt.addActionListener(e1 -> {
+                createClassroomPanel.cancelbt.addActionListener(e11 -> {
                     popupCounter[1]++;
                     popups[1].hide();
                 });
-                createClassroomPanel.donebt.addActionListener(e2 -> {
+                createClassroomPanel.donebt.addActionListener(e12 -> {
                     popupCounter[1]++;
                     createClassroomPanel.doneFunction();
                     popups[1].hide();
                 });
-                createClassroomPanel.addbt.addActionListener(e3 -> {
+                createClassroomPanel.addbt.addActionListener(e13 -> {
                     createClassroomPanel.addFunction();
                 });
                 Point point = new Point(this.createClassroomButton.getX(), this.createClassroomButton.getY() - 200);
@@ -79,10 +81,10 @@ public class ClassroomGUI extends GUIHelper {
                 popups[1].show();
             }
         });
-        this.logoutButton.addActionListener(e -> {
+        this.logoutButton.addActionListener(e2 -> {
             logout();
         });
-        this.privateWorkspaceButton.addActionListener(e -> {
+        this.privateWorkspaceButton.addActionListener(e3 -> {
             privateWorkspaceFunction();
         });
     }
@@ -156,9 +158,62 @@ public class ClassroomGUI extends GUIHelper {
         }
     }
 
-    // TODO: Implemented by other Group
     private void logout(){
+        closeAllPopups();
+        gui.switchToLoginGUI();
+    }
 
+    private void closeAllPopups(){
+        for (Popup popup : popups){
+            if (popup != null) {
+                popup.hide();
+            }
+        }
+        for (Component component : gradepanel10.getComponents()){
+            assert component instanceof GradePanel;
+            ((GradePanel) component).closePopups();
+        }
+        for (Component component : gradepanel11.getComponents()){
+            assert component instanceof GradePanel;
+            ((GradePanel) component).closePopups();
+        }
+        for (Component component : gradepanel12.getComponents()){
+            assert component instanceof GradePanel;
+            ((GradePanel) component).closePopups();
+        }
+        Arrays.fill(popupCounter, 0);
+    }
+
+    public void initForAccountType(AccountType accountType){
+        switch (accountType){
+            case admin:{
+
+                break;
+            }
+            case teacher:{
+                break;
+            }
+            case student:{
+                this.mainpanel.remove(createClassroomButton);
+                this.removeEditButtonsFromGradePanels();
+                break;
+            }
+        }
+    }
+
+    private void removeEditButtonsFromGradePanels(){
+        for (Component component : gradepanel10.getComponents()){
+            assert component instanceof GradePanel;
+            ((GradePanel) component).getMainpanel().remove(((GradePanel) component).editButton);
+        }
+        for (Component component : gradepanel11.getComponents()){
+            assert component instanceof GradePanel;
+            ((GradePanel) component).getMainpanel().remove(((GradePanel) component).editButton);
+        }
+        for (Component component : gradepanel12.getComponents()){
+            assert component instanceof GradePanel;
+            ((GradePanel) component).getMainpanel().remove(((GradePanel) component).editButton);
+        }
     }
 
     // TODO: Implemented by other Group

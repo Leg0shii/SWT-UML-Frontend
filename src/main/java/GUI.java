@@ -18,9 +18,12 @@ public class GUI extends JFrame {
         this.language = language;
     }
 
-    public void setupGUIS(String[] schools, GradePanel[][] gradePanels, String[] grades, String[] students) {
+    public void setupGUIS(String[] schools, GradePanel[][] gradePanels, String[] grades, String[] students, AccountType accountType) {
         this.loginGUI = new LoginGUI(language, schools, colorScheme);
+        this.loginGUI.gui = this;
         this.classroomGUI = new ClassroomGUI(language, gradePanels, grades, colorScheme);
+        this.classroomGUI.gui = this;
+        this.classroomGUI.initForAccountType(accountType);
         setAllStudents(students, gradePanels);
     }
 

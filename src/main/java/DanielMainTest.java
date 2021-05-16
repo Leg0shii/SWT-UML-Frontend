@@ -3,6 +3,7 @@ import java.awt.*;
 
 public class DanielMainTest {
     public static void main(String[] args) {
+        AccountType accountType = AccountType.admin;
         String[] schools = new String[3];
         schools[0] = "Schule A";
         schools[1] = "Schule B";
@@ -26,29 +27,18 @@ public class DanielMainTest {
         students[1] = "Daniel";
         students[2] = "Yoosta";
         students[3] = "Daniela";
-        GradePanel gp = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors);
-        GradePanel gp11 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors);
-        GradePanel gp111 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors);
-        GradePanel gp1 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors);
-        GradePanel gp2 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors);
+        GradePanel gp = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors, accountType);
+        GradePanel gp11 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors,accountType);
+        GradePanel gp111 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors,accountType);
+        GradePanel gp1 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors,accountType);
+        GradePanel gp2 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors,accountType);
         GradePanel[] gpl10 = {gp, gp11, gp111};
         GradePanel[] gpl11 = {gp1};
         GradePanel[] gpl12 = {gp2};
         GradePanel[][] gradePanels = {gpl10, gpl11, gpl12};
 
         GUI gui = new GUI(colors, Language.german);
-        gui.setupGUIS(schools, gradePanels, grades, students);
+        gui.setupGUIS(schools, gradePanels, grades, students, accountType);
         gui.switchToLoginGUI();
-        gui.switchToClassRoomGUI();
-
-        AdminEditClassroomPanel a = new AdminEditClassroomPanel(Language.german, colors);
-        PopupFactory pf = new PopupFactory();
-        Popup[] p = new Popup[2];
-        /*lg.loginbt.addActionListener(e -> {
-            Point point = new Point(lg.loginbt.getX(),lg.loginbt.getY());
-            SwingUtilities.convertPointToScreen(point,f);
-            p[0] = pf.getPopup(lg, a, point.x, point.y);
-            p[0].show();
-        });*/
     }
 }

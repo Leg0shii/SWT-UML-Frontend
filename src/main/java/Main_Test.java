@@ -13,6 +13,8 @@ public class Main_Test extends JFrame {
 
 
     public static void main(String[] args) {
+
+        AccountType accountType = AccountType.admin;
         Main_Test f = new Main_Test("Gruppe 31", 500);
 
         String[] schools = new String[3];
@@ -40,11 +42,11 @@ public class Main_Test extends JFrame {
         students[3] = "Daniela";
 
 
-        GradePanel gp = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors);
-        GradePanel gp11 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors);
-        GradePanel gp111 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors);
-        GradePanel gp1 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors);
-        GradePanel gp2 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors);
+        GradePanel gp = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors,accountType);
+        GradePanel gp11 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors,accountType);
+        GradePanel gp111 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors,accountType);
+        GradePanel gp1 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors,accountType);
+        GradePanel gp2 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors,accountType);
         GradePanel[] gpl10 = {gp,gp11,gp111};
         GradePanel[] gpl11 = {gp1};
         GradePanel[] gpl12 = {gp2};

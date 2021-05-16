@@ -13,6 +13,7 @@ public class LoginGUI extends GUIHelper {
     private JLabel schoollb;
     private JLabel usernamelb;
     private JPanel subpanel;
+    public GUI gui;
 
     public LoginGUI(Language language, String[] schools, Color[] colors) {
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -30,6 +31,9 @@ public class LoginGUI extends GUIHelper {
         }
         this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors);
         subpanel.setBorder(BorderFactory.createEtchedBorder());
+        this.loginbt.addActionListener(e -> {
+            login();
+        });
     }
 
     public String getPassword() {
@@ -52,5 +56,9 @@ public class LoginGUI extends GUIHelper {
         loginbt.setText(button);
     }
 
+    // TODO: Implemented by other Group
+    private void login(){
+        gui.switchToClassRoomGUI();
+    }
 
 }

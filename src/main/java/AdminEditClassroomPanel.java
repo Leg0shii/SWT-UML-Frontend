@@ -16,7 +16,7 @@ public class AdminEditClassroomPanel extends GUIHelper{
         this.add(mainpanel);
         this.setBorder(BorderFactory.createEtchedBorder());
         switch (language){
-            case german -> setupGUI("neue Klassenstufe", "Schülerliste zurücksetzen", "Klasse migrieren", "Löschen", "Abbrechen");
+            case german -> setupGUI("<html>neue <br>Klassenstufe</html>", "<html>Schülerliste <br>zurücksetzen</html>", "Klasse migrieren", "Löschen", "Abbrechen");
             case english -> setupGUI("New grade", "Reset student list", "Migrate grade", "Delete", "Cancel");
         }
         this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors);
@@ -34,5 +34,17 @@ public class AdminEditClassroomPanel extends GUIHelper{
         this.deletebt.setText(delete);
         this.cancelbt.setText(cancel);
 
+    }
+
+    // TODO: Other Group implements this
+    public void migrateFunction() {
+    }
+
+    // TODO: Other Group implements this
+    public void resetFunction() {
+    }
+
+    // TODO: Other Group implements this
+    public void deleteFunction() {
     }
 }
