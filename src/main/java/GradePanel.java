@@ -1,9 +1,10 @@
 import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 
-public class GradePane {
-    public JPanel panel1;
-    public JPanel subpanel;
-    private JButton enterButton;
+public class GradePanel extends GUIHelper {
+    private JPanel mainpanel;
+    public JButton enterButton;
     private JButton editButton;
     private JLabel dateLabel;
     private JLabel teacherLabel;
@@ -11,21 +12,15 @@ public class GradePane {
     private JLabel thisteacherlabel;
     private JLabel gradeheader;
 
-    public GradePane(String grade, String thisteacher, String nextdate){
-
-        setupLanguage(Language.german);
-        this.gradeheader.setText(grade);
-        this.thisteacherlabel.setText(thisteacher);
-        this.nextdatelabel.setText(nextdate);
-        this.subpanel.setBorder(BorderFactory.createRaisedSoftBevelBorder());
-    }
-    public GradePane(Language language, String grade, String thisteacher, String nextdate){
-
+    public GradePanel(Language language, String grade, String thisteacher, String nextdate, Color[] colors){
+        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        this.add(mainpanel);
         setupLanguage(language);
         this.gradeheader.setText(grade);
         this.thisteacherlabel.setText(thisteacher);
         this.nextdatelabel.setText(nextdate);
-        this.subpanel.setBorder(BorderFactory.createRaisedSoftBevelBorder());
+        this.setBorder(BorderFactory.createEtchedBorder());
+        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors);
     }
 
     private void setupLanguage(Language language) {
@@ -51,7 +46,6 @@ public class GradePane {
     }
 
     private void setupGradePane(String enter, String edit, String teacher, String date) {
-
         this.enterButton.setText(enter);
         this.editButton.setText(edit);
         this.teacherLabel.setText(teacher);

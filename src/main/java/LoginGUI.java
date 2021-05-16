@@ -1,7 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
-public class LoginGUI extends JPanel {
+public class LoginGUI extends GUIHelper {
     private JPanel mainpanel;
     public JButton loginbt;
     private JTextField usernametf;
@@ -27,15 +28,8 @@ public class LoginGUI extends JPanel {
         for (String temp : schools) {
             schooldropdown.addItem(temp);
         }
-        mainpanel.setBackground(colors[0]);
-        subpanel.setBackground(colors[1]);
-        usernamelb.setForeground(colors[2]);
-        loginlb.setForeground(colors[2]);
-        passwordlb.setForeground(colors[2]);
-        schoollb.setForeground(colors[2]);
-        loginbt.setForeground(colors[2]);
-        loginbt.setBackground(colors[3]);
-        subpanel.setBorder(BorderFactory.createRaisedSoftBevelBorder());
+        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors);
+        subpanel.setBorder(BorderFactory.createEtchedBorder());
     }
 
     public String getPassword() {

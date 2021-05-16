@@ -1,7 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
-public class CreateClassroomPanel extends JPanel {
+public class CreateClassroomPanel extends GUIHelper {
     private JPanel mainpanel;
     private JComboBox<String> gradecb;
     private JTextField gradenametf;
@@ -32,18 +33,7 @@ public class CreateClassroomPanel extends JPanel {
         for (String temp : grades) {
             this.gradecb.addItem(temp);
         }
-        this.mainpanel.setBackground(colors[0]);
-        this.gradelb.setForeground(colors[2]);
-        this.gradenamelb.setForeground(colors[2]);
-        this.teacherlb.setForeground(colors[2]);
-        this.datelb.setForeground(colors[2]);
-        this.studentlb.setForeground(colors[2]);
-        this.addbt.setForeground(colors[2]);
-        this.donebt.setForeground(colors[2]);
-        this.cancelbt.setForeground(colors[2]);
-        this.addbt.setBackground(colors[3]);
-        this.donebt.setBackground(colors[3]);
-        this.cancelbt.setBackground(colors[3]);
+        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors);
     }
 
     private void setupGUI(String grade, String gradename, String teacher, String date, String student, String add, String done, String cancel) {

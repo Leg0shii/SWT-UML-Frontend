@@ -1,7 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
-public class EditClassroomPanel extends JPanel {
+public class EditClassroomPanel extends GUIHelper {
     private JPanel mainpanel;
     public JButton donebt;
     public JButton cancelbt;
@@ -26,13 +27,7 @@ public class EditClassroomPanel extends JPanel {
         for (String temp : students){
             studentcb.addItem(temp);
         }
-        this.mainpanel.setBackground(colors[0]);
-        this.studenttflb.setForeground(colors[2]);
-        this.studentcblb.setForeground(colors[2]);
-        this.donebt.setForeground(colors[2]);
-        this.cancelbt.setForeground(colors[2]);
-        this.donebt.setBackground(colors[3]);
-        this.cancelbt.setBackground(colors[3]);
+        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors);
     }
 
     public String getStudentToAdd(){

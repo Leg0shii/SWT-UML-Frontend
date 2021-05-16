@@ -1,7 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
-public class AdminEditClassroomPanel extends JPanel{
+public class AdminEditClassroomPanel extends GUIHelper{
     private JPanel mainpanel;
     private JTextField gradetf;
     public JButton resetbt;
@@ -18,16 +19,7 @@ public class AdminEditClassroomPanel extends JPanel{
             case german -> setupGUI("neue Klassenstufe", "Schülerliste zurücksetzen", "Klasse migrieren", "Löschen", "Abbrechen");
             case english -> setupGUI("New grade", "Reset student list", "Migrate grade", "Delete", "Cancel");
         }
-        this.mainpanel.setBackground(colors[0]);
-        this.gradelb.setForeground(colors[2]);
-        this.resetbt.setForeground(colors[2]);
-        this.migratebt.setForeground(colors[2]);
-        this.deletebt.setForeground(colors[2]);
-        this.cancelbt.setForeground(colors[2]);
-        this.resetbt.setBackground(colors[3]);
-        this.migratebt.setBackground(colors[3]);
-        this.deletebt.setBackground(colors[3]);
-        this.cancelbt.setBackground(colors[3]);
+        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors);
 
     }
 

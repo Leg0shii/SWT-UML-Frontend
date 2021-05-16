@@ -54,18 +54,18 @@ public class Main_Test extends JFrame {
         ccp.donebt.addActionListener(e -> p[0].hide());
 */
 
-        GradePane gp = new GradePane("Klasse 10 a", "Herr irgendwer", "heute");
-        GradePane gp11 = new GradePane("Klasse 10 a", "Herr irgendwer", "heute");
-        GradePane gp111 = new GradePane("Klasse 10 a", "Herr irgendwer", "heute");
-        GradePane gp1 = new GradePane("Klasse 10 a", "Herr irgendwer", "heute");
-        GradePane gp2 = new GradePane("Klasse 10 a", "Herr irgendwer", "heute");
-        GradePane[] gpl10 = {gp,gp11,gp111};
-        GradePane[] gpl11 = {gp1};
-        GradePane[] gpl12 = {gp2};
+        GradePanel gp = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors);
+        GradePanel gp11 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors);
+        GradePanel gp111 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors);
+        GradePanel gp1 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors);
+        GradePanel gp2 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors);
+        GradePanel[] gpl10 = {gp,gp11,gp111};
+        GradePanel[] gpl11 = {gp1};
+        GradePanel[] gpl12 = {gp2};
 
 
-        ClassroomGUI cr = new ClassroomGUI(gpl10, gpl11, gpl12);
-        f.add(cr.panel1);
+        ClassroomGUI cr = new ClassroomGUI(Language.german,gpl10, gpl11, gpl12, colors);
+        f.add(cr);
 
 
         f.setVisible(true);
