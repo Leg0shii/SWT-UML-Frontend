@@ -1,4 +1,6 @@
-package util;
+package logic.course;
+
+import logic.user.User;
 
 import java.util.ArrayList;
 import java.util.Date;

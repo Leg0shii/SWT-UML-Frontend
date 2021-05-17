@@ -3,7 +3,7 @@ package gui.classroom;
 import gui.GUIManager;
 import gui.GUI;
 import util.AccountType;
-import util.User;
+import logic.user.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,8 +37,8 @@ public class ClassroomGUI extends GUI {
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         switch (guiManager.language){
-            case german -> setupGUI("Klasse 11", "Klasse 10", "Klasse 12", "Abmelden", "Klassenraum erstellen", "Privater Arbeitsplatz");
-            case english -> setupGUI("Grade 11", "Grade 10", "Grade 12", "Logout", "Create Classroom", "Private Workspace");
+            case GERMAN -> setupGUI("Klasse 11", "Klasse 10", "Klasse 12", "Abmelden", "Klassenraum erstellen", "Privater Arbeitsplatz");
+            case ENGLISH -> setupGUI("Grade 11", "Grade 10", "Grade 12", "Logout", "Create Classroom", "Private Workspace");
         }
 
         colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 0);
@@ -185,7 +185,7 @@ public class ClassroomGUI extends GUI {
     }
 
     public void initForAccountType(AccountType accountType){
-        if (accountType == AccountType.student) {
+        if (accountType == AccountType.STUDENT) {
             this.mainPanel.remove(createClassroomButton);
             removeEditButtonsFromGradePanels();
         }

@@ -28,8 +28,8 @@ public class CreateClassroomPanel extends GUI {
         this.add(mainPanel);
         this.setBorder(BorderFactory.createEtchedBorder());
         switch (language) {
-            case german -> this.setupGUI("Klassenstufe", "Klassenname", "Lehrer", "Termin", "Schüler", "Hinzufügen", "Fertig", "Abbrechen");
-            case english -> this.setupGUI("Grade", "Grade name", "Teacher", "Date", "Student", "Add", "Done", "Cancel");
+            case GERMAN -> this.setupGUI("Klassenstufe", "Klassenname", "Lehrer", "Termin", "Schüler", "Hinzufügen", "Fertig", "Abbrechen");
+            case ENGLISH -> this.setupGUI("Grade", "Grade name", "Teacher", "Date", "Student", "Add", "Done", "Cancel");
         }
         colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 0);
     }

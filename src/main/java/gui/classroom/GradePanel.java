@@ -1,11 +1,10 @@
 package gui.classroom;
 
-import gui.GUIManager;
 import gui.GUI;
 import util.AccountType;
-import util.Course;
+import logic.course.Course;
 import util.Language;
-import util.User;
+import logic.user.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,8 +29,8 @@ public class GradePanel extends GUI {
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         switch (language) {
-            case german -> setupGUI("Beitreten", "Bearbeiten", "Lehrer", "Termin", "Klasse");
-            case english -> setupGUI("Enter", "Edit", "Teacher", "Date", "Grade");
+            case GERMAN -> setupGUI("Beitreten", "Bearbeiten", "Lehrer", "Termin", "Klasse");
+            case ENGLISH -> setupGUI("Enter", "Edit", "Teacher", "Date", "Grade");
         }
         this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
         setupActionListeners(accountType);
@@ -60,7 +59,7 @@ public class GradePanel extends GUI {
         PopupFactory popupFactory = new PopupFactory();
         popups = new Popup[1];
         switch (accountType) {
-            case admin -> {
+            case ADMIN -> {
                 this.editButton.addActionListener(e1 -> {
                     Point point = new Point(this.editButton.getX()-5, 0);
                     SwingUtilities.convertPointToScreen(point, this);
@@ -74,7 +73,7 @@ public class GradePanel extends GUI {
                 });
                 this.enterButton.addActionListener(e2 -> this.enterFunction());
             }
-            case teacher -> {
+            case TEACHER -> {
                 this.editButton.addActionListener(e1 -> {
                     Point point = new Point(this.editButton.getX()-5, 0);
                     SwingUtilities.convertPointToScreen(point, this);

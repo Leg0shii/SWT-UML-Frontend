@@ -21,8 +21,8 @@ public class AdminEditClassroomPanel extends GUI {
         this.add(mainPanel);
         this.setBorder(BorderFactory.createEtchedBorder());
         switch (language){
-            case german -> setupGUI("neue Klassenstufe", "Zurücksetzen", "Migrieren", "Löschen", "Abbrechen");
-            case english -> setupGUI("New grade", "Reset", "Migrate", "Delete", "Cancel");
+            case GERMAN -> setupGUI("neue Klassenstufe", "Zurücksetzen", "Migrieren", "Löschen", "Abbrechen");
+            case ENGLISH -> setupGUI("New grade", "Reset", "Migrate", "Delete", "Cancel");
         }
         this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
     }

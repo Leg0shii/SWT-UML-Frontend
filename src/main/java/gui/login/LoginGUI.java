@@ -2,10 +2,8 @@ package gui.login;
 
 import gui.GUIManager;
 import gui.GUI;
-import util.Language;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 
 public class LoginGUI extends GUI {
@@ -27,8 +25,8 @@ public class LoginGUI extends GUI {
         this.add(mainPanel);
         subPanel.setBorder(BorderFactory.createEtchedBorder());
         switch (guiManager.language) {
-            case german -> setupGUI("Anmeldung", "Nutzername:", "Passwort:", "Schule:", "Anmelden");
-            case english -> setupGUI("Login", "Username:", "Password:", "School:", "Login");
+            case GERMAN -> setupGUI("Anmeldung", "Nutzername:", "Passwort:", "Schule:", "Anmelden");
+            case ENGLISH -> setupGUI("Login", "Username:", "Password:", "School:", "Login");
         }
         setupActionListeners();
         colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme,0);

@@ -1,9 +1,9 @@
 import gui.GUIManager;
 import gui.classroom.GradePanel;
 import util.AccountType;
-import util.Course;
+import logic.course.Course;
 import util.Language;
-import util.User;
+import logic.user.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,8 +12,8 @@ import java.util.Date;
 
 public class DanielMainTest {
     public static void main(String[] args) {
-        AccountType accountType = AccountType.teacher;
-        Language language = Language.german;
+        AccountType accountType = AccountType.TEACHER;
+        Language language = Language.GERMAN;
 
         String[] schools = new String[3];
         schools[0] = "Schule A";
@@ -34,10 +34,10 @@ public class DanielMainTest {
 
         // load from Database
         ArrayList<User> students = new ArrayList<>() {{
-            add(new User("2", "Yoost1", "surname"));
-            add(new User("3", "Yoost2", "surname"));
-            add(new User("4", "Yoost3", "surname"));
-            add(new User("5", "Yoost4", "surname"));
+            add(new User(2, "Yoost1", "surname"));
+            add(new User(3, "Yoost2", "surname"));
+            add(new User(4, "Yoost3", "surname"));
+            add(new User(5, "Yoost4", "surname"));
         }};
 
         ArrayList<Date> dates = new ArrayList<>();
@@ -46,9 +46,9 @@ public class DanielMainTest {
         dates.add(new Date());
 
         ArrayList<Course> courses = new ArrayList<>() {{
-            add(new Course(0, 10, 'a', dates, new User("0", "prename", "surname"), students));
-            add(new Course(1, 11, 'b', dates, new User("1", "prename", "surname"), students));
-            add(new Course(2, 12, 'a', dates, new User("0", "prename", "surname"), students));
+            add(new Course(0, 10, 'a', dates, new User(0, "prename", "surname"), students));
+            add(new Course(1, 11, 'b', dates, new User(1, "prename", "surname"), students));
+            add(new Course(2, 12, 'a', dates, new User(0, "prename", "surname"), students));
         }};
 
         GUIManager guiManager = new GUIManager(colors, language);

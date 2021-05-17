@@ -4,7 +4,7 @@ import gui.classroom.ClassroomGUI;
 import gui.login.LoginGUI;
 import util.AccountType;
 import util.Language;
-import util.User;
+import logic.user.User;
 
 import javax.swing.*;
 import java.awt.*;

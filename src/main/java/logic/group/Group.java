@@ -1,4 +1,6 @@
-package util;
+package logic.group;
+
+import logic.user.User;
 
 import java.util.ArrayList;
 

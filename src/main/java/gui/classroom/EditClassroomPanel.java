@@ -1,9 +1,8 @@
 package gui.classroom;
 
-import gui.GUIManager;
 import gui.GUI;
 import util.Language;
-import util.User;
+import logic.user.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,8 +22,8 @@ public class EditClassroomPanel extends GUI {
         this.add(mainPanel);
         this.setBorder(BorderFactory.createEtchedBorder());
         switch (language) {
-            case german -> this.setupGUI("<html>Schüler <br> hinzufügen</html>", "<html>Schüler <br> entfernen</html>", "Übernehmen", "Abbrechen");
-            case english -> this.setupGUI("Add student", "Remove student", "Commit", "Cancel");
+            case GERMAN -> this.setupGUI("<html>Schüler <br> hinzufügen</html>", "<html>Schüler <br> entfernen</html>", "Übernehmen", "Abbrechen");
+            case ENGLISH -> this.setupGUI("Add student", "Remove student", "Commit", "Cancel");
         }
         this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
     }
@@ -40,7 +39,7 @@ public class EditClassroomPanel extends GUI {
         this.studentComboBox.removeAllItems();
         this.studentComboBox.addItem("");
         for (User student : students){
-            this.studentComboBox.addItem(student.getID());
+            this.studentComboBox.addItem(student.getID() + "");
         }
     }
 
