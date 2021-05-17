@@ -4,6 +4,7 @@ import java.awt.*;
 public class DanielMainTest {
     public static void main(String[] args) {
         AccountType accountType = AccountType.admin;
+        Language language = Language.german;
         String[] schools = new String[3];
         schools[0] = "Schule A";
         schools[1] = "Schule B";
@@ -27,17 +28,17 @@ public class DanielMainTest {
         students[1] = "Daniel";
         students[2] = "Yoosta";
         students[3] = "Daniela";
-        GradePanel gp = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors, accountType);
-        GradePanel gp11 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors,accountType);
-        GradePanel gp111 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors,accountType);
-        GradePanel gp1 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors,accountType);
-        GradePanel gp2 = new GradePanel(Language.german, "Klasse 10 a", "Herr irgendwer", "heute", colors,accountType);
+        GradePanel gp = new GradePanel(language, "Klasse 10 a", "Herr irgendwer", "heute", colors, accountType);
+        GradePanel gp11 = new GradePanel(language, "Klasse 10 a", "Herr irgendwer", "heute", colors,accountType);
+        GradePanel gp111 = new GradePanel(language, "Klasse 10 a", "Herr irgendwer", "heute", colors,accountType);
+        GradePanel gp1 = new GradePanel(language, "Klasse 10 a", "Herr irgendwer", "heute", colors,accountType);
+        GradePanel gp2 = new GradePanel(language, "Klasse 10 a", "Herr irgendwer", "heute", colors,accountType);
         GradePanel[] gpl10 = {gp, gp11, gp111};
         GradePanel[] gpl11 = {gp1};
         GradePanel[] gpl12 = {gp2};
         GradePanel[][] gradePanels = {gpl10, gpl11, gpl12};
 
-        GUI gui = new GUI(colors, Language.german);
+        GUI gui = new GUI(colors, language);
         gui.setupGUIS(schools, gradePanels, grades, students, accountType);
         gui.switchToLoginGUI();
     }
