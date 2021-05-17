@@ -8,17 +8,17 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class AdminEditClassroomPanel extends GUIHelper {
-    private JPanel mainpanel;
-    private JTextField gradetf;
-    public JButton resetbt;
-    public JButton migratebt;
-    public JButton deletebt;
-    public JButton cancelbt;
-    private JLabel gradelb;
+    private JPanel mainPanel;
+    private JTextField gradeTextField;
+    public JButton resetButton;
+    public JButton migrateButton;
+    public JButton deleteButton;
+    public JButton cancelButton;
+    private JLabel gradeLabel;
 
     public AdminEditClassroomPanel(Language language, Color[] colors){
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.add(mainpanel);
+        this.add(mainPanel);
         this.setBorder(BorderFactory.createEtchedBorder());
         switch (language){
             case german -> setupGUI("neue Klassenstufe", "Zurücksetzen", "Migrieren", "Löschen", "Abbrechen");
@@ -27,16 +27,16 @@ public class AdminEditClassroomPanel extends GUIHelper {
         this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors);
     }
 
-    public String getGrade(){
-        return gradetf.getText();
+    private void setupGUI(String grade, String reset, String migrate, String delete, String cancel){
+        this.gradeLabel.setText(grade);
+        this.resetButton.setText(reset);
+        this.migrateButton.setText(migrate);
+        this.deleteButton.setText(delete);
+        this.cancelButton.setText(cancel);
     }
 
-    private void setupGUI(String grade, String reset, String migrate, String delete, String cancel){
-        this.gradelb.setText(grade);
-        this.resetbt.setText(reset);
-        this.migratebt.setText(migrate);
-        this.deletebt.setText(delete);
-        this.cancelbt.setText(cancel);
+    public String getGrade(){
+        return gradeTextField.getText();
     }
 
     // TODO: Other Group implements this

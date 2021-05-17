@@ -9,57 +9,58 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class LoginGUI extends GUIHelper {
-    private JPanel mainpanel;
-    public JButton loginbt;
-    private JTextField usernametf;
-    private JPasswordField passwordf;
-    private JComboBox<String> schooldropdown;
-    private JLabel loginlb;
-    private JLabel passwordlb;
-    private JLabel schoollb;
-    private JLabel usernamelb;
-    private JPanel subpanel;
+    private JPanel mainPanel;
+    public JButton loginButton;
+    private JTextField usernameTextField;
+    private JPasswordField passwordField;
+    private JComboBox<String> schoolDropDown;
+    private JLabel loginLabel;
+    private JLabel passwordLabel;
+    private JLabel schoolLabel;
+    private JLabel usernameLabel;
+    private JPanel subPanel;
     public GUI gui;
 
-    public LoginGUI(Language language, String[] schools, Color[] colors) {
+    public LoginGUI(Language language, Color[] colors) {
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.add(mainpanel);
+        this.add(mainPanel);
+        subPanel.setBorder(BorderFactory.createEtchedBorder());
         switch (language) {
-            case german:
-                this.setupGUI("Anmeldung", "Nutzername:", "Passwort:", "Schule:", "Anmelden");
-                break;
-            case english:
-                this.setupGUI("Login", "Username:", "Password:", "School:", "Login");
-                break;
+            case german -> this.setupGUI("Anmeldung", "Nutzername:", "Passwort:", "Schule:", "Anmelden");
+            case english -> this.setupGUI("Login", "Username:", "Password:", "School:", "Login");
         }
-        for (String temp : schools) {
-            schooldropdown.addItem(temp);
-        }
-        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors);
-        subpanel.setBorder(BorderFactory.createEtchedBorder());
-        this.loginbt.addActionListener(e -> {
-            login();
-        });
-    }
-
-    public String getPassword() {
-        return new String(passwordf.getPassword());
-    }
-
-    public String getUsername() {
-        return usernametf.getText();
-    }
-
-    public String getSchool() {
-        return (String) schooldropdown.getSelectedItem();
+        setupActionListeners();
+        colorComponents(this.getAllComponents(this, new ArrayList<>()), colors);
     }
 
     private void setupGUI(String login, String username, String password, String school, String button) {
-        loginlb.setText(login);
-        usernamelb.setText(username);
-        passwordlb.setText(password);
-        schoollb.setText(school);
-        loginbt.setText(button);
+        loginLabel.setText(login);
+        usernameLabel.setText(username);
+        passwordLabel.setText(password);
+        schoolLabel.setText(school);
+        loginButton.setText(button);
+    }
+
+    public void updateGUI(String[] schools){
+        for (String temp : schools) {
+            schoolDropDown.addItem(temp);
+        }
+    }
+
+    public void setupActionListeners(){
+        this.loginButton.addActionListener(e -> login());
+    }
+
+    public String getPassword() {
+        return new String(passwordField.getPassword());
+    }
+
+    public String getUsername() {
+        return usernameTextField.getText();
+    }
+
+    public String getSchool() {
+        return (String) schoolDropDown.getSelectedItem();
     }
 
     // TODO: Implemented by other Group

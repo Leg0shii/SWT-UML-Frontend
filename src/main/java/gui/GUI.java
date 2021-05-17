@@ -8,6 +8,8 @@ import util.Language;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class GUI extends JFrame {
     Color[] colorScheme;
@@ -26,26 +28,16 @@ public class GUI extends JFrame {
         this.language = language;
     }
 
-    public void setupGUIS(String[] schools, GradePanel[][] gradePanels, String[] grades, String[] students, AccountType accountType) {
-        this.loginGUI = new LoginGUI(language, schools, colorScheme);
+    public void setupGUIS() {
+        this.loginGUI = new LoginGUI(language, colorScheme);
         this.loginGUI.gui = this;
-        this.classroomGUI = new ClassroomGUI(language, gradePanels, grades, colorScheme);
+        this.classroomGUI = new ClassroomGUI(language, colorScheme);
         this.classroomGUI.gui = this;
-        this.classroomGUI.initForAccountType(accountType);
-        setAllStudents(students, gradePanels);
     }
 
-    public void updateGUIS(GradePanel[][] gradePanels, String[] students) {
-        this.classroomGUI.updateGUI(gradePanels);
-        setAllStudents(students, gradePanels);
-    }
-
-    public void setAllStudents(String[] students, GradePanel[][] gradePanels) {
-        for (GradePanel[] gradePanelGroup : gradePanels) {
-            for (GradePanel gradePanel : gradePanelGroup) {
-                gradePanel.setStudents(students);
-            }
-        }
+    public void updateGUIS(String[] schools, String[] students, AccountType accountType) {
+        this.classroomGUI.updateGUI(students, accountType);
+        this.loginGUI.updateGUI(schools);
     }
 
     public void switchToLoginGUI() {

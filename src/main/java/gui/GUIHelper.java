@@ -6,21 +6,22 @@ import java.util.List;
 
 public class GUIHelper extends JPanel {
     public void colorComponents(Component[] components, Color[] colorScheme) {
+        int panelCounter = 0;
         for (Component component : components) {
             switch (component.getClass().getSimpleName()) {
-                case "JPanel": {
-                    component.setBackground(colorScheme[1]);
-                    break;
+                case "JPanel" -> {
+                    if (panelCounter < 1) {
+                        component.setBackground(colorScheme[0]);
+                    } else {
+                        component.setBackground(colorScheme[1]);
+                    }
+                    panelCounter++;
                 }
-                case "JButton": {
+                case "JButton" -> {
                     component.setBackground(colorScheme[3]);
                     component.setForeground(colorScheme[2]);
-                    break;
                 }
-                case "JLabel": {
-                    component.setForeground(colorScheme[2]);
-                    break;
-                }
+                case "JLabel" -> component.setForeground(colorScheme[2]);
             }
         }
     }
