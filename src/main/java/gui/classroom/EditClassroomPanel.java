@@ -1,13 +1,15 @@
 package gui.classroom;
 
-import gui.GUIHelper;
+import gui.GUIManager;
+import gui.GUI;
 import util.Language;
+import util.User;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class EditClassroomPanel extends GUIHelper {
+public class EditClassroomPanel extends GUI {
     private JPanel mainPanel;
     public JButton doneButton;
     public JButton cancelButton;
@@ -16,7 +18,7 @@ public class EditClassroomPanel extends GUIHelper {
     private JLabel studentComboBoxLabel;
     private JLabel studentTextFieldLabel;
 
-    public EditClassroomPanel(Language language, Color[] colors){
+    public EditClassroomPanel(Color[] colors, Language language){
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         this.setBorder(BorderFactory.createEtchedBorder());
@@ -34,11 +36,11 @@ public class EditClassroomPanel extends GUIHelper {
         this.cancelButton.setText(cancel);
     }
 
-    public void updateGUI(String[] students){
+    public void updateGUI(ArrayList<User> students){
         this.studentComboBox.removeAllItems();
         this.studentComboBox.addItem("");
-        for (String student : students){
-            this.studentComboBox.addItem(student);
+        for (User student : students){
+            this.studentComboBox.addItem(student.getID());
         }
     }
 

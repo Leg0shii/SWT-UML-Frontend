@@ -1,13 +1,13 @@
 package gui.classroom;
 
-import gui.GUIHelper;
+import gui.GUI;
 import util.Language;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class CreateClassroomPanel extends GUIHelper {
+public class CreateClassroomPanel extends GUI {
     private JPanel mainPanel;
     private JComboBox<String> gradeComboBox;
     private JTextField gradeNameTextField;
@@ -23,7 +23,7 @@ public class CreateClassroomPanel extends GUIHelper {
     private JLabel dateLabel;
     private JLabel studentLabel;
 
-    public CreateClassroomPanel(Language language, Color[] colors) {
+    public CreateClassroomPanel(Color[] colors, Language language) {
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         this.setBorder(BorderFactory.createEtchedBorder());

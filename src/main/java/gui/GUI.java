@@ -1,52 +1,44 @@
 package gui;
 
-import gui.classroom.ClassroomGUI;
-import gui.classroom.GradePanel;
-import gui.login.LoginGUI;
-import util.AccountType;
 import util.Language;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.util.List;
 
-public class GUI extends JFrame {
-    Color[] colorScheme;
-    public LoginGUI loginGUI;
-    public ClassroomGUI classroomGUI;
-    Language language;
+public class GUI extends JPanel {
 
-    public GUI(Color[] colorScheme, Language language) {
-        super("E-Learning Software");
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setSize(800, 450);
-        this.setLocationRelativeTo(null);
-        this.setResizable(true);
-        this.colorScheme = colorScheme;
-        this.setVisible(true);
-        this.language = language;
+    public Color[] colors;
+    public Language language;
+
+    public void colorComponents(Component[] components, Color[] colorScheme) {
+        int panelCounter = 0;
+        for (Component component : components) {
+            switch (component.getClass().getSimpleName()) {
+                case "JPanel" -> {
+                    if (panelCounter < 1) {
+                        component.setBackground(colorScheme[0]);
+                    } else {
+                        component.setBackground(colorScheme[1]);
+                    }
+                    panelCounter++;
+                }
+                case "JButton" -> {
+                    component.setBackground(colorScheme[3]);
+                    component.setForeground(colorScheme[2]);
+                }
+                case "JLabel" -> component.setForeground(colorScheme[2]);
+            }
+        }
     }
 
-    public void setupGUIS() {
-        this.loginGUI = new LoginGUI(language, colorScheme);
-        this.loginGUI.gui = this;
-        this.classroomGUI = new ClassroomGUI(language, colorScheme);
-        this.classroomGUI.gui = this;
-    }
-
-    public void updateGUIS(String[] schools, String[] students, AccountType accountType) {
-        this.classroomGUI.updateGUI(students, accountType);
-        this.loginGUI.updateGUI(schools);
-    }
-
-    public void switchToLoginGUI() {
-        this.setContentPane(loginGUI);
-        this.setVisible(true);
-    }
-
-    public void switchToClassRoomGUI() {
-        this.setContentPane(classroomGUI);
-        this.setVisible(true);
+    public Component[] getAllComponents(Container container, List<Component> list) {
+        for (Component component : container.getComponents()) {
+            list.add(component);
+            if (component instanceof Container) {
+                getAllComponents((Container) component, list);
+            }
+        }
+        return list.toArray(new Component[0]);
     }
 }

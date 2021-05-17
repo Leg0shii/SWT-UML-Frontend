@@ -1,14 +1,14 @@
 package gui.login;
 
+import gui.GUIManager;
 import gui.GUI;
-import gui.GUIHelper;
 import util.Language;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class LoginGUI extends GUIHelper {
+public class LoginGUI extends GUI {
     private JPanel mainPanel;
     public JButton loginButton;
     private JTextField usernameTextField;
@@ -19,18 +19,19 @@ public class LoginGUI extends GUIHelper {
     private JLabel schoolLabel;
     private JLabel usernameLabel;
     private JPanel subPanel;
-    public GUI gui;
+    public GUIManager guiManager;
 
-    public LoginGUI(Language language, Color[] colors) {
+    public LoginGUI(GUIManager guiManager) {
+        this.guiManager = guiManager;
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         subPanel.setBorder(BorderFactory.createEtchedBorder());
-        switch (language) {
-            case german -> this.setupGUI("Anmeldung", "Nutzername:", "Passwort:", "Schule:", "Anmelden");
-            case english -> this.setupGUI("Login", "Username:", "Password:", "School:", "Login");
+        switch (guiManager.language) {
+            case german -> setupGUI("Anmeldung", "Nutzername:", "Passwort:", "Schule:", "Anmelden");
+            case english -> setupGUI("Login", "Username:", "Password:", "School:", "Login");
         }
         setupActionListeners();
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), colors);
+        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme);
     }
 
     private void setupGUI(String login, String username, String password, String school, String button) {
@@ -64,8 +65,8 @@ public class LoginGUI extends GUIHelper {
     }
 
     // TODO: Implemented by other Group
-    private void login(){
-        gui.switchToClassRoomGUI();
+    private void login() {
+        guiManager.switchToClassRoomGUI();
     }
 
 }

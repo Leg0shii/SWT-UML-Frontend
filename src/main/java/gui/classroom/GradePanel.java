@@ -1,14 +1,17 @@
 package gui.classroom;
 
-import gui.GUIHelper;
+import gui.GUIManager;
+import gui.GUI;
 import util.AccountType;
+import util.Course;
 import util.Language;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class GradePanel extends GUIHelper {
+public class GradePanel extends GUI {
+    private Course course;
     private JPanel mainPanel;
     public JButton enterButton;
     public JButton editButton;
@@ -22,7 +25,8 @@ public class GradePanel extends GUIHelper {
     private final EditClassroomPanel editClassroomPanel;
     private final AdminEditClassroomPanel adminEditClassroomPanel;
 
-    public GradePanel(Language language, Color[] colors, AccountType accountType) {
+    public GradePanel(Course course, Color[] colors, Language language, AccountType accountType) {
+        this.course = course;
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         switch (language) {
@@ -32,8 +36,8 @@ public class GradePanel extends GUIHelper {
         this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors);
         setupActionListeners(accountType);
 
-        this.editClassroomPanel = new EditClassroomPanel(language, colors);
-        this.adminEditClassroomPanel = new AdminEditClassroomPanel(language, colors);
+        this.editClassroomPanel = new EditClassroomPanel(colors, language);
+        this.adminEditClassroomPanel = new AdminEditClassroomPanel(colors, language);
     }
 
     private void setupGUI(String enter, String edit, String teacher, String date) {
@@ -43,17 +47,12 @@ public class GradePanel extends GUIHelper {
         this.dateLabel.setText(date);
     }
 
-    public void updateGUI(String grade, String thisTeacher, String nextDate) {
-        this.gradeHeaderLabel.setText(grade);
-        if (grade.matches(".......10..")) {
-            this.grade = 10;
-        } else if (grade.matches(".......11..")) {
-            this.grade = 11;
-        } else if (grade.matches(".......12..")) {
-            this.grade = 12;
-        }
-        this.thisTeacherLabel.setText(thisTeacher);
-        this.nextDateLabel.setText(nextDate);
+    // Both language support (too lazy rn)
+    public void updateGUI(Course course) {
+        this.gradeHeaderLabel.setText("Klasse " + course.getGrade());
+        this.grade = course.getGrade();
+        this.thisTeacherLabel.setText(course.getTeacher().getFullName());
+        this.nextDateLabel.setText("Next Date");
     }
 
     public void setupActionListeners(AccountType accountType) {
@@ -98,6 +97,14 @@ public class GradePanel extends GUIHelper {
                 popup.hide();
             }
         }
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     public JPanel getMainPanel() {

@@ -1,13 +1,13 @@
 package gui.classroom;
 
-import gui.GUIHelper;
+import gui.GUI;
 import util.Language;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class AdminEditClassroomPanel extends GUIHelper {
+public class AdminEditClassroomPanel extends GUI {
     private JPanel mainPanel;
     private JTextField gradeTextField;
     public JButton resetButton;
@@ -16,7 +16,7 @@ public class AdminEditClassroomPanel extends GUIHelper {
     public JButton cancelButton;
     private JLabel gradeLabel;
 
-    public AdminEditClassroomPanel(Language language, Color[] colors){
+    public AdminEditClassroomPanel(Color[] colors, Language language){
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         this.setBorder(BorderFactory.createEtchedBorder());
