@@ -11,8 +11,8 @@ public class GUI extends JPanel {
     public Color[] colors;
     public Language language;
 
-    public void colorComponents(Component[] components, Color[] colorScheme) {
-        int panelCounter = 0;
+    public void colorComponents(Component[] components, Color[] colorScheme, int panelCounterStart) {
+        int panelCounter = panelCounterStart;
         for (Component component : components) {
             switch (component.getClass().getSimpleName()) {
                 case "JPanel" -> {

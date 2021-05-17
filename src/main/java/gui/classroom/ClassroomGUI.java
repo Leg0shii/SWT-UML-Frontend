@@ -3,7 +3,6 @@ package gui.classroom;
 import gui.GUIManager;
 import gui.GUI;
 import util.AccountType;
-import util.Language;
 import util.User;
 
 import javax.swing.*;
@@ -42,7 +41,7 @@ public class ClassroomGUI extends GUI {
             case english -> setupGUI("Grade 11", "Grade 10", "Grade 12", "Logout", "Create Classroom", "Private Workspace");
         }
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme);
+        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 0);
         setupActionListeners();
 
         this.gradePanel10.setLayout(new BoxLayout(gradePanel10, BoxLayout.Y_AXIS));

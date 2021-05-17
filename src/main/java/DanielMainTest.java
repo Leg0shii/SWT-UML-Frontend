@@ -8,11 +8,12 @@ import util.User;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class DanielMainTest {
     public static void main(String[] args) {
         AccountType accountType = AccountType.teacher;
-        Language language = Language.german;
+        Language language = Language.english;
 
         String[] schools = new String[3];
         schools[0] = "Schule A";
@@ -39,11 +40,15 @@ public class DanielMainTest {
             add(new User("5", "Yoost4", "surname"));
         }};
 
-        Course testCourse = new Course(2, 12, 'a', new ArrayList<>(), new User("0", "prename", "surname"), students);
+        ArrayList<Date> dates = new ArrayList<>();
+        dates.add(new Date());
+        dates.add(new Date());
+        dates.add(new Date());
 
         ArrayList<Course> courses = new ArrayList<>() {{
-            add(new Course(0, 10, 'a', new ArrayList<>(), new User("0", "prename", "surname"), students));
-            add(new Course(1, 11, 'b', new ArrayList<>(), new User("1", "prename", "surname"), students));
+            add(new Course(0, 10, 'a', dates, new User("0", "prename", "surname"), students));
+            add(new Course(1, 11, 'b', dates, new User("1", "prename", "surname"), students));
+            add(new Course(2, 12, 'a', dates, new User("0", "prename", "surname"), students));
         }};
 
         GUIManager guiManager = new GUIManager(colors, language);
@@ -54,18 +59,21 @@ public class DanielMainTest {
         JFrame frame = new JFrame("Tests");
         JButton button = new JButton("Add GradePanel!");
 
+        final int[] counter = {0};
+
         button.addActionListener(e -> {
-            GradePanel gradePanel = new GradePanel(testCourse, colors, language, accountType);
-            gradePanel.updateGUI(testCourse);
+            GradePanel gradePanel = new GradePanel(colors, language, accountType);
+            gradePanel.updateGUI(courses.get(counter[0] % courses.size()));
             guiManager.classroomGUI.addGradePanel(gradePanel);
             guiManager.updateGUIS(schools, students, accountType);
+            counter[0]++;
         });
         JButton button2 = new JButton("To 11 Grade!");
         button2.addActionListener(e -> {
-            GradePanel gradePanel = guiManager.classroomGUI.getGradePanel(testCourse.getID());
-            Course migrateCourse = gradePanel.getCourse();
-            migrateCourse.setGrade(11);
-            gradePanel.updateGUI(migrateCourse);
+            GradePanel gradePanel = guiManager.classroomGUI.getGradePanel(courses.get(1).getID());
+            Course course = gradePanel.getCourse();
+            course.setGrade(10);
+            gradePanel.updateGUI(course);
             guiManager.updateGUIS(schools, students, accountType);
         });
 

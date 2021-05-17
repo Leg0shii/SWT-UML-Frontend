@@ -26,7 +26,7 @@ public class EditClassroomPanel extends GUI {
             case german -> this.setupGUI("<html>Schüler <br> hinzufügen</html>", "<html>Schüler <br> entfernen</html>", "Übernehmen", "Abbrechen");
             case english -> this.setupGUI("Add student", "Remove student", "Commit", "Cancel");
         }
-        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors);
+        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
     }
 
     private void setupGUI(String student, String students, String done, String cancel){

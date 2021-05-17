@@ -31,7 +31,7 @@ public class CreateClassroomPanel extends GUI {
             case german -> this.setupGUI("Klassenstufe", "Klassenname", "Lehrer", "Termin", "Schüler", "Hinzufügen", "Fertig", "Abbrechen");
             case english -> this.setupGUI("Grade", "Grade name", "Teacher", "Date", "Student", "Add", "Done", "Cancel");
         }
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), colors);
+        colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 0);
     }
 
     private void setupGUI(String grade, String gradeName, String teacher, String date, String student, String add, String done, String cancel) {

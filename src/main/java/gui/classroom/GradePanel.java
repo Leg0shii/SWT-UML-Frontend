@@ -25,34 +25,34 @@ public class GradePanel extends GUI {
     private final EditClassroomPanel editClassroomPanel;
     private final AdminEditClassroomPanel adminEditClassroomPanel;
 
-    public GradePanel(Course course, Color[] colors, Language language, AccountType accountType) {
-        this.course = course;
+    public GradePanel(Color[] colors, Language language, AccountType accountType) {
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         switch (language) {
-            case german -> setupGUI("Beitreten", "Bearbeiten", "Lehrer", "Termin");
-            case english -> setupGUI("Enter", "Edit", "Teacher", "Date");
+            case german -> setupGUI("Beitreten", "Bearbeiten", "Lehrer", "Termin", "Klasse");
+            case english -> setupGUI("Enter", "Edit", "Teacher", "Date", "Grade");
         }
-        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors);
+        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
         setupActionListeners(accountType);
 
         this.editClassroomPanel = new EditClassroomPanel(colors, language);
         this.adminEditClassroomPanel = new AdminEditClassroomPanel(colors, language);
     }
 
-    private void setupGUI(String enter, String edit, String teacher, String date) {
+    private void setupGUI(String enter, String edit, String teacher, String date, String grade) {
         this.enterButton.setText(enter);
         this.editButton.setText(edit);
         this.teacherLabel.setText(teacher);
         this.dateLabel.setText(date);
+        this.gradeHeaderLabel.setText(grade + " ");
     }
 
-    // Both language support (too lazy rn)
     public void updateGUI(Course course) {
-        this.gradeHeaderLabel.setText("Klasse " + course.getGrade());
+        this.course = course;
+        this.gradeHeaderLabel.setText(gradeHeaderLabel.getText().split(" ")[0] + " " + course.getGrade());
         this.grade = course.getGrade();
         this.thisTeacherLabel.setText(course.getTeacher().getFullName());
-        this.nextDateLabel.setText("Next Date");
+        this.nextDateLabel.setText(String.valueOf(course.getDates().get(0)));
     }
 
     public void setupActionListeners(AccountType accountType) {
