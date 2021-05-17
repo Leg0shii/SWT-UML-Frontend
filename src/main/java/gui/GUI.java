@@ -1,3 +1,11 @@
+package gui;
+
+import gui.classroom.ClassroomGUI;
+import gui.classroom.GradePanel;
+import gui.login.LoginGUI;
+import util.AccountType;
+import util.Language;
+
 import javax.swing.*;
 import java.awt.*;
 

@@ -1,7 +1,12 @@
+package gui.classroom;
+
+import gui.GUIHelper;
+import util.AccountType;
+import util.Language;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class GradePanel extends GUIHelper {
     private JPanel mainpanel;
@@ -32,25 +37,8 @@ public class GradePanel extends GUIHelper {
     }
 
     private void setupLanguage(Language language) {
-        String enter;
-        String edit;
-        String teacher;
-        String date;
-        switch (language) {
-            case german -> {
-                enter = "Beitreten";
-                edit = "Bearbeiten";
-                teacher = "Lehrer:";
-                date = "Termin:";
-            }
-            default -> {
-                enter = "Enter";
-                edit = "Edit";
-                teacher = "Teacher:";
-                date = "When?:";
-            }
-        }
-        setupGradePane(enter, edit, teacher, date);
+        if (language == Language.german) setupGradePane("Beitreten","Bearbeiten","Lehrer:","Termin:");
+        else setupGradePane("Enter","Edit","Teacher:","When?:");
     }
 
     private void setupGradePane(String enter, String edit, String teacher, String date) {

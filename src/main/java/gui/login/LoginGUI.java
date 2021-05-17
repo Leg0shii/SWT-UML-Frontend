@@ -1,3 +1,9 @@
+package gui.login;
+
+import gui.GUI;
+import gui.GUIHelper;
+import util.Language;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;

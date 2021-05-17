@@ -1,7 +1,11 @@
+package gui.workspace;
+
+import gui.workspace.Draggable;
+
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
-public class Drawable extends Draggable{
+public class Drawable extends Draggable {
 
     public Drawable(int x, int y, Color c){
         setBorder(new LineBorder(c, 3));

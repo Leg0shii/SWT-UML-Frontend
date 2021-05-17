@@ -1,8 +1,13 @@
+package gui.classroom;
+
+import gui.GUIHelper;
+import util.Language;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class AdminEditClassroomPanel extends GUIHelper{
+public class AdminEditClassroomPanel extends GUIHelper {
     private JPanel mainpanel;
     private JTextField gradetf;
     public JButton resetbt;
@@ -32,7 +37,6 @@ public class AdminEditClassroomPanel extends GUIHelper{
         this.migratebt.setText(migrate);
         this.deletebt.setText(delete);
         this.cancelbt.setText(cancel);
-
     }
 
     // TODO: Other Group implements this

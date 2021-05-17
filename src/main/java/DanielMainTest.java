@@ -1,9 +1,13 @@
-import javax.swing.*;
+import gui.GUI;
+import gui.classroom.GradePanel;
+import util.AccountType;
+import util.Language;
+
 import java.awt.*;
 
 public class DanielMainTest {
     public static void main(String[] args) {
-        AccountType accountType = AccountType.admin;
+        AccountType accountType = AccountType.teacher;
         Language language = Language.german;
         String[] schools = new String[3];
         schools[0] = "Schule A";

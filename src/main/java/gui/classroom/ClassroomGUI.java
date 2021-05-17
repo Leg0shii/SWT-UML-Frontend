@@ -1,3 +1,10 @@
+package gui.classroom;
+
+import gui.GUI;
+import gui.GUIHelper;
+import util.AccountType;
+import util.Language;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
