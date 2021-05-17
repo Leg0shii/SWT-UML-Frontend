@@ -13,7 +13,7 @@ import java.util.Date;
 public class DanielMainTest {
     public static void main(String[] args) {
         AccountType accountType = AccountType.teacher;
-        Language language = Language.english;
+        Language language = Language.german;
 
         String[] schools = new String[3];
         schools[0] = "Schule A";
@@ -70,9 +70,9 @@ public class DanielMainTest {
         });
         JButton button2 = new JButton("To 11 Grade!");
         button2.addActionListener(e -> {
-            GradePanel gradePanel = guiManager.classroomGUI.getGradePanel(courses.get(1).getID());
+            GradePanel gradePanel = guiManager.classroomGUI.getGradePanel(courses.get(2).getID());
             Course course = gradePanel.getCourse();
-            course.setGrade(10);
+            course.setGrade(11);
             gradePanel.updateGUI(course);
             guiManager.updateGUIS(schools, students, accountType);
         });

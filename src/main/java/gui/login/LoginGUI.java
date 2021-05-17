@@ -31,7 +31,7 @@ public class LoginGUI extends GUI {
             case english -> setupGUI("Login", "Username:", "Password:", "School:", "Login");
         }
         setupActionListeners();
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme,1);
+        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme,0);
     }
 
     private void setupGUI(String login, String username, String password, String school, String button) {
