@@ -5,6 +5,7 @@ import gui.GUI;
 import util.AccountType;
 import util.Course;
 import util.Language;
+import util.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,7 +50,7 @@ public class GradePanel extends GUI {
 
     public void updateGUI(Course course) {
         this.course = course;
-        this.gradeHeaderLabel.setText(gradeHeaderLabel.getText().split(" ")[0] + " " + course.getGrade());
+        this.gradeHeaderLabel.setText(gradeHeaderLabel.getText().split(" ")[0] + " " + course.getGrade() + " " + course.getName());
         this.grade = course.getGrade();
         this.thisTeacherLabel.setText(course.getTeacher().getFullName());
         this.nextDateLabel.setText(String.valueOf(course.getDates().get(0)));
@@ -115,12 +116,12 @@ public class GradePanel extends GUI {
         return nextDateLabel.getText();
     }
 
-    public String getThisTeacher() {
-        return thisTeacherLabel.getText();
+    public User getThisTeacher() {
+        return course.getTeacher();
     }
 
-    public String getGradeHeader() {
-        return gradeHeaderLabel.getText();
+    public String getGradePlusGradeName() {
+        return course.getGrade() + " " + course.getName();
     }
 
     public EditClassroomPanel getEditClassroomPanel() {
