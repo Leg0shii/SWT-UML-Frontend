@@ -2,6 +2,8 @@ package gui;
 
 import gui.classroom.ClassroomGUI;
 import gui.login.LoginGUI;
+import gui.workspace.WorkspaceGUI;
+import logic.group.Group;
 import util.AccountType;
 import util.Language;
 import logic.user.User;
@@ -9,6 +11,7 @@ import logic.user.User;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GUIManager extends JFrame {
     public Color[] colorScheme;
@@ -16,6 +19,7 @@ public class GUIManager extends JFrame {
 
     public LoginGUI loginGUI;
     public ClassroomGUI classroomGUI;
+    public WorkspaceGUI workspaceGUI;
 
     public GUIManager(Color[] colorScheme, Language language) {
         super("E-Learning Software");
@@ -31,11 +35,13 @@ public class GUIManager extends JFrame {
     public void setupGUIS() {
         this.loginGUI = new LoginGUI(this);
         this.classroomGUI = new ClassroomGUI(this);
+        this.workspaceGUI = new WorkspaceGUI(this);
     }
 
-    public void updateGUIS(String[] schools, ArrayList<User> students, AccountType accountType) {
+    public void updateGUIS(String[] schools, ArrayList<User> students, AccountType accountType, List<Group> groups, List<User> users) {
         this.classroomGUI.updateGUI(students, accountType);
         this.loginGUI.updateGUI(schools);
+        this.workspaceGUI.updateGUI(groups, users, accountType);
     }
 
     public void switchToLoginGUI() {
@@ -45,6 +51,11 @@ public class GUIManager extends JFrame {
 
     public void switchToClassRoomGUI() {
         this.setContentPane(classroomGUI);
+        this.setVisible(true);
+    }
+
+    public void switchToWorkspaceGUI() {
+        this.setContentPane(workspaceGUI);
         this.setVisible(true);
     }
 

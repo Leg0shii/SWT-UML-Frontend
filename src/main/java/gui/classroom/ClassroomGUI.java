@@ -221,6 +221,6 @@ public class ClassroomGUI extends GUI {
 
     // TODO: Implemented by other Group
     private void privateWorkspaceFunction(){
-
+        guiManager.switchToWorkspaceGUI();
     }
 }

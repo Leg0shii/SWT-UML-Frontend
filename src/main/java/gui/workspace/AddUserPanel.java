@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class AddUserPanel extends GUI {
     private JPanel mainPanel;
-    private JButton addButton;
+    public JButton addButton;
     private JTextField studentTextField;
     private JLabel headerLabel;
     private JLabel studentLabel;

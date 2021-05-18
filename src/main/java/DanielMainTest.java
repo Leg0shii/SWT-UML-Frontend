@@ -1,6 +1,7 @@
 import gui.GUIManager;
 import gui.classroom.GradePanel;
 import gui.workspace.CreateTaskPanel;
+import logic.group.Group;
 import logic.user.UserManager;
 import util.AccountType;
 import logic.course.Course;
@@ -42,6 +43,13 @@ public class DanielMainTest {
             add(new User(5, "Yoost4", "surname"));
         }};
 
+        ArrayList<Group> groups = new ArrayList<>() {{
+            add(new Group(1, 10, 5, students, "TestWorkspace1"));
+            add(new Group(2, 10, 5, students, "TestWorkspace2"));
+            add(new Group(3, 10, 5, students, "TestWorkspace3"));
+            add(new Group(4, 10, 5, students, "TestWorkspace4"));
+        }};
+
         ArrayList<Date> dates = new ArrayList<>();
         dates.add(new Date());
         dates.add(new Date());
@@ -55,7 +63,7 @@ public class DanielMainTest {
 
         GUIManager guiManager = new GUIManager(colors, language);
         guiManager.setupGUIS();
-        guiManager.updateGUIS(schools, students, accountType);
+        guiManager.updateGUIS(schools, students, accountType, groups, students);
         guiManager.switchToLoginGUI();
 
         JFrame frame = new JFrame("Tests");
@@ -67,7 +75,7 @@ public class DanielMainTest {
             GradePanel gradePanel = new GradePanel(colors, language, accountType);
             gradePanel.updateGUI(courses.get(counter[0] % courses.size()));
             guiManager.classroomGUI.addGradePanel(gradePanel);
-            guiManager.updateGUIS(schools, students, accountType);
+            guiManager.updateGUIS(schools, students, accountType, groups, students);
             counter[0]++;
         });
         JButton button2 = new JButton("To 11 Grade!");
@@ -76,13 +84,11 @@ public class DanielMainTest {
             Course course = gradePanel.getCourse();
             course.setGrade(11);
             gradePanel.updateGUI(course);
-            guiManager.updateGUIS(schools, students, accountType);
+            guiManager.updateGUIS(schools, students, accountType, groups, students);
         });
-        var createTaskPanel = new CreateTaskPanel(language,colors);
         frame.setLayout(new FlowLayout());
         frame.add(button);
         frame.add(button2);
-        frame.add(createTaskPanel);
         frame.pack();
         frame.setVisible(true);
     }

@@ -25,6 +25,10 @@ public class GUI extends JPanel {
                     component.setForeground(colorScheme[2]);
                 }
                 case "JLabel" -> component.setForeground(colorScheme[2]);
+                case "JRadioButton" -> {
+                    component.setBackground(colorScheme[1]);
+                    component.setForeground(colorScheme[2]);
+                }
             }
         }
     }
