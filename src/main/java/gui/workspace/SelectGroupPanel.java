@@ -12,7 +12,7 @@ import java.util.List;
 public class SelectGroupPanel extends GUI {
     private JPanel mainPanel;
     private JComboBox<Integer> selectGroupComboBox;
-    private JButton startTaskButton;
+    public JButton startTaskButton;
     private JLabel selectGroupLabel;
     private List<Group> groups;
 
@@ -47,11 +47,16 @@ public class SelectGroupPanel extends GUI {
     }
 
     private void initForAccountType() {
+        
+    }
 
-    }
-    /*
-    public Group getSelectedGroup(){
+    public Group getSelectedGroup() {
         Object selectedNumber = this.selectGroupComboBox.getSelectedItem();
+        for (Group group : groups){
+            if (group.getNumber() == (int) selectedNumber){
+                return group;
+            }
+        }
+        return null;
     }
-     */
 }

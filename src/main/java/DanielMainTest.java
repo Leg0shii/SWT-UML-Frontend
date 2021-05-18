@@ -98,10 +98,20 @@ public class DanielMainTest {
         button3.addActionListener(e -> {
             guiManager.workspaceGUI.sendRequest(students.get(1));
         });
+        JButton button4 = new JButton("Send Task Proposition!");
+        button4.addActionListener(e -> {
+            guiManager.workspaceGUI.sendTaskProposition(groups);
+        });
+        JButton button5 = new JButton("Set Task");
+        button5.addActionListener(e -> {
+            guiManager.workspaceGUI.setTask("Test Task");
+        });
         frame.setLayout(new FlowLayout());
         frame.add(button);
         frame.add(button2);
         frame.add(button3);
+        frame.add(button4);
+        frame.add(button5);
         frame.pack();
         frame.setVisible(true);
     }
