@@ -1,5 +1,7 @@
 import gui.GUIManager;
 import gui.classroom.GradePanel;
+import gui.workspace.CreateTaskPanel;
+import logic.user.UserManager;
 import util.AccountType;
 import logic.course.Course;
 import util.Language;
@@ -76,10 +78,11 @@ public class DanielMainTest {
             gradePanel.updateGUI(course);
             guiManager.updateGUIS(schools, students, accountType);
         });
-
+        var createTaskPanel = new CreateTaskPanel(language,colors);
         frame.setLayout(new FlowLayout());
         frame.add(button);
         frame.add(button2);
+        frame.add(createTaskPanel);
         frame.pack();
         frame.setVisible(true);
     }

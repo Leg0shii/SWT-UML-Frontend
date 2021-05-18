@@ -8,9 +8,6 @@ import java.util.List;
 
 public class GUI extends JPanel {
 
-    public Color[] colors;
-    public Language language;
-
     public void colorComponents(Component[] components, Color[] colorScheme, int panelCounterStart) {
         int panelCounter = panelCounterStart;
         for (Component component : components) {
