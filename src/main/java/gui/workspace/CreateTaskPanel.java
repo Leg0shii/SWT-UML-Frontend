@@ -17,9 +17,9 @@ public class CreateTaskPanel extends GUI {
     private JLabel headerLabel;
     private JLabel pictureLabel;
     private JLabel selectedFileLabel;
-    private JButton cancelButton;
-    private JButton createButton;
-    private JScrollPane taskScrollPanel;
+    public JButton cancelButton;
+    public JButton createButton;
+    public JScrollPane taskScrollPanel;
     private File selectedFile;
 
     public CreateTaskPanel(Language language, Color[] colors) {
@@ -55,7 +55,6 @@ public class CreateTaskPanel extends GUI {
 
     // TODO: Cancel Button Listener in PopUp superclass
     private void setupListeners() {
-        this.createButton.addActionListener(e -> createFunction());
         this.selectFileButton.addActionListener(e -> fileChooserFunction());
     }
 
@@ -82,7 +81,7 @@ public class CreateTaskPanel extends GUI {
     }
 
     // TODO: Implemented by other Group
-    private void createFunction(){
+    public void createFunction(){
 
     }
 

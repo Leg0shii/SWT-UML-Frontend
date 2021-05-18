@@ -38,10 +38,10 @@ public class GUIManager extends JFrame {
         this.workspaceGUI = new WorkspaceGUI(this);
     }
 
-    public void updateGUIS(String[] schools, ArrayList<User> students, AccountType accountType, List<Group> groups, List<User> users) {
+    public void updateGUIS(String[] schools, ArrayList<User> students, AccountType accountType, List<Group> groups, List<User> users, int remainingTime) {
         this.classroomGUI.updateGUI(students, accountType);
         this.loginGUI.updateGUI(schools);
-        this.workspaceGUI.updateGUI(groups, users, accountType);
+        this.workspaceGUI.updateGUI(groups, users, accountType, remainingTime);
     }
 
     public void switchToLoginGUI() {

@@ -41,6 +41,14 @@ public class DanielMainTest {
             add(new User(3, "Yoost2", "surname"));
             add(new User(4, "Yoost3", "surname"));
             add(new User(5, "Yoost4", "surname"));
+            add(new User(6, "Yoost5", "surname"));
+            add(new User(7, "Yoost6", "surname"));
+            add(new User(8, "Yoost7", "surname"));
+            add(new User(9, "Yoost8", "surname"));
+            add(new User(10, "Yoost9", "surname"));
+            add(new User(11, "Yoost10", "surname"));
+            add(new User(12, "Yoost11", "surname"));
+            add(new User(13, "Yoost12", "surname"));
         }};
 
         ArrayList<Group> groups = new ArrayList<>() {{
@@ -63,7 +71,7 @@ public class DanielMainTest {
 
         GUIManager guiManager = new GUIManager(colors, language);
         guiManager.setupGUIS();
-        guiManager.updateGUIS(schools, students, accountType, groups, students);
+        guiManager.updateGUIS(schools, students, accountType, groups, students, 0);
         guiManager.switchToLoginGUI();
 
         JFrame frame = new JFrame("Tests");
@@ -75,7 +83,7 @@ public class DanielMainTest {
             GradePanel gradePanel = new GradePanel(colors, language, accountType);
             gradePanel.updateGUI(courses.get(counter[0] % courses.size()));
             guiManager.classroomGUI.addGradePanel(gradePanel);
-            guiManager.updateGUIS(schools, students, accountType, groups, students);
+            guiManager.updateGUIS(schools, students, accountType, groups, students, 1);
             counter[0]++;
         });
         JButton button2 = new JButton("To 11 Grade!");
@@ -84,11 +92,16 @@ public class DanielMainTest {
             Course course = gradePanel.getCourse();
             course.setGrade(11);
             gradePanel.updateGUI(course);
-            guiManager.updateGUIS(schools, students, accountType, groups, students);
+            guiManager.updateGUIS(schools, students, accountType, groups, students, 0);
+        });
+        JButton button3 = new JButton("Send Request to Join!");
+        button3.addActionListener(e -> {
+            guiManager.workspaceGUI.sendRequest(students.get(1));
         });
         frame.setLayout(new FlowLayout());
         frame.add(button);
         frame.add(button2);
+        frame.add(button3);
         frame.pack();
         frame.setVisible(true);
     }

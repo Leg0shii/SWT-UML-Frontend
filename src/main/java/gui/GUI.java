@@ -35,6 +35,9 @@ public class GUI extends JPanel {
 
     public Component[] getAllComponents(Container container, List<Component> list) {
         for (Component component : container.getComponents()) {
+            if (component instanceof GUI){
+                continue;
+            }
             list.add(component);
             if (component instanceof Container) {
                 getAllComponents((Container) component, list);

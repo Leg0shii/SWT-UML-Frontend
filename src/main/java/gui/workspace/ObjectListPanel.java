@@ -35,7 +35,7 @@ public class ObjectListPanel extends GUI {
         this.add(mainPanel);
         this.objectScrollPanel.setViewportView(objectList);
         this.addStudentButton = new JButton();
-        this.objectList.setLayout(new BoxLayout(objectList, BoxLayout.Y_AXIS));
+        this.objectList.setLayout(new GridLayout(0,1));
 
         switch (language) {
             case GERMAN -> setupGUI("Teilnehmer", "Gruppen", "Gruppe", "Schüler hinzufügen");
@@ -123,7 +123,6 @@ public class ObjectListPanel extends GUI {
         }
     }
 
-    // TODO: Add Setup
     private void setupObjectButtons(List<Group> groups, List<User> users) {
         this.objectList.removeAll();
         if (showGroups) {
