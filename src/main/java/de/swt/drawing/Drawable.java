@@ -1,4 +1,4 @@
-package de.swt.gui.workspace;
+package de.swt.drawing;
 
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -20,7 +20,7 @@ public class Drawable extends Draggable {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g) {
         int x = 0;
         int y = 0;
         //int width = this.width -1;
