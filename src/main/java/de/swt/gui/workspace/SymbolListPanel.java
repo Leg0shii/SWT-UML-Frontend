@@ -101,6 +101,7 @@ public class SymbolListPanel extends GUI {
             }
             clickCounter[0]++;
         });
+        clearButton.addActionListener(e4 -> deleteLastDrawnObject());
     }
 
     private void initForAccountType() {
