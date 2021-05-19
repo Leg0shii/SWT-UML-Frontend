@@ -5,9 +5,8 @@ import java.awt.*;
 
 
 public class ToolBar extends JPanel {//mby panel instead of frame?
-	
 
-    private JToolBar toolBar = new JToolBar("TaskBar", JToolBar.VERTICAL);
+
     JButton button1;
     JButton button2;
     JButton button3;
@@ -21,7 +20,8 @@ public class ToolBar extends JPanel {//mby panel instead of frame?
 		//super("ToolBar");
 		setSize(1000, 600);
 		//setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		
+
+        JToolBar toolBar = new JToolBar("TaskBar", JToolBar.VERTICAL);
         toolBar.setLayout(new GridLayout(12, 2, 5, 5));
         toolBar.setFloatable(false);
         
@@ -40,10 +40,10 @@ public class ToolBar extends JPanel {//mby panel instead of frame?
         toolBar.add(button5 = new JButton("Button5"));
         button5.setIcon(new ImageIcon(""));				//Image einfuegen
         
-        /*Weitere Buttons einfuegen!
-         * toolBar.add(buttonN = new JButton("ButtonN"));
+        /*
+           //Weitere Buttons einfuegen!
+           toolBar.add(buttonN = new JButton("ButtonN"));
            buttonN.setIcon(new ImageIcon(""));
-         * 
          */
         
         
