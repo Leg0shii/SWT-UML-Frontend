@@ -135,7 +135,7 @@ public class WorkspaceGUI extends GUI {
         requestPanel.updateGUI(user);
         PopupFactory popupFactory = new PopupFactory();
         Popup[] popups = new Popup[1];
-        Point point = new Point(rightPanel.getX() - rightPanel.getWidth(), rightPanel.getY() + rightPanel.getHeight());
+        Point point = new Point(rightPanel.getX() - rightPanel.getWidth(), rightPanel.getY() + rightPanel.getHeight() -100);
         SwingUtilities.convertPointToScreen(point, this.midPanel);
         popups[0] = popupFactory.getPopup(this, requestPanel, point.x, point.y);
         popups[0].show();

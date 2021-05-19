@@ -23,6 +23,8 @@ public class SymbolListPanel extends GUI {
     private JButton thumbsDownButton;
     private JButton drawButton;
     private JButton clearButton;
+    private JPanel toolPanel;
+    private int[] clickCounter;
 
     public SymbolListPanel(Color[] colors) {
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -38,17 +40,48 @@ public class SymbolListPanel extends GUI {
     }
 
     private void setupGUI() throws IOException {
-        this.thumbsDownButton.setText("");
-        this.clearButton.setText("");
-        this.drawButton.setText("");
+        this.toolPanel.setLayout(new GridLayout(1,4));
+        this.toolPanel.removeAll();
         this.thumbsUpButton.setText("");
-        System.out.println("URL: " + getClass().getResource("src/main/java/resources/like.png"));
-        /*
-        BufferedImage image = ImageIO.read(Objects.requireNonNull(getClass().getResource("resources/like.png")));
-        BufferedImage ret = new BufferedImage(32,32,BufferedImage.TYPE_INT_RGB);
-        ret.getGraphics().drawImage(image,0,0,32,32,null);
-        this.thumbsUpButton.setIcon(new ImageIcon(ret));
-        */
+        this.thumbsDownButton.setText("");
+        this.drawButton.setText("");
+        this.clearButton.setText("");
+        BufferedImage image1 = ImageIO.read(Objects.requireNonNull(ClassLoader.getSystemResource("like.png")));
+        BufferedImage ret1 = new BufferedImage(20, 20, BufferedImage.TYPE_INT_ARGB);
+        ret1.getGraphics().drawImage(image1, 0, 0, 20, 20, null);
+        this.thumbsUpButton.setIcon(new ImageIcon(ret1));
+        BufferedImage image2 = ImageIO.read(Objects.requireNonNull(ClassLoader.getSystemResource("thumb-down.png")));
+        BufferedImage ret2 = new BufferedImage(20, 20, BufferedImage.TYPE_INT_ARGB);
+        ret2.getGraphics().drawImage(image2, 0, 0, 20, 20, null);
+        this.thumbsDownButton.setIcon(new ImageIcon(ret2));
+        BufferedImage image3 = ImageIO.read(Objects.requireNonNull(ClassLoader.getSystemResource("pencil.png")));
+        BufferedImage ret3 = new BufferedImage(20, 20, BufferedImage.TYPE_INT_ARGB);
+        ret3.getGraphics().drawImage(image3, 0, 0, 20, 20, null);
+        this.drawButton.setIcon(new ImageIcon(ret3));
+        BufferedImage image4 = ImageIO.read(Objects.requireNonNull(ClassLoader.getSystemResource("trash.png")));
+        BufferedImage ret4 = new BufferedImage(20, 20, BufferedImage.TYPE_INT_ARGB);
+        ret4.getGraphics().drawImage(image4, 0, 0, 20, 20, null);
+        this.clearButton.setIcon(new ImageIcon(ret4));
+        thumbsUpButton.setContentAreaFilled(false);
+        thumbsUpButton.setFocusPainted(false);
+        thumbsUpButton.setBorderPainted(true);
+        thumbsDownButton.setContentAreaFilled(false);
+        thumbsDownButton.setFocusPainted(false);
+        thumbsDownButton.setBorderPainted(true);
+        clearButton.setContentAreaFilled(false);
+        clearButton.setFocusPainted(false);
+        clearButton.setBorderPainted(true);
+        drawButton.setContentAreaFilled(true);
+        drawButton.setFocusPainted(false);
+        drawButton.setBorderPainted(true);
+        drawButton.setPreferredSize(new Dimension(20,20));
+
+        this.toolPanel.add(thumbsUpButton);
+        this.toolPanel.add(thumbsDownButton);
+        this.toolPanel.add(drawButton);
+        this.toolPanel.add(clearButton);
+
+        this.clickCounter = new int[1];
     }
 
     public void updateGUI() {
@@ -56,10 +89,41 @@ public class SymbolListPanel extends GUI {
     }
 
     private void setupListeners() {
-
+        thumbsUpButton.addActionListener(e1 -> drawThumbUp());
+        thumbsDownButton.addActionListener(e2 -> drawThumbDown());
+        drawButton.addActionListener(e3 -> {
+            if (clickCounter[0] % 2 == 0) {
+                enableDraw();
+                drawButton.setBorder(BorderFactory.createLoweredBevelBorder());
+            } else {
+                disableDraw();
+                drawButton.setBorder(BorderFactory.createRaisedBevelBorder());
+            }
+            clickCounter[0]++;
+        });
     }
 
     private void initForAccountType() {
+
+    }
+
+    private void drawThumbUp() {
+
+    }
+
+    private void drawThumbDown() {
+
+    }
+
+    private void enableDraw() {
+
+    }
+
+    private void disableDraw() {
+
+    }
+
+    private void deleteLastDrawnObject() {
 
     }
 }

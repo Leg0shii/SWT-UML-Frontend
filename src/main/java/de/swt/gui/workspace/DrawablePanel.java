@@ -12,7 +12,6 @@ public class DrawablePanel extends GUI {
     private JPanel mainPanel;
     private JButton taskButton;
     private JPanel drawPanel;
-    private JToolBar toolBar;
     private JLabel remainingLabel;
     private JButton showTaskButton;
     private Popup[] popups;
@@ -27,8 +26,8 @@ public class DrawablePanel extends GUI {
         this.drawPanel.setLayout(null);
 
         switch (language) {
-            case GERMAN -> setupGUI("Aufgabe erstellen", "Verbleibende Zeit: ", "Aufgabe anzeigen");
-            case ENGLISH -> setupGUI("Create Task", "Remaining Time: ", "Show Task");
+            case GERMAN -> setupGUI("Aufgabe erstellen", "Verbleibende Zeit:  Minuten", "Aufgabe anzeigen");
+            case ENGLISH -> setupGUI("Create Task", "Remaining Time:  Minutes", "Show Task");
         }
 
         colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
@@ -53,7 +52,7 @@ public class DrawablePanel extends GUI {
 
     public void updateGUI(int remainingTime, AccountType accountType) {
         String[] split = this.remainingLabel.getText().split(" ");
-        this.remainingLabel.setText(split[0] + " " + split[1] + " " + remainingTime);
+        this.remainingLabel.setText(split[0] + " " + split[1] + " " + remainingTime + " " + split[3]);
         initForAccountType(accountType);
     }
 
@@ -63,7 +62,6 @@ public class DrawablePanel extends GUI {
             if (popupCounter[0] % 2 == 0) {
                 CreateTaskPanel createTaskPanel = new CreateTaskPanel(language, colors);
                 createTaskPanel.taskScrollPanel.setPreferredSize(new Dimension(this.getWidth() / 4, this.getHeight() / 4));
-                createTaskPanel.setPreferredSize(new Dimension(this.getWidth() / 3, this.getHeight() / 3));
                 createTaskPanel.cancelButton.addActionListener(e11 -> {
                     popups[0].hide();
                     popupCounter[0]++;
