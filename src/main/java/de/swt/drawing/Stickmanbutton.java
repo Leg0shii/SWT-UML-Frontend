@@ -1,28 +1,30 @@
 package de.swt.drawing;
 
+import de.swt.gui.workspace.DrawablePanel;
+
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class Drawable extends Draggable {
+public class Stickmanbutton extends JComponent {
 
     int width;
     int height;
 
-
-    public Drawable(int xx, int yy, Color c){
-        //setBorder(new LineBorder(c, 3));
+    public Stickmanbutton(int xx, int yy, DrawablePanel dp){
+        setBorder(new LineBorder(Color.black, 2));
         this.width = 50;
         this.height = 100;
         setBounds(xx, yy, width, height);
-       // setBackground(Color.black);
+        // setBackground(Color.black);
         //setOpaque(true);
 
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                new Drawable(20, 20, Color.BLACK);
+                dp.add(new Drawable(20, 20, Color.BLACK));
             }
         });
 
