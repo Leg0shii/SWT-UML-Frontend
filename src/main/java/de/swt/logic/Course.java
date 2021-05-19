@@ -16,7 +16,7 @@ public class Course{
 
     private int id;
     private int grade;
-    private char name;
+    private String name;
     private ArrayList<Date> dates;
     private User teacher;
     private ArrayList<User> students;

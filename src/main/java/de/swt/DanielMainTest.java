@@ -5,6 +5,7 @@ import de.swt.gui.classroom.GradePanel;
 import de.swt.logic.Group;
 import de.swt.util.AccountType;
 import de.swt.logic.Course;
+import de.swt.util.Client;
 import de.swt.util.Language;
 import de.swt.logic.User;
 
@@ -16,6 +17,18 @@ import java.util.Date;
 
 public class DanielMainTest {
     public static void main(String[] args) {
+
+        Client client = new Client();
+        client.onStart();
+        ArrayList<User> userList = new ArrayList<>();
+        ArrayList<Course> courseList = new ArrayList<>();
+        for(int key : client.userManager.getUserHashMap().keySet()) {
+            userList.add(client.userManager.getUserHashMap().get(key));
+        }
+        for(int key : client.courseManager.getCourseHashMap().keySet()) {
+            courseList.add(client.courseManager.getCourseHashMap().get(key));
+        }
+
         AccountType accountType = AccountType.TEACHER;
         Language language = Language.GERMAN;
 
@@ -65,14 +78,14 @@ public class DanielMainTest {
         dates.add(new Date());
 
         ArrayList<Course> courses = new ArrayList<>() {{
-            add(new Course(0, 10, 'a', dates, new User(0, "prename", "surname"), students));
-            add(new Course(1, 11, 'b', dates, new User(1, "prename", "surname"), students));
-            add(new Course(2, 12, 'a', dates, new User(0, "prename", "surname"), students));
+            add(new Course(0, 10, "a", dates, new User(0, "prename", "surname"), students));
+            add(new Course(1, 11, "b", dates, new User(1, "prename", "surname"), students));
+            add(new Course(2, 12, "a", dates, new User(0, "prename", "surname"), students));
         }};
 
         GUIManager guiManager = new GUIManager(colors, language);
         guiManager.setupGUIS();
-        guiManager.updateGUIS(schools, students, accountType, groups, students, 0);
+        guiManager.updateGUIS(schools, userList, accountType, groups, userList, 0);
         guiManager.switchToWorkspaceGUI();
 
         JFrame frame = new JFrame("Tests");
@@ -80,24 +93,31 @@ public class DanielMainTest {
 
         final int[] counter = {0};
 
+        for(Course course : courseList) {
+            GradePanel gradePanel = new GradePanel(colors, language, accountType);
+            gradePanel.updateGUI(course);
+            guiManager.classroomGUI.addGradePanel(gradePanel);
+            guiManager.updateGUIS(schools, userList, accountType, groups, userList, 1);
+        }
+
         button.addActionListener(e -> {
             GradePanel gradePanel = new GradePanel(colors, language, accountType);
-            gradePanel.updateGUI(courses.get(counter[0] % courses.size()));
+            gradePanel.updateGUI(courseList.get(counter[0] % courseList.size()));
             guiManager.classroomGUI.addGradePanel(gradePanel);
-            guiManager.updateGUIS(schools, students, accountType, groups, students, 1);
+            guiManager.updateGUIS(schools, userList, accountType, groups, userList, 1);
             counter[0]++;
         });
         JButton button2 = new JButton("To 11 Grade!");
         button2.addActionListener(e -> {
-            GradePanel gradePanel = guiManager.classroomGUI.getGradePanel(courses.get(2).getId());
+            GradePanel gradePanel = guiManager.classroomGUI.getGradePanel(courseList.get(2).getId());
             Course course = gradePanel.getCourse();
             course.setGrade(11);
             gradePanel.updateGUI(course);
-            guiManager.updateGUIS(schools, students, accountType, groups, students, 0);
+            guiManager.updateGUIS(schools, userList, accountType, groups, userList, 0);
         });
         JButton button3 = new JButton("Send Request to Join!");
         button3.addActionListener(e -> {
-            guiManager.workspaceGUI.sendRequest(students.get(1));
+            guiManager.workspaceGUI.sendRequest(userList.get(1));
         });
         JButton button4 = new JButton("Send Task Proposition!");
         button4.addActionListener(e -> {
