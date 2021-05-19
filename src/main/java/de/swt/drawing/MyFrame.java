@@ -18,30 +18,29 @@ import java.nio.file.*;
 
 public class MyFrame extends JFrame{
 
-	
-    private JFrame frame = new JFrame();
+
     private JTextPane textArea;
     private JScrollPane scrollPane;
 
 	
 	MyFrame(){
 		
-		frame.setTitle("Workplace");
-		frame.setSize(1920,1080);
-		frame.setLayout(null);
+		this.setTitle("Workplace");
+		this.setSize(1920,1080);
+		this.setLayout(null);
 		
 		MakeContentPane();
 	    MakeMenubar();
 	    
-	    frame.pack();
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	    this.pack();
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 	}
 		
 	
 	public void MakeMenubar(){
 		JMenuBar menuBar = new JMenuBar();
-		frame.setJMenuBar(menuBar);
+		this.setJMenuBar(menuBar);
 		
 		//File-Menu
 		JMenu fileMenu = new JMenu("File");
@@ -94,8 +93,8 @@ public class MyFrame extends JFrame{
         action.putValue(Action.NAME, "Bold");
         editMenu.add(action);
         
-		frame.setJMenuBar(menuBar);
-		frame.setVisible(true);								
+		this.setJMenuBar(menuBar);
+		this.setVisible(true);
 		
 	}
 
@@ -106,7 +105,7 @@ public class MyFrame extends JFrame{
         
         scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-        Container contentPane = frame.getContentPane();
+        Container contentPane = this.getContentPane();
 
         contentPane.setLayout(new BorderLayout());
         //contentPane.add(textArea, BorderLayout.CENTER);
@@ -141,7 +140,7 @@ public class MyFrame extends JFrame{
 		
         final JFileChooser Save = new JFileChooser();
         Save.setApproveButtonText("Save");
-        int actionDialog = Save.showSaveDialog(frame);
+        int actionDialog = Save.showSaveDialog(this);
         if (actionDialog != JFileChooser.APPROVE_OPTION) {
             return;
         }
@@ -160,7 +159,7 @@ public class MyFrame extends JFrame{
                 try {
                     outFile.close();
                 } catch (IOException e) {
-
+                    e.printStackTrace();
                 }
             }
         }
@@ -180,7 +179,7 @@ public class MyFrame extends JFrame{
         SaveAs.setFileFilter(new FileNameExtensionFilter("Hypertext Markup Language File (*html)","html"));
         
         SaveAs.setApproveButtonText("Save As");
-        int actionDialog = SaveAs.showSaveDialog(frame);
+        int actionDialog = SaveAs.showSaveDialog(this);
         if (actionDialog != JFileChooser.APPROVE_OPTION) {
             return;
         }
@@ -200,7 +199,7 @@ public class MyFrame extends JFrame{
                 try {
                     outFile.close();
                 } catch (IOException e) {
-
+                    e.printStackTrace();
                 }
             }
         }
@@ -212,7 +211,7 @@ public class MyFrame extends JFrame{
     	final JFileChooser Open = new JFileChooser();
         
     	Open.setApproveButtonText("Open");
-        int actionDialog = Open.showOpenDialog(frame);
+        int actionDialog = Open.showOpenDialog(this);
         if (actionDialog != JFileChooser.APPROVE_OPTION) {
             return;
         }
