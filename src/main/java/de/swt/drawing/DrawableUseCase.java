@@ -2,8 +2,10 @@ package de.swt.drawing;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class DrawableUseCase extends Draggable {
+public class DrawableUseCase extends Draggable{
     private String description;
     private int scale;
     private int width;
@@ -17,16 +19,50 @@ public class DrawableUseCase extends Draggable {
         this.scale = scale;
     }
 
-    public void updateComponent(String description) {
+    public void updateComponent(String description, int scale) {
         this.description = description;
+        this.scale = scale;
     }
 
     private void calculateWidthAndHeight(Graphics g) {
         this.textWidth = g.getFontMetrics().stringWidth(this.description);
         this.textHeight = g.getFontMetrics().getHeight();
-        this.width = textWidth + 20;
-        this.height = textHeight + 10;
+        this.width = textWidth + 20 * scale / 2;
+        this.height = textHeight + 20 * scale / 2;
         this.setBounds(super.getX(), super.getY(), width, height);
+    }
+
+    private void setupListeners(){
+        this.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                clickedFunction();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+    }
+
+    private void clickedFunction(){
+
     }
 
     @Override

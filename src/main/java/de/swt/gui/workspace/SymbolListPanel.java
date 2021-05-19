@@ -24,6 +24,7 @@ public class SymbolListPanel extends GUI {
     private JButton drawButton;
     private JButton clearButton;
     private JPanel toolPanel;
+    public JPanel symbolPanel;
     private int[] clickCounter;
 
     public SymbolListPanel(Color[] colors) {
