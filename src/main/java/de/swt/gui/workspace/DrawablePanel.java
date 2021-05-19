@@ -1,5 +1,7 @@
 package de.swt.gui.workspace;
 
+import de.swt.drawing.Drawable;
+import de.swt.drawing.DrawableUseCase;
 import de.swt.gui.GUI;
 import de.swt.util.AccountType;
 import de.swt.util.Language;
@@ -34,8 +36,10 @@ public class DrawablePanel extends GUI {
         setupListeners();
 
         this.drawPanel.setBackground(Color.WHITE);
-        Drawable drawable = new Drawable(10, 10, Color.BLUE);
-        this.drawPanel.add(drawable);
+        for (int i = 1; i < 4; i++) {
+            DrawableUseCase useCase = new DrawableUseCase(10,10,i,"Pussy");
+            this.drawPanel.add(useCase);
+        }
 
         this.popups = new Popup[2];
         this.popupCounter = new int[2];
@@ -82,14 +86,14 @@ public class DrawablePanel extends GUI {
         });
         this.showTaskButton.addActionListener(e2 -> {
             PopupFactory popupFactory = new PopupFactory();
-            if (popupCounter[1] % 2 == 0){
+            if (popupCounter[1] % 2 == 0) {
                 ShowTaskPanel showTaskPanel = new ShowTaskPanel(language, colors);
                 showTaskPanel.updateGUI(task);
                 Point point = new Point(showTaskButton.getX() - this.getWidth() / 4, showTaskButton.getY() + showTaskButton.getHeight());
                 SwingUtilities.convertPointToScreen(point, this);
                 popups[1] = popupFactory.getPopup(this, showTaskPanel, point.x, point.y);
                 popups[1].show();
-            } else{
+            } else {
                 popups[1].hide();
             }
             popupCounter[1]++;
@@ -104,7 +108,7 @@ public class DrawablePanel extends GUI {
         }
     }
 
-    public void setTask(String task){
+    public void setTask(String task) {
         this.task = task;
     }
 }

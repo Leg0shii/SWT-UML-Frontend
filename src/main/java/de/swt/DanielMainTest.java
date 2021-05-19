@@ -73,7 +73,7 @@ public class DanielMainTest {
         GUIManager guiManager = new GUIManager(colors, language);
         guiManager.setupGUIS();
         guiManager.updateGUIS(schools, students, accountType, groups, students, 0);
-        guiManager.switchToLoginGUI();
+        guiManager.switchToWorkspaceGUI();
 
         JFrame frame = new JFrame("Tests");
         JButton button = new JButton("Add GradePanel!");

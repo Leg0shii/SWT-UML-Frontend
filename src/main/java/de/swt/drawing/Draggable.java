@@ -1,4 +1,4 @@
-package de.swt.gui.workspace;
+package de.swt.drawing;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
