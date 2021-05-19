@@ -28,6 +28,8 @@ public class DrawManager {
         WorkspaceGUI wgui = new WorkspaceGUI(new GUIManager(colors, Language.GERMAN));
         drawing.add(wgui);
 
+
+
     }
 
 

@@ -40,6 +40,8 @@ public class DrawablePanel extends GUI {
             DrawableUseCase useCase = new DrawableUseCase(10,10,i,"Pussy");
             this.drawPanel.add(useCase);
         }
+        Drawable dbstickman = new Drawable(20,20,Color.black);
+        this.drawPanel.add(dbstickman);
 
         this.popups = new Popup[2];
         this.popupCounter = new int[2];
