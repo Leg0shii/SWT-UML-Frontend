@@ -1,5 +1,6 @@
 package de.swt.gui.workspace;
 
+import de.swt.drawing.Stickmanbutton;
 import de.swt.gui.GUI;
 
 import javax.imageio.ImageIO;
@@ -83,6 +84,8 @@ public class SymbolListPanel extends GUI {
         this.toolPanel.add(clearButton);
 
         this.clickCounter = new int[1];
+
+        //this.add(Stickmanbutton())
     }
 
     public void updateGUI() {
@@ -128,4 +131,9 @@ public class SymbolListPanel extends GUI {
     private void deleteLastDrawnObject() {
 
     }
+
+
+
+
+
 }

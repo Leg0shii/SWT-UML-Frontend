@@ -1,5 +1,6 @@
 package de.swt.gui.workspace;
 
+import de.swt.drawing.Stickmanbutton;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.logic.Group;
@@ -62,6 +63,7 @@ public class WorkspaceGUI extends GUI {
         this.objectListPanelPanel.add(objectListPanel);
         this.midPanel.add(drawablePanel);
         this.sendTaskButton.setText(sendTask);
+        this.symbolListPanel.symbolPanel.add(new Stickmanbutton(0,0,drawablePanel));
         this.rightPanel.add(symbolListPanel);
     }
 

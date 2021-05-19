@@ -30,7 +30,6 @@ public class Stickmanbutton extends JComponent {
 
     }
 
-
     @Override
     public void paintComponent(Graphics g) {
         int x = 0;
