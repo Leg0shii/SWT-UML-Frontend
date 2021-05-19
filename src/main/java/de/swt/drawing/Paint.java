@@ -13,7 +13,7 @@ public class Paint extends JFrame {
     Color c;
 
     public Paint() {
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1920, 1080);
         setLocationRelativeTo(null);
 

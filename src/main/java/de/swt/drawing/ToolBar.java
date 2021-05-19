@@ -26,21 +26,21 @@ public class ToolBar extends JPanel {//mby panel instead of frame?
         toolBar.setFloatable(false);
         
         toolBar.add(button1 = new JButton("Button1"));
-        button1.setIcon(new ImageIcon(""));				//Image einf�gen
+        button1.setIcon(new ImageIcon(""));				//Image einfuegen
 		
         toolBar.add(button2 = new JButton("Button2"));
-        button2.setIcon(new ImageIcon(""));				//Image einf�gen
+        button2.setIcon(new ImageIcon(""));				//Image einfuegen
         
         toolBar.add(button3 = new JButton("Button3"));
-        button3.setIcon(new ImageIcon(""));				//Image einf�gen
+        button3.setIcon(new ImageIcon(""));				//Image einfuegen
         
         toolBar.add(button4 = new JButton("Button4"));
-        button4.setIcon(new ImageIcon(""));				//Image einf�gen
+        button4.setIcon(new ImageIcon(""));				//Image einfuegen
         
         toolBar.add(button5 = new JButton("Button5"));
-        button5.setIcon(new ImageIcon(""));				//Image einf�gen
+        button5.setIcon(new ImageIcon(""));				//Image einfuegen
         
-        /*Weitere Buttons einf�gen!
+        /*Weitere Buttons einfuegen!
          * toolBar.add(buttonN = new JButton("ButtonN"));
            buttonN.setIcon(new ImageIcon(""));
          * 
@@ -49,13 +49,13 @@ public class ToolBar extends JPanel {//mby panel instead of frame?
         
         toolBar.setOrientation(JToolBar.HORIZONTAL);
         
-		//add(panel);
+		this.add(toolBar);
         /*
         Container cp = getContentPane();
         cp.setLayout(new BorderLayout());
         cp.add(toolBar, BorderLayout.EAST);
-        */
-        setVisible(true);
+
+        setVisible(true);*/
 
     }
 
