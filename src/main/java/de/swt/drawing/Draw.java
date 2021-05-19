@@ -1,4 +1,10 @@
 package de.swt.drawing;
 
-public class Draw {
+import javax.swing.*;
+
+public class Draw extends JPanel {
+
+
+
+
 }
