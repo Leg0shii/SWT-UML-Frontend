@@ -19,7 +19,7 @@ public class MyFrame extends JFrame{
     private JTextPane textArea;
 
 
-    MyFrame(){
+    public MyFrame(){
 		
 		this.setTitle("Workplace");
 		this.setSize(1920,1080);

@@ -12,9 +12,7 @@ public class Paint extends JFrame {
     JButton colorChooser;
     Color c;
 
-    Paint() {
-
-
+    public Paint() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(1920, 1080);
         setLocationRelativeTo(null);
@@ -35,6 +33,7 @@ public class Paint extends JFrame {
         setVisible(true);
     }
 
+    @Override
     public void paint(Graphics g) {
         g.setColor(c);
         g.fillOval(x, y, 4, 4);
