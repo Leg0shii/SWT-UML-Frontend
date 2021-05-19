@@ -6,10 +6,8 @@ import javax.swing.JPanel;
 
 public class NewWindow {
 
-    MyFrame myframe = new MyFrame();
-
     NewWindow() {
-
+        MyFrame myframe = new MyFrame();
         myframe.setTitle("Workplace");
         myframe.setSize(1920, 1080);
         myframe.setLayout(null);
@@ -18,6 +16,4 @@ public class NewWindow {
         JPanel panel = new JPanel();
         panel.setSize(1920, 1080);
     }
-
-
 }

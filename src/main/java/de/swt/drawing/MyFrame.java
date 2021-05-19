@@ -13,9 +13,6 @@ import java.io.IOException;
 import java.nio.file.*;
 
 
-
-
-
 public class MyFrame extends JFrame{
 
 
@@ -146,11 +143,17 @@ public class MyFrame extends JFrame{
         }
 
         File fileName = new File(Save.getSelectedFile() + ".txt");
+
+        outFilefunc(fileName);
+    }
+
+    private void outFilefunc(File fileName) {
         BufferedWriter outFile = null;
+
         try {
             outFile = new BufferedWriter(new FileWriter(fileName));
 
-            textArea.write(outFile); 
+            textArea.write(outFile);
 
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -164,9 +167,8 @@ public class MyFrame extends JFrame{
             }
         }
     }
-	
-	
-	
+
+
     public void SaveAs() {
 
         final JFileChooser SaveAs = new JFileChooser();
@@ -185,24 +187,8 @@ public class MyFrame extends JFrame{
         }
 
         File fileName = new File(SaveAs.getSelectedFile() + ".txt");
-        
-        BufferedWriter outFile = null;
-        try {
-            outFile = new BufferedWriter(new FileWriter(fileName));
 
-            textArea.write(outFile); 
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (outFile != null) {
-                try {
-                    outFile.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        outFilefunc(fileName);
     }
 	
     public void Open() {
@@ -217,13 +203,7 @@ public class MyFrame extends JFrame{
         }
         //TODO
     }
-   
-   
 
-
-        
-    
-    
 	
     public void Exit() {
     	System.exit(0);	
