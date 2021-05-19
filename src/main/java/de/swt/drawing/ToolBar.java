@@ -22,7 +22,7 @@ public class ToolBar extends JFrame {
 		
 		super("ToolBar");
 		setVisible(true);
-		setSize(1920, 1080);
+		setSize(1000, 600);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
         toolBar.setLayout(new GridLayout(12, 2, 5, 5));

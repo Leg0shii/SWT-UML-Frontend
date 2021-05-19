@@ -31,7 +31,7 @@ public class MyFrame extends JFrame{
 		
 		MakeContentPane();
 	    MakeMenubar();
-	    
+
 	    this.pack();
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
