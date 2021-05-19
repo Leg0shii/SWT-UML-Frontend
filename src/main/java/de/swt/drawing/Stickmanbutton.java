@@ -17,14 +17,15 @@ public class Stickmanbutton extends JComponent {
         setBorder(new LineBorder(Color.black, 2));
         this.width = 50;
         this.height = 100;
-        setBounds(xx, yy, width, height);
+        setPreferredSize(new Dimension(width, height));
         // setBackground(Color.black);
         //setOpaque(true);
 
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                dp.add(new Drawable(20, 20, Color.BLACK));
+                dp.drawPanel.add(new Drawable(20, 20, Color.BLACK));
+                dp.drawPanel.repaint();
             }
         });
 

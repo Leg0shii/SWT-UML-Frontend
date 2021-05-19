@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class DrawablePanel extends GUI {
     private JPanel mainPanel;
     private JButton taskButton;
-    private JPanel drawPanel;
+    public JPanel drawPanel;
     private JLabel remainingLabel;
     private JButton showTaskButton;
     private Popup[] popups;
