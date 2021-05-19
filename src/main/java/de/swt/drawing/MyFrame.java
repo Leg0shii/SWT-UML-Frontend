@@ -127,7 +127,7 @@ public class MyFrame extends JFrame{
 	
 	
 	public void New() {
-		new NewWindow();
+		new MyFrame();
 		new Paint();
 		new ToolBar();
 	}
