@@ -2,45 +2,24 @@ package de.swt.util;
 
 import de.swt.database.AsyncMySQL;
 import de.swt.database.DBManager;
-import de.swt.logic.user.User;
-import de.swt.logic.user.UserManager;
+import de.swt.logic.User;
 
 public class Client {
 
     public AsyncMySQL mySQL;
     public User user;
     public DBManager dbManager;
-    public UserManager userManager;
     public static Client instance;
 
-    public void onStart() throws InterruptedException {
+    public void onStart() {
 
         instance = this;
         dbManager = new DBManager();
-
-        mySQL = dbManager.initTables();
-
-        int userID = 0; //get from login later
-        userManager = new UserManager(mySQL);
-        userManager.loadAllUserData();
-        user = userManager.getUserHashMap().get(userID);
-
-        System.out.println("IN2"); // shows that IN2 is called before the "IN" which are inside userManager.loadAllUserData();
-        // just a lazy thing because the db connection is threaded so it runs in the background
-        // meanwhile code continues and it would call for loop with no data inside
-        // this could be solved by waiting 10s when loggin in (loading screen for example)
-        Thread.sleep(1000);
-
-        System.out.println("IN3");
-        for(int key : userManager.getUserHashMap().keySet()) {
-            System.out.println(userManager.getUserHashMap().get(key).getFullName());
-        }
+        mySQL = dbManager.connectToDB();
 
     }
 
     public void onDisable() {
-
-
 
     }
 

@@ -3,7 +3,7 @@ package de.swt.gui.classroom;
 import de.swt.gui.GUIManager;
 import de.swt.gui.GUI;
 import de.swt.util.AccountType;
-import de.swt.logic.user.User;
+import de.swt.logic.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -135,7 +135,7 @@ public class ClassroomGUI extends GUI {
 
     public GradePanel getGradePanel(int id){
         for (GradePanel gradePanel : gradePanels){
-            if (gradePanel.getCourse().getID() == id){
+            if (gradePanel.getCourse().getId() == id){
                 return gradePanel;
             }
         }

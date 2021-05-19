@@ -2,9 +2,9 @@ package de.swt.gui.classroom;
 
 import de.swt.gui.GUI;
 import de.swt.util.AccountType;
-import de.swt.logic.course.Course;
+import de.swt.logic.Course;
 import de.swt.util.Language;
-import de.swt.logic.user.User;
+import de.swt.logic.User;
 
 import javax.swing.*;
 import java.awt.*;

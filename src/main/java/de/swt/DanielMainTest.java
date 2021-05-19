@@ -2,11 +2,11 @@ package de.swt;
 
 import de.swt.gui.GUIManager;
 import de.swt.gui.classroom.GradePanel;
-import de.swt.logic.group.Group;
+import de.swt.logic.Group;
 import de.swt.util.AccountType;
-import de.swt.logic.course.Course;
+import de.swt.logic.Course;
 import de.swt.util.Language;
-import de.swt.logic.user.User;
+import de.swt.logic.User;
 
 
 import javax.swing.*;
@@ -89,7 +89,7 @@ public class DanielMainTest {
         });
         JButton button2 = new JButton("To 11 Grade!");
         button2.addActionListener(e -> {
-            GradePanel gradePanel = guiManager.classroomGUI.getGradePanel(courses.get(2).getID());
+            GradePanel gradePanel = guiManager.classroomGUI.getGradePanel(courses.get(2).getId());
             Course course = gradePanel.getCourse();
             course.setGrade(11);
             gradePanel.updateGUI(course);

@@ -2,7 +2,7 @@ package de.swt.gui.classroom;
 
 import de.swt.gui.GUI;
 import de.swt.util.Language;
-import de.swt.logic.user.User;
+import de.swt.logic.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,7 +39,7 @@ public class EditClassroomPanel extends GUI {
         this.studentComboBox.removeAllItems();
         this.studentComboBox.addItem("");
         for (User student : students){
-            this.studentComboBox.addItem(student.getID() + "");
+            this.studentComboBox.addItem(student.getId() + "");
         }
     }
 

@@ -3,10 +3,10 @@ package de.swt.gui;
 import de.swt.gui.classroom.ClassroomGUI;
 import de.swt.gui.login.LoginGUI;
 import de.swt.gui.workspace.WorkspaceGUI;
-import de.swt.logic.group.Group;
+import de.swt.logic.Group;
 import de.swt.util.AccountType;
 import de.swt.util.Language;
-import de.swt.logic.user.User;
+import de.swt.logic.User;
 
 import javax.swing.*;
 import java.awt.*;

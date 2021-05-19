@@ -1,8 +1,8 @@
 package de.swt.gui.workspace;
 
 import de.swt.gui.GUI;
-import de.swt.logic.group.Group;
-import de.swt.logic.user.User;
+import de.swt.logic.Group;
+import de.swt.logic.User;
 import de.swt.util.AccountType;
 import de.swt.util.Language;
 
