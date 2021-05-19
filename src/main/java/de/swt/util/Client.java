@@ -6,6 +6,9 @@ import de.swt.logic.CourseManager;
 import de.swt.logic.User;
 import de.swt.logic.UserManager;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class Client {
 
     public AsyncMySQL mySQL;
@@ -22,17 +25,10 @@ public class Client {
         dbManager = new DBManager();
         mySQL = dbManager.connectToDB();
 
-        courseManager = new CourseManager(mySQL);
-        courseManager.cacheAllCourseData();
+        courseManager = new CourseManager(instance);
+        userManager = new UserManager(instance);
 
-        userManager = new UserManager(mySQL);
-        userManager.setCourseHashMap(courseManager.getCourseHashMap());
-        userManager.cacheAllUserData();
-
-        for(int ids : userManager.getUserHashMap().keySet()) {
-            userManager.loadAllUserCourses(ids);
-        }
-
+        loadAllInformation();
     }
 
     public void onDisable() {
@@ -41,6 +37,11 @@ public class Client {
 
     public static Client getInstance() {
         return instance;
+    }
+
+    public void loadAllInformation() {
+        courseManager.cacheAllCourseData();
+        userManager.cacheAllUserData();
     }
 
 }

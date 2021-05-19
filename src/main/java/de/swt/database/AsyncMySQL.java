@@ -6,8 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 /**
@@ -106,13 +105,9 @@ public class AsyncMySQL {
      * String object gets converted to a PreparedStatement automatically.
      * The consumer object returns the ResultSet of the query.
      * @param statement sql query as a String object
-     * @param consumer consumer object that returns the ResultSet of the query
      */
-    public void query(String statement, Consumer<ResultSet> consumer) {
-        executor.execute(() ->  {
-            ResultSet result = sql.query(statement);
-            consumer.accept(result);
-        });
+    public ResultSet query(String statement) {
+        return sql.query(statement);
     }
 
     /**

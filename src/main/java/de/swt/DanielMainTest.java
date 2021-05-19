@@ -12,6 +12,7 @@ import de.swt.logic.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 

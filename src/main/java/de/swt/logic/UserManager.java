@@ -2,92 +2,83 @@ package de.swt.logic;
 
 import de.swt.database.AsyncMySQL;
 import de.swt.util.AccountType;
+import de.swt.util.Client;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Setter
 @Getter
 public class UserManager {
 
+    private Client client;
+    private AsyncMySQL mySQL;
     private HashMap<Integer, User> userHashMap;
-    private HashMap<Integer, Course> courseHashMap;
-    private final AsyncMySQL mySQL;
 
-    public UserManager(AsyncMySQL mySQL) {
+    public UserManager(Client client) {
 
-        this.mySQL = mySQL;
+        this.client = client;
+        this.mySQL = client.mySQL;
         this.userHashMap = new HashMap<>();
-        this.courseHashMap = new HashMap<>();
     }
 
-    public void loadUser(int id, String password) {
-        AtomicInteger i = new AtomicInteger();
-        if(userHashMap.containsKey(id)) {
-            // check for user password
-            mySQL.query("SELECT password FROM users WHERE id = " + id + ";", resultSet -> i.set(queryUserData(resultSet, id, password)));
-        } else {
-            System.out.println("Password is wrong!");
-        }
-        while(i.get() != 1);
-    }
-
-    private int queryUserData(ResultSet resultSet, int id, String password) {
-        try {
-            if(resultSet.next()) {
-                if(resultSet.getString("password").equals(password)) {
-                    userHashMap.get(id).setOnline(true);
-                }
-            } else System.out.println("§cUser doesnt exist");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 1;
-    }
-
-    public void cacheAllUserData() {
-        AtomicInteger i = new AtomicInteger();
-        mySQL.query("SELECT * FROM users;", resultSet -> i.set(queryUserData(resultSet)));
-        while(i.get() != 1);
-    }
-
-    private int queryUserData(ResultSet resultSet) {
-        try {
-            while(resultSet.next()) {
-                User user = new User();
-                int userID = resultSet.getInt("userid");
-                user.setId(userID);
+    public User loadUser(int id) throws SQLException {
+        User user;
+        if (!userHashMap.containsKey(id)) {
+            ResultSet resultSet = mySQL.query("SELECT * FROM users WHERE userid = " + id + ";");
+            if (resultSet.next()) {
+                user = new User();
+                user.setId(id);
                 user.setFirstname(resultSet.getString("prename"));
                 user.setSurname(resultSet.getString("surname"));
                 user.setAccountType(AccountType.valueOf(resultSet.getString("usertype")));
                 user.setOnline(false);
-                // TODO : get courses
-                userHashMap.put(userID, user);
+                user.setCourse(loadCourses(id));
+                userHashMap.put(id, user);
+            } else {
+                System.out.println("SOMETHING WENT WRONG WHILE LOADING USER!!!");
+                return null;
             }
-        } catch (SQLException e) { e.printStackTrace(); }
-        return 1;
+        } else user = userHashMap.get(id);
+        return user;
     }
 
-    private int queryAllCourseData(int id, ResultSet resultSet) {
+    public void cacheAllUserData() {
+        ResultSet resultSet = mySQL.query("SELECT * FROM users;");
         try {
-            if(resultSet.next()) {
-                Course[] course = new Course[2];
-                course[0] = courseHashMap.get(resultSet.getInt("mcourseid"));
-                course[1] = courseHashMap.get(resultSet.getInt("scourseid"));
-                userHashMap.get(id).setCourse(course);
+            while (resultSet.next()) {
+                loadUser(resultSet.getInt("userid"));
             }
-        } catch (SQLException e) { e.printStackTrace(); }
-        return 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void loadAllUserCourses(int id) {
-        AtomicInteger i = new AtomicInteger();
-        mySQL.query("SELECT mcourseid,scourseid FROM users WHERE userid = " + id + ";", resultSet -> i.set(queryAllCourseData(id, resultSet)));
-        while(i.get() != 1);
+    private Course[] loadCourses(int id) throws SQLException {
+        Course[] courses = new Course[2];
+        ResultSet resultSetUser = mySQL.query("SELECT mcourseid,scourseid FROM users WHERE userid = " + id + ";");
+        ResultSet resultSetCourseM;
+        ResultSet resultSetCourseS;
+
+        if (resultSetUser.next()) {
+            resultSetCourseM = mySQL.query("SELECT * FROM courses WHERE courseid = " + resultSetUser.getInt("mcourseid") + ";");
+            resultSetCourseS = mySQL.query("SELECT * FROM courses WHERE courseid = " + resultSetUser.getInt("scourseid") + ";");
+        } else {
+            System.out.println("ERROR OCCURED WHILE LOADING IN COURSES!!!");
+            return null;
+        }
+
+        if (resultSetCourseM.next() && resultSetCourseS.next()) {
+            courses[0] = client.courseManager.loadCourse(resultSetCourseM.getInt("courseid"));
+            courses[1] = client.courseManager.loadCourse(resultSetCourseS.getInt("courseid"));
+        } else {
+            System.out.println("ERROR OCCURED WHILE LOADING IN COURSES!!!");
+            return null;
+        }
+        return courses;
     }
 
 }
