@@ -17,10 +17,9 @@ public class MyFrame extends JFrame{
 
 
     private JTextPane textArea;
-    private JScrollPane scrollPane;
 
-	
-	MyFrame(){
+
+    MyFrame(){
 		
 		this.setTitle("Workplace");
 		this.setSize(1920,1080);
@@ -37,50 +36,45 @@ public class MyFrame extends JFrame{
 	
 	public void MakeMenubar(){
 		JMenuBar menuBar = new JMenuBar();
-		this.setJMenuBar(menuBar);
-		
+
 		//File-Menu
 		JMenu fileMenu = new JMenu("File");
         menuBar.add(fileMenu);
         
         JMenuItem newItem = new JMenuItem("New");
-        newItem.addActionListener((e) -> New());
+        newItem.addActionListener((e) -> newMyFrame());
         
         JMenuItem saveItem = new JMenuItem("Save");
-        saveItem.addActionListener((e) -> Save());
+        saveItem.addActionListener((e) -> save());
         
         JMenuItem saveAsItem = new JMenuItem("Save As");
-        saveAsItem.addActionListener((e) -> SaveAs());
+        saveAsItem.addActionListener((e) -> saveAs());
         
         JMenuItem openItem = new JMenuItem("Open");
-        openItem.addActionListener((e) -> Open());
+        openItem.addActionListener((e) -> open());
         
         JMenuItem exitItem = new JMenuItem("Exit");
-        exitItem.addActionListener((e) -> System.exit(1));
+        exitItem.addActionListener((e) -> exit(1));
         
         fileMenu.add(newItem);
         fileMenu.add(openItem);
         fileMenu.add(saveItem);
         fileMenu.add(saveAsItem);
         fileMenu.add(exitItem);
-        
-        
-        
+
         //Edit-Menu
         JMenu editMenu = new JMenu("Edit");
         menuBar.add(editMenu);
         
         JMenuItem undoItem = new JMenuItem("Undo");
-        undoItem.addActionListener((e) -> Undo());
+        undoItem.addActionListener((e) -> undo());
         
         JMenuItem redoItem = new JMenuItem("Redo");
-        redoItem.addActionListener((e) -> Redo());
+        redoItem.addActionListener((e) -> redo());
         
         JMenuItem deleteItem = new JMenuItem("Delete");
-        deleteItem.addActionListener((e) -> Open());
-        
-        
-		
+        deleteItem.addActionListener((e) -> open());
+
 		editMenu.add(deleteItem);
 		editMenu.add(redoItem);
 		editMenu.add(undoItem);
@@ -89,8 +83,8 @@ public class MyFrame extends JFrame{
         Action action = new StyledEditorKit.BoldAction();
         action.putValue(Action.NAME, "Bold");
         editMenu.add(action);
-        
-		this.setJMenuBar(menuBar);
+
+        this.setJMenuBar(menuBar);
 		this.setVisible(true);
 		
 	}
@@ -98,9 +92,9 @@ public class MyFrame extends JFrame{
 	
 	public void MakeContentPane() {
         //textArea = new JTextArea();
-        textArea = new JTextPane();
-        
-        scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        this.textArea = new JTextPane();
+
+        JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
         Container contentPane = this.getContentPane();
 
@@ -125,15 +119,12 @@ public class MyFrame extends JFrame{
     }
 	
 	
-	
-	public void New() {
+
+	public void newMyFrame() {
 		new MyFrame();
-		new Paint();
-		new ToolBar();
 	}
 	
-	
-	public void Save() {
+	public void save() {
 		
         final JFileChooser Save = new JFileChooser();
         Save.setApproveButtonText("Save");
@@ -169,7 +160,7 @@ public class MyFrame extends JFrame{
     }
 
 
-    public void SaveAs() {
+    public void saveAs() {
 
         final JFileChooser SaveAs = new JFileChooser();
         
@@ -191,9 +182,7 @@ public class MyFrame extends JFrame{
         outFilefunc(fileName);
     }
 	
-    public void Open() {
-
-    	
+    public void open() {
     	final JFileChooser Open = new JFileChooser();
         
     	Open.setApproveButtonText("Open");
@@ -205,21 +194,19 @@ public class MyFrame extends JFrame{
     }
 
 	
-    public void Exit() {
-    	System.exit(0);	
+    public void exit(int status) {
+    	System.exit(status);
     }
     
-    public void Undo() {
+    public void undo() {
     	
     }
  
-    public void Redo() {
+    public void redo() {
  	
     }
  
-    public void Delete() {
+    public void delete() {
  	
     }
-
-
 }
