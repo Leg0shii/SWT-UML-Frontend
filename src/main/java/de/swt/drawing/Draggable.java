@@ -7,6 +7,7 @@ import java.awt.event.MouseMotionAdapter;
 
 //https://stackoverflow.com/questions/874360/swing-creating-a-draggable-component
 
+//a draggable JComponent
 public class Draggable extends JComponent {
 
     private volatile int screenX;
@@ -16,6 +17,7 @@ public class Draggable extends JComponent {
 
     public Draggable(){
 
+        //get info on press
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -26,6 +28,7 @@ public class Draggable extends JComponent {
                 myY = getY();
             }
         });
+        //drag on drag
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
