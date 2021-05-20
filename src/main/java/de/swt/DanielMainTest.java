@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class DanielMainTest {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
 
         Client client = new Client();
         client.onStart();
