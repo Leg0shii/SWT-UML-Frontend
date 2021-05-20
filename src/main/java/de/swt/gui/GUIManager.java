@@ -77,6 +77,7 @@ public class GUIManager extends JFrame {
     }
 
     public void addToDrawPanel(JComponent component){
+        workspaceGUI.addToDrawPanel(component);
     }
 
     public void insertNewPanel() {
