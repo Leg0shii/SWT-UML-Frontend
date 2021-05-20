@@ -87,7 +87,7 @@ public class SymbolListPanel extends GUI {
 
         this.clickCounter = new int[1];
 
-        //this.add(Stickmanbutton())
+        this.symbolPanel.add(new Stickmanbutton(10,10, guiManager));
     }
 
     public void updateGUI() {

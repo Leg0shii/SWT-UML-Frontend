@@ -108,5 +108,6 @@ public class DrawablePanel extends GUI {
 
     public void addToDrawPanel(JComponent component) {
         drawPanel.add(component);
+        drawPanel.repaint();
     }
 }
