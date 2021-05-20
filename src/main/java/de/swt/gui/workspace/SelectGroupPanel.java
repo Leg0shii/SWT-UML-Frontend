@@ -1,6 +1,7 @@
 package de.swt.gui.workspace;
 
 import de.swt.gui.GUI;
+import de.swt.gui.GUIManager;
 import de.swt.logic.Group;
 import de.swt.util.Language;
 
@@ -16,16 +17,17 @@ public class SelectGroupPanel extends GUI {
     private JLabel selectGroupLabel;
     private List<Group> groups;
 
-    public SelectGroupPanel(Language language, Color[] colors) {
+    public SelectGroupPanel(GUIManager guiManager) {
+        super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
 
-        switch (language) {
+        switch (guiManager.language) {
             case GERMAN -> setupGUI("Wähle deine Gruppe", "Aufgabe beginnen");
             case ENGLISH -> setupGUI("Select your Group", "Start Task");
         }
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
+        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         setupListeners();
     }
 
@@ -51,9 +53,9 @@ public class SelectGroupPanel extends GUI {
     }
 
     public Group getSelectedGroup() {
-        Object selectedNumber = this.selectGroupComboBox.getSelectedItem();
+        String selectedNumber = String.valueOf(this.selectGroupComboBox.getSelectedItem());
         for (Group group : groups){
-            if (group.getNumber() == (int) selectedNumber){
+            if (group.getNumber() == Integer.parseInt(selectedNumber)){
                 return group;
             }
         }

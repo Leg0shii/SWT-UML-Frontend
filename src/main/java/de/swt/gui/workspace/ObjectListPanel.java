@@ -1,13 +1,19 @@
 package de.swt.gui.workspace;
 
 import de.swt.gui.GUI;
+import de.swt.gui.GUIManager;
 import de.swt.logic.Group;
 import de.swt.logic.User;
 import de.swt.util.AccountType;
 import de.swt.util.Language;
+import org.w3c.dom.ls.LSOutput;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,33 +28,24 @@ public class ObjectListPanel extends GUI {
     private String group;
     private boolean showGroups;
     private JButton addStudentButton;
-    private Language language;
-    private Color[] colors;
     private List<Group> groupsList;
     private List<User> users;
-    private int[] popupCounter;
-    private Popup[] popups;
-    private AccountType accountType;
 
-    public ObjectListPanel(Language language, Color[] colors) {
+    public ObjectListPanel(GUIManager guiManager) {
+        super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         this.objectScrollPanel.setViewportView(objectList);
         this.addStudentButton = new JButton();
-        this.objectList.setLayout(new GridLayout(0,1));
+        this.objectList.setLayout(new GridLayout(0, 1));
 
-        switch (language) {
+        switch (guiManager.language) {
             case GERMAN -> setupGUI("Teilnehmer", "Gruppen", "Gruppe", "Schüler hinzufügen");
             case ENGLISH -> setupGUI("Participants", "Groups", "Group", "Add Student");
         }
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
+        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         setupListeners();
-
-        this.language = language;
-        this.colors = colors;
-        this.popupCounter = new int[2];
-        this.popups = new Popup[2];
     }
 
     private void setupGUI(String participants, String groups, String group, String addStudents) {
@@ -57,10 +54,10 @@ public class ObjectListPanel extends GUI {
         this.group = group;
         this.showGroups = false;
         this.addStudentButton.setText(addStudents);
+        initPopups(2);
     }
 
-    public void updateGUI(List<Group> groups, List<User> users, AccountType accountType) {
-        this.accountType = accountType;
+    public void updateGUI(List<Group> groups, List<User> users) {
         this.groupsList = groups;
         this.users = users;
         setupObjectButtons(groups, users);
@@ -73,51 +70,52 @@ public class ObjectListPanel extends GUI {
             this.switchButton.setText(this.groups);
             this.objectList.add(this.addStudentButton);
         }
-        initForAccountType(accountType);
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
+        initForAccountType();
+        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         this.revalidate();
     }
 
     private void setupListeners() {
         this.switchButton.addActionListener(e1 -> {
-                    PopupFactory popupFactory = new PopupFactory();
                     if (!groupsList.isEmpty()) {
                         this.showGroups = !this.showGroups;
-                        this.updateGUI(this.groupsList, this.users, accountType);
+                        closeAllPopups();
+                        this.updateGUI(this.groupsList, this.users);
                     } else {
-                        if (popupCounter[1] % 2 == 0) {
-                            CreateGroupPanel createGroupPanel = new CreateGroupPanel(language, colors);
+                        if (popupCounter.get(1) % 2 == 0) {
+                            CreateGroupPanel createGroupPanel = new CreateGroupPanel(guiManager);
                             Point point = new Point(switchButton.getX() + switchButton.getWidth(), switchButton.getY());
                             SwingUtilities.convertPointToScreen(point, objectList);
-                            popups[1] = popupFactory.getPopup(this, createGroupPanel, point.x, point.y);
-                            popups[1].show();
+                            popups.get(1).hide();
+                            popups.set(1, factory.getPopup(this, createGroupPanel, point.x, point.y));
+                            popups.get(1).show();
                         } else {
-                            popups[1].hide();
+                            popups.get(1).hide();
                         }
-                        popupCounter[1]++;
+                        incrementPopupCounter(1);
                     }
                 }
         );
         this.addStudentButton.addActionListener(e2 -> {
-            PopupFactory popupFactory = new PopupFactory();
-            if (popupCounter[0] % 2 == 0) {
-                AddUserPanel addUserPanel = new AddUserPanel(language, colors);
+            if (popupCounter.get(0) % 2 == 0) {
+                AddUserPanel addUserPanel = new AddUserPanel(guiManager);
                 addUserPanel.addButton.addActionListener(e21 -> {
                     addUserFunction();
                 });
                 Point point = new Point(addStudentButton.getX() + addStudentButton.getWidth(), addStudentButton.getY());
                 SwingUtilities.convertPointToScreen(point, objectList);
-                popups[0] = popupFactory.getPopup(this, addUserPanel, point.x, point.y);
-                popups[0].show();
+                popups.get(0).hide();
+                popups.set(0, factory.getPopup(this, addUserPanel, point.x, point.y));
+                popups.get(0).show();
             } else {
-                popups[0].hide();
+                popups.get(0).hide();
             }
-            popupCounter[0]++;
+            incrementPopupCounter(0);
         });
     }
 
-    public void initForAccountType(AccountType accountType) {
-        if (accountType == AccountType.STUDENT) {
+    public void initForAccountType() {
+        if (guiManager.accountType == AccountType.STUDENT) {
             this.objectList.remove(addStudentButton);
             this.mainPanel.remove(switchButton);
         }
@@ -125,70 +123,74 @@ public class ObjectListPanel extends GUI {
 
     private void setupObjectButtons(List<Group> groups, List<User> users) {
         this.objectList.removeAll();
+        System.out.println(popupCounter);
+        popups.subList(2, popups.size()).clear();
+        popupCounter.subList(2, popupCounter.size()).clear();
+        System.out.println(popupCounter);
+        int counter = 2;
         if (showGroups) {
             for (Group group : groups) {
                 JButton objectButton = new JButton();
                 objectButton.setText(this.group + " " + group.getNumber());
-                setupListenerForObjectButton(objectButton, group);
+                setupListenerForObjectButton(objectButton, group, counter);
+                counter += 1;
                 this.objectList.add(objectButton);
             }
         } else {
             for (User user : users) {
                 JButton objectButton = new JButton();
                 objectButton.setText(user.getFullName());
-                if (accountType != AccountType.STUDENT) {
-                    setupListenerForObjectButton(objectButton, user);
+                if (guiManager.accountType != AccountType.STUDENT) {
+                    setupListenerForObjectButton(objectButton, user, counter);
+                    counter += 1;
                 }
                 this.objectList.add(objectButton);
             }
         }
     }
 
-    // TODO: Add Listeners
-    private void setupListenerForObjectButton(JButton objectButton, Object object) {
-        PopupFactory popupFactory = new PopupFactory();
-        Popup[] popups = new Popup[2];
-        int[] popupCounter = new int[2];
+    private void setupListenerForObjectButton(JButton objectButton, Object object, int n) {
+        initPopups(1);
         if (showGroups) {
-            objectButton.addActionListener(e1 -> {
-                if (popupCounter[0] % 2 == 0) {
-                    GroupButtonPanel groupButtonPanel = new GroupButtonPanel(language, colors);
-                    groupButtonPanel.terminateButton.addActionListener(e11 -> {
+            objectButton.addActionListener(e -> {
+                if (popupCounter.get(n) % 2 == 0) {
+                    GroupButtonPanel groupButtonPanel = new GroupButtonPanel(guiManager);
+                    groupButtonPanel.terminateButton.addActionListener(e1 -> {
                         terminateGroup((Group) object);
-                        this.objectList.remove(objectButton);
-                        popups[0].hide();
+                        objectList.remove(objectButton);
+                        popups.get(n).hide();
                     });
-                    groupButtonPanel.watchButton.addActionListener(e12 -> {
-                        watchGroup((Group) object);
-                    });
+                    groupButtonPanel.watchButton.addActionListener(e2 -> watchGroup((Group) object));
                     Point point = new Point(objectButton.getX() + objectButton.getWidth(), objectButton.getY());
                     SwingUtilities.convertPointToScreen(point, objectList);
-                    popups[0] = popupFactory.getPopup(objectButton, groupButtonPanel, point.x, point.y);
-                    popups[0].show();
+                    popups.get(n).hide();
+                    popups.set(n, factory.getPopup(guiManager, groupButtonPanel, point.x, point.y));
+                    popups.get(n).show();
                 } else {
-                    popups[0].hide();
+                    popups.get(n).hide();
                 }
-                popupCounter[0]++;
-                this.revalidate();
+                incrementPopupCounter(n);
+                revalidate();
             });
         } else {
-            objectButton.addActionListener(e2 -> {
-                if (popupCounter[1] % 2 == 0) {
-                    UserButtonPanel userButtonPanel = new UserButtonPanel(language, colors);
-                    userButtonPanel.kickButton.addActionListener(e21 -> {
-                        removeStudent((User) object);
-                        this.objectList.remove(objectButton);
-                        popups[1].hide();
+            objectButton.addActionListener(e -> {
+                if (popupCounter.get(n) % 2 == 0) {
+                    UserButtonPanel userButtonPanel = new UserButtonPanel(guiManager);
+                    userButtonPanel.kickButton.addActionListener(e1 -> {
+                        ObjectListPanel.this.removeStudent((User) object);
+                        ObjectListPanel.this.objectList.remove(objectButton);
+                        popups.get(n).hide();
                     });
                     Point point = new Point(objectButton.getX() + objectButton.getWidth(), objectButton.getY());
                     SwingUtilities.convertPointToScreen(point, objectList);
-                    popups[1] = popupFactory.getPopup(objectButton, userButtonPanel, point.x, point.y);
-                    popups[1].show();
+                    popups.get(n).hide();
+                    popups.set(n, factory.getPopup(guiManager, userButtonPanel, point.x, point.y));
+                    popups.get(n).show();
                 } else {
-                    popups[1].hide();
+                    popups.get(n).hide();
                 }
-                popupCounter[1]++;
-                this.revalidate();
+                incrementPopupCounter(n);
+                revalidate();
             });
         }
 

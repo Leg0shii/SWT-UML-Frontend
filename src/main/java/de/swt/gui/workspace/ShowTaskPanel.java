@@ -1,6 +1,7 @@
 package de.swt.gui.workspace;
 
 import de.swt.gui.GUI;
+import de.swt.gui.GUIManager;
 import de.swt.util.Language;
 
 import javax.swing.*;
@@ -11,11 +12,12 @@ public class ShowTaskPanel extends GUI {
     private JPanel mainPanel;
     private JLabel taskLabel;
 
-    public ShowTaskPanel(Language language, Color[] colors) {
+    public ShowTaskPanel(GUIManager guiManager) {
+        super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
+        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         setupListeners();
     }
 

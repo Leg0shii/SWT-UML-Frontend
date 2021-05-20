@@ -1,6 +1,7 @@
 package de.swt.gui.workspace;
 
 import de.swt.gui.GUI;
+import de.swt.gui.GUIManager;
 import de.swt.logic.User;
 import de.swt.util.Language;
 
@@ -14,16 +15,17 @@ public class RequestPanel extends GUI {
     public JButton denyButton;
     private JLabel requestLabel;
 
-    public RequestPanel(Language language, Color[] colors) {
+    public RequestPanel(GUIManager guiManager) {
+        super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
 
-        switch (language) {
+        switch (guiManager.language) {
             case GERMAN -> setupGUI(" möchte beitreten", "Akzeptieren", "Verweigern");
             case ENGLISH -> setupGUI(" wants to join", "Accept", "Deny");
         }
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
+        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         setupListeners();
     }
 

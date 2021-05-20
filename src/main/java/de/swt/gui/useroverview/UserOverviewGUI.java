@@ -1,13 +1,15 @@
 package de.swt.gui.useroverview;
 
 import de.swt.gui.GUI;
+import de.swt.gui.GUIManager;
 
 import javax.swing.*;
 
 public class UserOverviewGUI extends GUI {
     private JPanel mainPanel;
 
-    public UserOverviewGUI() {
+    public UserOverviewGUI(GUIManager guiManager) {
+        super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
     }
