@@ -64,4 +64,15 @@ public class CourseManager {
         return list;
     }
 
+    private ArrayList<User> loadUsersInCourse(int courseid) {
+        ArrayList<User> users = new ArrayList<>();
+        ResultSet resultSet = mySQL.query("SELECT userid FROM courses WHERE mcourseid = " + courseid + " OR scourseid = " + courseid + ";");
+        try {
+            while (resultSet.next()) {
+                users.add(client.userManager.loadUser(resultSet.getInt("userid")));
+            }
+        } catch (SQLException ignored) { }
+        return users;
+    }
+
 }

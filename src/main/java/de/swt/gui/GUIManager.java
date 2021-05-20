@@ -5,6 +5,7 @@ import de.swt.gui.login.LoginGUI;
 import de.swt.gui.workspace.WorkspaceGUI;
 import de.swt.logic.Group;
 import de.swt.util.AccountType;
+import de.swt.util.Client;
 import de.swt.util.Language;
 import de.swt.logic.User;
 
@@ -22,9 +23,11 @@ public class GUIManager extends JFrame {
     public WorkspaceGUI workspaceGUI;
 
     private final List<GUI> childrenGUI;
+    private Client client;
 
-    public GUIManager(Language language, AccountType accountType) {
+    public GUIManager(Client client,  Language language, AccountType accountType) {
         super("E-Learning Software");
+        this.client = client;
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(800, 450);
         this.setLocationRelativeTo(null);
@@ -85,4 +88,9 @@ public class GUIManager extends JFrame {
     public Language getLanguage() {
         return language;
     }
+
+    public Client getClient() {
+        return this.client;
+    }
+
 }
