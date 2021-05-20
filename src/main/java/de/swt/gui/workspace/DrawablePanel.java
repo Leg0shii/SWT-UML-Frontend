@@ -105,4 +105,8 @@ public class DrawablePanel extends GUI {
     public void setTask(String task) {
         this.task = task;
     }
+
+    public void addToDrawPanel(JComponent component) {
+        drawPanel.add(component);
+    }
 }

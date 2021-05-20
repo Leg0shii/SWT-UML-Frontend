@@ -29,7 +29,7 @@ public class DanielMainTest {
         for (int key : client.courseManager.getCourseHashMap().keySet()) {
             courseList.add(client.courseManager.getCourseHashMap().get(key));
         }
-
+        System.out.println("here");
         AccountType accountType = AccountType.TEACHER;
         Language language = Language.GERMAN;
 

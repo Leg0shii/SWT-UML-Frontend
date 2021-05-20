@@ -163,4 +163,8 @@ public class WorkspaceGUI extends GUI {
     public void setTask(String task) {
         this.drawablePanel.setTask(task);
     }
+
+    public void addToDrawPanel(JComponent component) {
+        drawablePanel.addToDrawPanel(component);
+    }
 }
