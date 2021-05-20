@@ -10,16 +10,12 @@ import java.awt.event.MouseEvent;
 
 public class Stickmanbutton extends JComponent {
 
-    int width;
-    int height;
+    int width = 50;
+    int height = 100;
 
-    public Stickmanbutton(int xx, int yy, DrawablePanel dp){
+    public Stickmanbutton(DrawablePanel dp){
         setBorder(new LineBorder(Color.black, 2));
-        this.width = 50;
-        this.height = 100;
         setPreferredSize(new Dimension(width, height));
-        // setBackground(Color.black);
-        //setOpaque(true);
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -36,7 +32,6 @@ public class Stickmanbutton extends JComponent {
         int x = 0;
         int y = 0;
         //int width = this.width -1;
-        //int height = this.height -1;
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.setPaint(Color.black);
