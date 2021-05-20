@@ -36,7 +36,6 @@ public class UserManager {
                 user.setSurname(resultSet.getString("surname"));
                 user.setAccountType(AccountType.valueOf(resultSet.getString("usertype")));
                 user.setOnline(false);
-                user.setCourse(loadCourses(id));
                 userHashMap.put(id, user);
             } else {
                 System.out.println("SOMETHING WENT WRONG WHILE LOADING USER!!!");
@@ -57,9 +56,9 @@ public class UserManager {
         }
     }
 
-    private Course[] loadCourses(int id) throws SQLException {
+    public Course[] loadCourses(int userid) throws SQLException {
         Course[] courses = new Course[2];
-        ResultSet resultSetUser = mySQL.query("SELECT mcourseid,scourseid FROM users WHERE userid = " + id + ";");
+        ResultSet resultSetUser = mySQL.query("SELECT mcourseid,scourseid FROM users WHERE userid = " + userid + ";");
         ResultSet resultSetCourseM;
         ResultSet resultSetCourseS;
 

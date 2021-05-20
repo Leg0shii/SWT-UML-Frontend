@@ -2,6 +2,7 @@ package de.swt.util;
 
 import de.swt.database.AsyncMySQL;
 import de.swt.database.DBManager;
+import de.swt.logic.Course;
 import de.swt.logic.CourseManager;
 import de.swt.logic.User;
 import de.swt.logic.UserManager;
@@ -19,7 +20,7 @@ public class Client {
     public CourseManager courseManager;
     public UserManager userManager;
 
-    public void onStart() {
+    public void onStart() throws SQLException {
 
         instance = this;
         dbManager = new DBManager();
@@ -39,9 +40,12 @@ public class Client {
         return instance;
     }
 
-    public void loadAllInformation() {
+    public void loadAllInformation() throws SQLException {
         courseManager.cacheAllCourseData();
         userManager.cacheAllUserData();
+        for(int key : userManager.getUserHashMap().keySet()) {
+            userManager.getUserHashMap().get(key).setCourse(userManager.loadCourses(key));
+        }
     }
 
 }
