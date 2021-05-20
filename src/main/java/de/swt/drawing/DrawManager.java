@@ -26,10 +26,9 @@ public class DrawManager {
         drawing.setSize(new Dimension(500,500));
         drawing.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         drawing.setVisible(true);
-        WorkspaceGUI wgui = new WorkspaceGUI(new GUIManager(colors, Language.GERMAN, AccountType.TEACHER));
-        drawing.add(wgui);
 
-
+        //WorkspaceGUI wgui = new WorkspaceGUI(new GUIManager(colors, Language.GERMAN, AccountType.TEACHER));
+        //drawing.add(wgui);
 
     }
 

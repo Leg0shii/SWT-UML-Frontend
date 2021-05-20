@@ -84,7 +84,7 @@ public class DanielMainTest {
             add(new Course(2, 12, "a", dates, new User(0, "prename", "surname"), students));
         }};
 
-        GUIManager guiManager = new GUIManager(colors, language, accountType);
+        GUIManager guiManager = new GUIManager(client, colors, language, accountType);
         guiManager.setupGUIS();
         guiManager.updateGUIS(schools, userList, groups, userList, 0);
         guiManager.switchToWorkspaceGUI();

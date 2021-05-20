@@ -63,7 +63,21 @@ public class LoginGUI extends GUI {
 
     // TODO: Implemented by other Group
     private void login() {
-        guiManager.switchToClassRoomGUI();
+        int loginID;
+        try {
+            loginID = Integer.parseInt(getUsername());
+        } catch (NumberFormatException numberFormatException) {
+            // TODO : Errorlabel if no number entered
+            System.out.println("Please enter a real number as ID!");
+            return;
+        }
+        String password = getPassword();
+        if(guiManager.getClient().userManager.userLogin(loginID, password)) {
+            guiManager.switchToClassRoomGUI();
+        } else {
+            System.out.println("Login failed");
+            // TODO : Errorlabel if login fails
+        }
     }
 
 }

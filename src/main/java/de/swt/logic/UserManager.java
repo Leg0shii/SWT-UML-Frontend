@@ -6,6 +6,7 @@ import de.swt.util.Client;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -57,7 +58,7 @@ public class UserManager {
         }
     }
 
-    public int[] loadCourses(int userid) throws SQLException {
+    private int[] loadCourses(int userid) throws SQLException {
         int[] courses = new int[2];
         ResultSet resultSetUser = mySQL.query("SELECT mcourseid,scourseid FROM users WHERE userid = " + userid + ";");
         if(resultSetUser.next()) {
@@ -68,6 +69,22 @@ public class UserManager {
             return null;
         }
         return courses;
+    }
+
+    public boolean userLogin(int userid, String password) {
+        // add hash and salt later
+        try { return client.server.login(userid, password);
+        } catch (RemoteException ignored) { }
+        return false;
+    }
+
+    public void userLogout() {
+        userHashMap.get(client.userid).setOnline(false);
+    }
+
+    public boolean canJoinCourse(int courseid) {
+        return userHashMap.get(client.userid).getCourse()[0] == courseid
+            || userHashMap.get(client.userid).getCourse()[1] == courseid;
     }
 
 }
