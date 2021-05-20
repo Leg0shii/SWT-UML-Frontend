@@ -8,7 +8,7 @@ public class Main {
 
     // standard main dont use ty
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
 
         Client client = new Client();
         client.onStart();

@@ -20,7 +20,7 @@ public class Client {
     public CourseManager courseManager;
     public UserManager userManager;
 
-    public void onStart() throws SQLException {
+    public void onStart() {
 
         instance = this;
         dbManager = new DBManager();
@@ -40,12 +40,9 @@ public class Client {
         return instance;
     }
 
-    public void loadAllInformation() throws SQLException {
+    public void loadAllInformation() {
         courseManager.cacheAllCourseData();
         userManager.cacheAllUserData();
-        for(int key : userManager.getUserHashMap().keySet()) {
-            userManager.getUserHashMap().get(key).setCourse(userManager.loadCourses(key));
-        }
     }
 
 }
