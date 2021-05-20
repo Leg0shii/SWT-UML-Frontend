@@ -17,10 +17,9 @@ public class LoginGUI extends GUI {
     private JLabel schoolLabel;
     private JLabel usernameLabel;
     private JPanel subPanel;
-    public GUIManager guiManager;
 
     public LoginGUI(GUIManager guiManager) {
-        this.guiManager = guiManager;
+        super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         subPanel.setBorder(BorderFactory.createEtchedBorder());

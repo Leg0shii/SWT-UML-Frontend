@@ -2,6 +2,7 @@ package de.swt.gui.workspace;
 
 import de.swt.drawing.Stickmanbutton;
 import de.swt.gui.GUI;
+import de.swt.gui.GUIManager;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -28,11 +29,12 @@ public class SymbolListPanel extends GUI {
     public JPanel symbolPanel;
     private int[] clickCounter;
 
-    public SymbolListPanel(Color[] colors) {
+    public SymbolListPanel(GUIManager guiManager) {
+        super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
+        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         setupListeners();
         try {
             setupGUI();

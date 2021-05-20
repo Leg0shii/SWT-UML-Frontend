@@ -1,6 +1,7 @@
 package de.swt.gui.workspace;
 
 import de.swt.gui.GUI;
+import de.swt.gui.GUIManager;
 import de.swt.util.Language;
 
 import javax.swing.*;
@@ -13,16 +14,17 @@ public class SubmitTaskPanel extends GUI {
     public JButton noButton;
     private JLabel checkLabel;
 
-    public SubmitTaskPanel(Language language, Color[] colors) {
+    public SubmitTaskPanel(GUIManager guiManager) {
+        super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
 
-        switch (language) {
+        switch (guiManager.language) {
             case GERMAN -> setupGUI("Sicher?", "Ja", "Nein");
             case ENGLISH -> setupGUI("Sure?", "Yes", "No");
         }
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
+        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         setupListeners();
     }
 

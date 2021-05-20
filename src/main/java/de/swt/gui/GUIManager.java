@@ -16,12 +16,15 @@ import java.util.List;
 public class GUIManager extends JFrame {
     public Color[] colorScheme;
     public Language language;
+    public AccountType accountType;
 
     public LoginGUI loginGUI;
     public ClassroomGUI classroomGUI;
     public WorkspaceGUI workspaceGUI;
 
-    public GUIManager(Color[] colorScheme, Language language) {
+    private final List<GUI> childrenGUI;
+
+    public GUIManager(Color[] colorScheme, Language language, AccountType accountType) {
         super("E-Learning Software");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(800, 450);
@@ -30,33 +33,50 @@ public class GUIManager extends JFrame {
         this.colorScheme = colorScheme;
         this.setVisible(true);
         this.language = language;
+        this.accountType = accountType;
+        this.childrenGUI = new ArrayList<>();
     }
 
     public void setupGUIS() {
         this.loginGUI = new LoginGUI(this);
+        this.childrenGUI.add(loginGUI);
         this.classroomGUI = new ClassroomGUI(this);
+        this.childrenGUI.add(classroomGUI);
         this.workspaceGUI = new WorkspaceGUI(this);
+        this.childrenGUI.add(workspaceGUI);
     }
 
-    public void updateGUIS(String[] schools, ArrayList<User> students, AccountType accountType, List<Group> groups, List<User> users, int remainingTime) {
-        this.classroomGUI.updateGUI(students, accountType);
+    public void updateGUIS(String[] schools, ArrayList<User> students,  List<Group> groups, List<User> users, int remainingTime) {
+        this.classroomGUI.updateGUI(students);
         this.loginGUI.updateGUI(schools);
-        this.workspaceGUI.updateGUI(groups, users, accountType, remainingTime);
+        this.workspaceGUI.updateGUI(groups, users, remainingTime);
     }
 
     public void switchToLoginGUI() {
+        closeAllPopups();
         this.setContentPane(loginGUI);
         this.setVisible(true);
     }
 
     public void switchToClassRoomGUI() {
+        closeAllPopups();
         this.setContentPane(classroomGUI);
         this.setVisible(true);
     }
 
     public void switchToWorkspaceGUI() {
+        closeAllPopups();
         this.setContentPane(workspaceGUI);
         this.setVisible(true);
+    }
+
+    public void closeAllPopups(){
+        for (GUI childGUI : childrenGUI){
+            childGUI.closeAllPopups();
+        }
+    }
+
+    public void addToDrawPanel(JComponent component){
     }
 
     public void insertNewPanel() {

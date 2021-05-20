@@ -1,6 +1,7 @@
 package de.swt.gui.workspace;
 
 import de.swt.gui.GUI;
+import de.swt.gui.GUIManager;
 import de.swt.util.Language;
 
 import javax.swing.*;
@@ -20,16 +21,17 @@ public class CreateGroupPanel extends GUI {
     private JLabel durationLabel;
     private JLabel unitLabel;
 
-    public CreateGroupPanel(Language language, Color[] colors) {
+    public CreateGroupPanel(GUIManager guiManager) {
+        super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
 
-        switch (language) {
+        switch (guiManager.language) {
             case GERMAN -> setupGUI("Gruppen erstellen", "Anzahl", "Gruppengröße", "Öffnungsdauer", "in Minuten", "Erstellen", "Abbrechen");
             case ENGLISH -> setupGUI("Create Groups", "Count", "Size", "Duration", "in minutes", "Create", "Cancel");
         }
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
+        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         setupListeners();
     }
 

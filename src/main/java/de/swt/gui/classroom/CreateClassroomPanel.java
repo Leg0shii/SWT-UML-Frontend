@@ -1,6 +1,7 @@
 package de.swt.gui.classroom;
 
 import de.swt.gui.GUI;
+import de.swt.gui.GUIManager;
 import de.swt.util.Language;
 
 import javax.swing.*;
@@ -23,15 +24,16 @@ public class CreateClassroomPanel extends GUI {
     private JLabel dateLabel;
     private JLabel studentLabel;
 
-    public CreateClassroomPanel(Color[] colors, Language language) {
+    public CreateClassroomPanel(GUIManager guiManager) {
+        super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         this.setBorder(BorderFactory.createEtchedBorder());
-        switch (language) {
+        switch (guiManager.language) {
             case GERMAN -> this.setupGUI("Klassenstufe", "Klassenname", "Lehrer", "Termin", "Schüler", "Hinzufügen", "Fertig", "Abbrechen");
             case ENGLISH -> this.setupGUI("Grade", "Grade name", "Teacher", "Date", "Student", "Add", "Done", "Cancel");
         }
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 0);
+        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 0);
     }
 
     private void setupGUI(String grade, String gradeName, String teacher, String date, String student, String add, String done, String cancel) {

@@ -27,21 +27,19 @@ public class WorkspaceGUI extends GUI {
     private ObjectListPanel objectListPanel;
     private DrawablePanel drawablePanel;
     private Group selectedGroup;
-    private AccountType accountType;
-    private int[] popupCounter;
-    private Popup[] popups;
     private SymbolListPanel symbolListPanel;
 
     public WorkspaceGUI(GUIManager guiManager) {
+        super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         this.objectListPanelPanel.setLayout(new BoxLayout(objectListPanelPanel, BoxLayout.X_AXIS));
         this.menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.X_AXIS));
         this.midPanel.setLayout(new BoxLayout(midPanel, BoxLayout.X_AXIS));
         this.rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.X_AXIS));
-        this.objectListPanel = new ObjectListPanel(guiManager.language, guiManager.colorScheme);
-        this.drawablePanel = new DrawablePanel(guiManager.language, guiManager.colorScheme);
-        this.symbolListPanel = new SymbolListPanel(guiManager.colorScheme);
+        this.objectListPanel = new ObjectListPanel(guiManager);
+        this.drawablePanel = new DrawablePanel(guiManager);
+        this.symbolListPanel = new SymbolListPanel(guiManager);
 
         switch (guiManager.language) {
             case GERMAN -> setupGUI("Schreibansicht", "Annotierungsansicht", "Abmelden", "Lösung einreichen");
@@ -52,8 +50,8 @@ public class WorkspaceGUI extends GUI {
         setupListeners();
 
         this.guiManager = guiManager;
-        this.popupCounter = new int[1];
-        this.popups = new Popup[1];
+
+        initPopups(3);
     }
 
     private void setupGUI(String write, String annotate, String logout, String sendTask) {
@@ -63,14 +61,12 @@ public class WorkspaceGUI extends GUI {
         this.objectListPanelPanel.add(objectListPanel);
         this.midPanel.add(drawablePanel);
         this.sendTaskButton.setText(sendTask);
-        this.symbolListPanel.symbolPanel.add(new Stickmanbutton(0,0,drawablePanel));
         this.rightPanel.add(symbolListPanel);
     }
 
-    public void updateGUI(List<Group> groups, List<User> users, AccountType accountType, int remainingTime) {
-        this.accountType = accountType;
-        this.objectListPanel.updateGUI(groups, users, accountType);
-        this.drawablePanel.updateGUI(remainingTime, accountType);
+    public void updateGUI(List<Group> groups, List<User> users, int remainingTime) {
+        this.objectListPanel.updateGUI(groups, users);
+        this.drawablePanel.updateGUI(remainingTime);
         this.initForAccountType();
     }
 
@@ -87,34 +83,34 @@ public class WorkspaceGUI extends GUI {
             }
         });
         this.sendTaskButton.addActionListener(e3 -> {
-            PopupFactory popupFactory = new PopupFactory();
-            if (popupCounter[0] % 2 == 0) {
-                SubmitTaskPanel submitTaskPanel = new SubmitTaskPanel(guiManager.language, guiManager.colorScheme);
+            if (popupCounter.get(0) % 2 == 0) {
+                SubmitTaskPanel submitTaskPanel = new SubmitTaskPanel(guiManager);
                 submitTaskPanel.yesButton.addActionListener(e21 -> {
                     submitTaskPanel.yesFunction();
-                    popups[0].hide();
-                    popupCounter[0]++;
+                    popups.get(0).hide();
+                    initPopups(0);
                 });
                 submitTaskPanel.noButton.addActionListener(e22 -> {
-                    popups[0].hide();
-                    popupCounter[0]++;
+                    popups.get(0).hide();
+                    initPopups(0);
                 });
                 Point point = new Point(sendTaskButton.getX() + sendTaskButton.getWidth(), sendTaskButton.getY());
                 SwingUtilities.convertPointToScreen(point, this.leftPanel);
-                popups[0] = popupFactory.getPopup(this.leftPanel, submitTaskPanel, point.x, point.y);
-                popups[0].show();
+                popups.get(0).hide();
+                popups.set(0, factory.getPopup(this.leftPanel, submitTaskPanel, point.x, point.y));
+                popups.get(0).show();
             } else {
-                popups[0].hide();
+                popups.get(0).hide();
             }
-            popupCounter[0]++;
+            incrementPopupCounter(0);
         });
     }
 
     private void initForAccountType() {
-        if (accountType != AccountType.STUDENT) {
+        if (guiManager.accountType != AccountType.STUDENT) {
             this.leftPanel.remove(sendTaskButton);
         }
-        if (accountType == AccountType.STUDENT) {
+        if (guiManager.accountType == AccountType.STUDENT) {
             this.leftPanel.remove(annotationRadioButton);
             this.leftPanel.remove(writeRadioButton);
         }
@@ -133,36 +129,34 @@ public class WorkspaceGUI extends GUI {
     }
 
     public void sendRequest(User user) {
-        RequestPanel requestPanel = new RequestPanel(guiManager.language, guiManager.colorScheme);
+        RequestPanel requestPanel = new RequestPanel(guiManager);
         requestPanel.updateGUI(user);
-        PopupFactory popupFactory = new PopupFactory();
-        Popup[] popups = new Popup[1];
         Point point = new Point(rightPanel.getX() - rightPanel.getWidth(), rightPanel.getY() + rightPanel.getHeight() -100);
         SwingUtilities.convertPointToScreen(point, this.midPanel);
-        popups[0] = popupFactory.getPopup(this, requestPanel, point.x, point.y);
-        popups[0].show();
+        popups.get(1).hide();
+        popups.set(1, factory.getPopup(this, requestPanel, point.x, point.y));
+        popups.get(1).show();
         requestPanel.denyButton.addActionListener(e1 -> {
             requestPanel.denyFunction();
-            popups[0].hide();
+            popups.get(1).hide();
         });
         requestPanel.acceptButton.addActionListener(e2 -> {
             requestPanel.acceptFunction();
-            popups[0].hide();
+            popups.get(1).hide();
         });
     }
 
     public void sendTaskProposition(List<Group> groups) {
-        SelectGroupPanel selectGroupPanel = new SelectGroupPanel(guiManager.language, guiManager.colorScheme);
+        SelectGroupPanel selectGroupPanel = new SelectGroupPanel(guiManager);
         selectGroupPanel.updateGUI(groups);
-        PopupFactory popupFactory = new PopupFactory();
-        Popup[] popups = new Popup[1];
         Point point = new Point(midPanel.getX() + midPanel.getWidth() / 2, midPanel.getY() + midPanel.getHeight() / 4);
         SwingUtilities.convertPointToScreen(point, this);
-        popups[0] = popupFactory.getPopup(this, selectGroupPanel, point.x, point.y);
-        popups[0].show();
+        popups.get(2).hide();
+        popups.set(2, factory.getPopup(this, selectGroupPanel, point.x, point.y));
+        popups.get(2).show();
         selectGroupPanel.startTaskButton.addActionListener(e -> {
             this.selectedGroup = selectGroupPanel.getSelectedGroup();
-            popups[0].hide();
+            popups.get(2).hide();
         });
     }
 

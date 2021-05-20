@@ -1,6 +1,7 @@
 package de.swt.gui.workspace;
 
 import de.swt.gui.GUI;
+import de.swt.gui.GUIManager;
 import de.swt.util.Language;
 
 import javax.swing.*;
@@ -14,16 +15,17 @@ public class AddUserPanel extends GUI {
     private JLabel headerLabel;
     private JLabel studentLabel;
 
-    public AddUserPanel(Language language, Color[] colors) {
+    public AddUserPanel(GUIManager guiManager) {
+        super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
 
-        switch (language) {
+        switch (guiManager.language) {
             case GERMAN -> setupGUI("Schüler hinzufügen", "Schüler-ID", "Hinzufügen");
             case ENGLISH -> setupGUI("Add student", "Student ID", "Add");
         }
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
+        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         setupListeners();
     }
 

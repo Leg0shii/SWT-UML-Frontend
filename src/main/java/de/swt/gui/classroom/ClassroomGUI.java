@@ -26,17 +26,14 @@ public class ClassroomGUI extends GUI {
     private JScrollPane scrollPanel10;
     private JScrollPane scrollPanel11;
     private JScrollPane scrollPanel12;
-    public Popup[] popups;
-    private int[] popupCounter;
-    public GUIManager guiManager;
     private final List<GradePanel> gradePanels;
     private final CreateClassroomPanel createClassroomPanel;
 
     public ClassroomGUI(GUIManager guiManager) {
-        this.guiManager = guiManager;
+        super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
-        switch (guiManager.language){
+        switch (guiManager.language) {
             case GERMAN -> setupGUI("Klasse 11", "Klasse 10", "Klasse 12", "Abmelden", "Klassenraum erstellen", "Privater Arbeitsplatz");
             case ENGLISH -> setupGUI("Grade 11", "Grade 10", "Grade 12", "Logout", "Create Classroom", "Private Workspace");
         }
@@ -53,7 +50,7 @@ public class ClassroomGUI extends GUI {
 
         this.gradePanels = new ArrayList<>();
 
-        this.createClassroomPanel = new CreateClassroomPanel(guiManager.colorScheme, guiManager.language);
+        this.createClassroomPanel = new CreateClassroomPanel(guiManager);
     }
 
     private void setupGUI(String grade11, String grade10, String grade12, String logout, String createCR, String privateWS) {
@@ -64,30 +61,29 @@ public class ClassroomGUI extends GUI {
         this.supportButton.setText("Support");
         this.createClassroomButton.setText(createCR);
         this.privateWorkspaceButton.setText(privateWS);
+        initPopups(2);
     }
 
-    public void updateGUI(ArrayList<User> students, AccountType accountType) {
+    public void updateGUI(ArrayList<User> students) {
         removeAllGradePanels();
         for (GradePanel gradePanel : gradePanels) {
             gradePanel.getEditClassroomPanel().updateGUI(students);
-            switch (gradePanel.grade){
+            switch (gradePanel.grade) {
                 case 10 -> gradePanel10.add(gradePanel);
                 case 11 -> gradePanel11.add(gradePanel);
                 case 12 -> gradePanel12.add(gradePanel);
             }
         }
-        this.initForAccountType(accountType);
+        this.initForAccountType();
         this.revalidate();
     }
 
     private void setupActionListeners() {
         PopupFactory popupFactory = new PopupFactory();
-        this.popupCounter = new int[2];
-        this.popups = new Popup[2];
         this.supportButton.addActionListener(e -> {
-            popupCounter[0]++;
-            if (popupCounter[0] % 2 == 0) {
-                popups[0].hide();
+            incrementPopupCounter(0);
+            if (popupCounter.get(0) % 2 == 0) {
+                popups.get(0).hide();
             } else {
                 JPanel supportPanel = new JPanel();
                 supportPanel.setBorder(BorderFactory.createEtchedBorder());
@@ -95,47 +91,46 @@ public class ClassroomGUI extends GUI {
                 supportPanel.add(supportNumber);
                 Point point = new Point(this.supportButton.getX(), this.supportButton.getY() - 30);
                 SwingUtilities.convertPointToScreen(point, this);
-                popups[0] = popupFactory.getPopup(this, supportPanel, point.x, point.y);
-                popups[0].show();
+                popups.set(0, popupFactory.getPopup(this, supportPanel, point.x, point.y));
+                popups.get(0).show();
             }
         });
         this.createClassroomButton.addActionListener(e1 -> {
-            popupCounter[1]++;
-            if (popupCounter[1] % 2 == 0) {
-                popups[1].hide();
+            incrementPopupCounter(1);
+            if (popupCounter.get(1) % 2 == 0) {
+                popups.get(1).hide();
             } else {
                 createClassroomPanel.cancelButton.addActionListener(e11 -> {
-                    popupCounter[1]++;
-                    popups[1].hide();
+                    incrementPopupCounter(1);
+                    popups.get(1).hide();
                 });
                 createClassroomPanel.doneButton.addActionListener(e12 -> {
-                    popupCounter[1]++;
+                    incrementPopupCounter(1);
                     createClassroomPanel.doneFunction();
-                    popups[1].hide();
+                    popups.get(1).hide();
                 });
                 createClassroomPanel.addButton.addActionListener(e13 -> createClassroomPanel.addFunction());
                 Point point = new Point(this.createClassroomButton.getX(), this.createClassroomButton.getY() - 200);
                 SwingUtilities.convertPointToScreen(point, this);
-                popups[1] = popupFactory.getPopup(this, createClassroomPanel, point.x, point.y);
-                popups[1].show();
+                popups.set(1, popupFactory.getPopup(this, createClassroomPanel, point.x, point.y));
+                popups.get(1).show();
             }
         });
         this.logoutButton.addActionListener(e2 -> logout());
         this.privateWorkspaceButton.addActionListener(e3 -> privateWorkspaceFunction());
     }
 
-    private void logout(){
-        closeAllPopups();
+    private void logout() {
         guiManager.switchToLoginGUI();
     }
 
-    public void addGradePanel(GradePanel gradePanel){
+    public void addGradePanel(GradePanel gradePanel) {
         this.gradePanels.add(gradePanel);
     }
 
-    public GradePanel getGradePanel(int id){
-        for (GradePanel gradePanel : gradePanels){
-            if (gradePanel.getCourse().getId() == id){
+    public GradePanel getGradePanel(int id) {
+        for (GradePanel gradePanel : gradePanels) {
+            if (gradePanel.getCourse().getId() == id) {
                 return gradePanel;
             }
         }
@@ -160,45 +155,21 @@ public class ClassroomGUI extends GUI {
         }
     }
 
-    private void closeAllPopups(){
-        for (Popup popup : popups){
-            if (popup != null) {
-                popup.hide();
-            }
-        }
-        for (Component component : gradePanel10.getComponents()){
-            if (component instanceof GradePanel) {
-                ((GradePanel) component).closePopups();
-            }
-        }
-        for (Component component : gradePanel11.getComponents()){
-            if (component instanceof GradePanel) {
-                ((GradePanel) component).closePopups();
-            }
-        }
-        for (Component component : gradePanel12.getComponents()){
-            if (component instanceof GradePanel) {
-                ((GradePanel) component).closePopups();
-            }
-        }
-        Arrays.fill(popupCounter, 0);
-    }
-
-    public void initForAccountType(AccountType accountType){
-        if (accountType == AccountType.STUDENT) {
+    public void initForAccountType() {
+        if (guiManager.accountType == AccountType.STUDENT) {
             this.mainPanel.remove(createClassroomButton);
             removeEditButtonsFromGradePanels();
         }
     }
 
-    private void removeEditButtonsFromGradePanels(){
-        for (Component component : gradePanel10.getComponents()){
+    private void removeEditButtonsFromGradePanels() {
+        for (Component component : gradePanel10.getComponents()) {
             ((GradePanel) component).getMainPanel().remove(((GradePanel) component).editButton);
         }
-        for (Component component : gradePanel11.getComponents()){
+        for (Component component : gradePanel11.getComponents()) {
             ((GradePanel) component).getMainPanel().remove(((GradePanel) component).editButton);
         }
-        for (Component component : gradePanel12.getComponents()){
+        for (Component component : gradePanel12.getComponents()) {
             ((GradePanel) component).getMainPanel().remove(((GradePanel) component).editButton);
         }
     }
@@ -220,7 +191,7 @@ public class ClassroomGUI extends GUI {
     }
 
     // TODO: Implemented by other Group
-    private void privateWorkspaceFunction(){
+    private void privateWorkspaceFunction() {
         guiManager.switchToWorkspaceGUI();
     }
 }

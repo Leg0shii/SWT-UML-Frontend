@@ -23,10 +23,10 @@ public class DanielMainTest {
         client.onStart();
         ArrayList<User> userList = new ArrayList<>();
         ArrayList<Course> courseList = new ArrayList<>();
-        for(int key : client.userManager.getUserHashMap().keySet()) {
+        for (int key : client.userManager.getUserHashMap().keySet()) {
             userList.add(client.userManager.getUserHashMap().get(key));
         }
-        for(int key : client.courseManager.getCourseHashMap().keySet()) {
+        for (int key : client.courseManager.getCourseHashMap().keySet()) {
             courseList.add(client.courseManager.getCourseHashMap().get(key));
         }
 
@@ -84,9 +84,9 @@ public class DanielMainTest {
             add(new Course(2, 12, "a", dates, new User(0, "prename", "surname"), students));
         }};
 
-        GUIManager guiManager = new GUIManager(colors, language);
+        GUIManager guiManager = new GUIManager(colors, language, accountType);
         guiManager.setupGUIS();
-        guiManager.updateGUIS(schools, userList, accountType, groups, userList, 0);
+        guiManager.updateGUIS(schools, userList, groups, userList, 0);
         guiManager.switchToWorkspaceGUI();
 
         JFrame frame = new JFrame("Tests");
@@ -94,18 +94,18 @@ public class DanielMainTest {
 
         final int[] counter = {0};
 
-        for(Course course : courseList) {
-            GradePanel gradePanel = new GradePanel(colors, language, accountType);
+        for (Course course : courseList) {
+            GradePanel gradePanel = new GradePanel(guiManager);
             gradePanel.updateGUI(course);
             guiManager.classroomGUI.addGradePanel(gradePanel);
-            guiManager.updateGUIS(schools, userList, accountType, groups, userList, 1);
+            guiManager.updateGUIS(schools, userList, groups, userList, 1);
         }
 
         button.addActionListener(e -> {
-            GradePanel gradePanel = new GradePanel(colors, language, accountType);
+            GradePanel gradePanel = new GradePanel(guiManager);
             gradePanel.updateGUI(courseList.get(counter[0] % courseList.size()));
             guiManager.classroomGUI.addGradePanel(gradePanel);
-            guiManager.updateGUIS(schools, userList, accountType, groups, userList, 1);
+            guiManager.updateGUIS(schools, userList, groups, userList, 1);
             counter[0]++;
         });
         JButton button2 = new JButton("To 11 Grade!");
@@ -114,7 +114,7 @@ public class DanielMainTest {
             Course course = gradePanel.getCourse();
             course.setGrade(11);
             gradePanel.updateGUI(course);
-            guiManager.updateGUIS(schools, userList, accountType, groups, userList, 0);
+            guiManager.updateGUIS(schools, userList, groups, userList, 0);
         });
         JButton button3 = new JButton("Send Request to Join!");
         button3.addActionListener(e -> {

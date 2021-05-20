@@ -1,6 +1,7 @@
 package de.swt.gui.classroom;
 
 import de.swt.gui.GUI;
+import de.swt.gui.GUIManager;
 import de.swt.util.AccountType;
 import de.swt.logic.Course;
 import de.swt.util.Language;
@@ -20,23 +21,23 @@ public class GradePanel extends GUI {
     private JLabel nextDateLabel;
     private JLabel thisTeacherLabel;
     private JLabel gradeHeaderLabel;
-    private Popup[] popups;
     public int grade;
     private final EditClassroomPanel editClassroomPanel;
     private final AdminEditClassroomPanel adminEditClassroomPanel;
 
-    public GradePanel(Color[] colors, Language language, AccountType accountType) {
+    public GradePanel(GUIManager guiManager) {
+        super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
-        switch (language) {
+        switch (guiManager.language) {
             case GERMAN -> setupGUI("Beitreten", "Bearbeiten", "Lehrer", "Termin", "Klasse");
             case ENGLISH -> setupGUI("Enter", "Edit", "Teacher", "Date", "Grade");
         }
-        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
-        setupActionListeners(accountType);
+        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
+        setupActionListeners(guiManager.accountType);
 
-        this.editClassroomPanel = new EditClassroomPanel(colors, language);
-        this.adminEditClassroomPanel = new AdminEditClassroomPanel(colors, language);
+        this.editClassroomPanel = new EditClassroomPanel(guiManager);
+        this.adminEditClassroomPanel = new AdminEditClassroomPanel(guiManager);
     }
 
     private void setupGUI(String enter, String edit, String teacher, String date, String grade) {
@@ -45,6 +46,7 @@ public class GradePanel extends GUI {
         this.teacherLabel.setText(teacher);
         this.dateLabel.setText(date);
         this.gradeHeaderLabel.setText(grade + " ");
+        initPopups(1);
     }
 
     public void updateGUI(Course course) {
@@ -56,45 +58,35 @@ public class GradePanel extends GUI {
     }
 
     public void setupActionListeners(AccountType accountType) {
-        PopupFactory popupFactory = new PopupFactory();
-        popups = new Popup[1];
         switch (accountType) {
             case ADMIN -> {
                 this.editButton.addActionListener(e1 -> {
-                    Point point = new Point(this.editButton.getX()-5, 0);
+                    Point point = new Point(this.editButton.getX() - 5, 0);
                     SwingUtilities.convertPointToScreen(point, this);
-                    adminEditClassroomPanel.setPreferredSize(new Dimension(this.getWidth(),this.getHeight()));
-                    adminEditClassroomPanel.cancelButton.addActionListener(e11 -> popups[0].hide());
+                    adminEditClassroomPanel.setPreferredSize(new Dimension(this.getWidth(), this.getHeight()));
+                    adminEditClassroomPanel.cancelButton.addActionListener(e11 -> popups.get(0).hide());
                     adminEditClassroomPanel.deleteButton.addActionListener(e12 -> adminEditClassroomPanel.deleteFunction());
                     adminEditClassroomPanel.migrateButton.addActionListener(e13 -> adminEditClassroomPanel.migrateFunction());
                     adminEditClassroomPanel.resetButton.addActionListener(e14 -> adminEditClassroomPanel.resetFunction());
-                    popups[0] = popupFactory.getPopup(this, adminEditClassroomPanel, point.x, point.y);
-                    popups[0].show();
+                    popups.set(0, factory.getPopup(this, adminEditClassroomPanel, point.x, point.y));
+                    popups.get(0).show();
                 });
                 this.enterButton.addActionListener(e2 -> this.enterFunction());
             }
             case TEACHER -> {
                 this.editButton.addActionListener(e1 -> {
-                    Point point = new Point(this.editButton.getX()-5, 0);
+                    Point point = new Point(this.editButton.getX() - 5, 0);
                     SwingUtilities.convertPointToScreen(point, this);
-                    editClassroomPanel.setPreferredSize(new Dimension(this.getWidth(),this.getHeight()));
-                    editClassroomPanel.cancelButton.addActionListener(e11 -> popups[0].hide());
+                    editClassroomPanel.setPreferredSize(new Dimension(this.getWidth(), this.getHeight()));
+                    editClassroomPanel.cancelButton.addActionListener(e11 -> popups.get(0).hide());
                     editClassroomPanel.doneButton.addActionListener(e12 -> {
                         editClassroomPanel.doneFunction();
-                        popups[0].hide();
+                        popups.get(0).hide();
                     });
-                    popups[0] = popupFactory.getPopup(this, editClassroomPanel, point.x, point.y);
-                    popups[0].show();
+                    popups.set(0, factory.getPopup(this, editClassroomPanel, point.x, point.y));
+                    popups.get(0).show();
                 });
                 this.enterButton.addActionListener(e2 -> this.enterFunction());
-            }
-        }
-    }
-
-    public void closePopups() {
-        for (Popup popup : popups) {
-            if (popup != null) {
-                popup.hide();
             }
         }
     }

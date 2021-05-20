@@ -1,6 +1,7 @@
 package de.swt.gui.classroom;
 
 import de.swt.gui.GUI;
+import de.swt.gui.GUIManager;
 import de.swt.util.Language;
 import de.swt.logic.User;
 
@@ -17,15 +18,16 @@ public class EditClassroomPanel extends GUI {
     private JLabel studentComboBoxLabel;
     private JLabel studentTextFieldLabel;
 
-    public EditClassroomPanel(Color[] colors, Language language){
+    public EditClassroomPanel(GUIManager guiManager){
+        super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         this.setBorder(BorderFactory.createEtchedBorder());
-        switch (language) {
+        switch (guiManager.language) {
             case GERMAN -> this.setupGUI("<html>Schüler <br> hinzufügen</html>", "<html>Schüler <br> entfernen</html>", "Übernehmen", "Abbrechen");
             case ENGLISH -> this.setupGUI("Add student", "Remove student", "Commit", "Cancel");
         }
-        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
+        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
     }
 
     private void setupGUI(String student, String students, String done, String cancel){

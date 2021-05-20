@@ -1,10 +1,9 @@
 package de.swt.gui.classroom;
 
 import de.swt.gui.GUI;
-import de.swt.util.Language;
+import de.swt.gui.GUIManager;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 
 public class AdminEditClassroomPanel extends GUI {
@@ -16,15 +15,16 @@ public class AdminEditClassroomPanel extends GUI {
     public JButton cancelButton;
     private JLabel gradeLabel;
 
-    public AdminEditClassroomPanel(Color[] colors, Language language){
+    public AdminEditClassroomPanel(GUIManager guiManager){
+        super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         this.setBorder(BorderFactory.createEtchedBorder());
-        switch (language){
+        switch (guiManager.language){
             case GERMAN -> setupGUI("neue Klassenstufe", "Zurücksetzen", "Migrieren", "Löschen", "Abbrechen");
             case ENGLISH -> setupGUI("New grade", "Reset", "Migrate", "Delete", "Cancel");
         }
-        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
+        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
     }
 
     private void setupGUI(String grade, String reset, String migrate, String delete, String cancel){

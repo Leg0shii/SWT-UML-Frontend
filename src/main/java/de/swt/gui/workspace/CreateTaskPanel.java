@@ -1,6 +1,7 @@
 package de.swt.gui.workspace;
 
 import de.swt.gui.GUI;
+import de.swt.gui.GUIManager;
 import de.swt.util.Language;
 
 import javax.swing.*;
@@ -22,18 +23,19 @@ public class CreateTaskPanel extends GUI {
     public JScrollPane taskScrollPanel;
     private File selectedFile;
 
-    public CreateTaskPanel(Language language, Color[] colors) {
+    public CreateTaskPanel(GUIManager guiManager) {
+        super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         this.filePanel.setLayout(new BoxLayout(filePanel,BoxLayout.X_AXIS));
         this.taskScrollPanel.setViewportView(taskTextArea);
 
-        switch (language) {
+        switch (guiManager.language) {
             case GERMAN -> setupGUI("Aufgabenstellung", "Bild", "Erstellen", "Abbrechen");
             case ENGLISH -> setupGUI("Task", "Picture", "Create", "Cancel");
         }
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), colors, 1);
+        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         setupListeners();
 
         this.selectedFile = null;
