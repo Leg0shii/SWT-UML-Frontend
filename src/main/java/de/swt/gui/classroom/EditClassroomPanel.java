@@ -2,11 +2,9 @@ package de.swt.gui.classroom;
 
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
-import de.swt.util.Language;
 import de.swt.logic.User;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 
 public class EditClassroomPanel extends GUI {
@@ -22,12 +20,10 @@ public class EditClassroomPanel extends GUI {
         super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
-        this.setBorder(BorderFactory.createEtchedBorder());
         switch (guiManager.language) {
             case GERMAN -> this.setupGUI("<html>Schüler <br> hinzufügen</html>", "<html>Schüler <br> entfernen</html>", "Übernehmen", "Abbrechen");
             case ENGLISH -> this.setupGUI("Add student", "Remove student", "Commit", "Cancel");
         }
-        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
     }
 
     private void setupGUI(String student, String students, String done, String cancel){

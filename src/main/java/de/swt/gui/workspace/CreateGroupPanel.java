@@ -2,10 +2,8 @@ package de.swt.gui.workspace;
 
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
-import de.swt.util.Language;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 
 public class CreateGroupPanel extends GUI {
@@ -31,7 +29,6 @@ public class CreateGroupPanel extends GUI {
             case ENGLISH -> setupGUI("Create Groups", "Count", "Size", "Duration", "in minutes", "Create", "Cancel");
         }
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         setupListeners();
     }
 

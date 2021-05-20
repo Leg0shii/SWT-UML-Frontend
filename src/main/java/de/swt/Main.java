@@ -2,8 +2,6 @@ package de.swt;
 
 import de.swt.util.Client;
 
-import java.sql.SQLException;
-
 public class Main {
 
     // standard main dont use ty

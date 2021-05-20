@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GUIManager extends JFrame {
-    public Color[] colorScheme;
     public Language language;
     public AccountType accountType;
 
@@ -24,13 +23,12 @@ public class GUIManager extends JFrame {
 
     private final List<GUI> childrenGUI;
 
-    public GUIManager(Color[] colorScheme, Language language, AccountType accountType) {
+    public GUIManager(Language language, AccountType accountType) {
         super("E-Learning Software");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(800, 450);
         this.setLocationRelativeTo(null);
         this.setResizable(true);
-        this.colorScheme = colorScheme;
         this.setVisible(true);
         this.language = language;
         this.accountType = accountType;
@@ -82,10 +80,6 @@ public class GUIManager extends JFrame {
 
     public void insertNewPanel() {
 
-    }
-
-    public Color[] getColorScheme() {
-        return colorScheme;
     }
 
     public Language getLanguage() {

@@ -1,6 +1,5 @@
 package de.swt.gui.workspace;
 
-import de.swt.drawing.Stickmanbutton;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.logic.Group;
@@ -23,7 +22,6 @@ public class WorkspaceGUI extends GUI {
     private JPanel midPanel;
     private JPanel rightPanel;
     private JButton sendTaskButton;
-    private GUIManager guiManager;
     private ObjectListPanel objectListPanel;
     private DrawablePanel drawablePanel;
     private Group selectedGroup;
@@ -46,7 +44,6 @@ public class WorkspaceGUI extends GUI {
             case ENGLISH -> setupGUI("Writing View", "Annotation View", "Logout", "Send Solution");
         }
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 0);
         setupListeners();
 
         this.guiManager = guiManager;
@@ -88,11 +85,11 @@ public class WorkspaceGUI extends GUI {
                 submitTaskPanel.yesButton.addActionListener(e21 -> {
                     submitTaskPanel.yesFunction();
                     popups.get(0).hide();
-                    initPopups(0);
+                    incrementPopupCounter(0);
                 });
                 submitTaskPanel.noButton.addActionListener(e22 -> {
                     popups.get(0).hide();
-                    initPopups(0);
+                    incrementPopupCounter(0);
                 });
                 Point point = new Point(sendTaskButton.getX() + sendTaskButton.getWidth(), sendTaskButton.getY());
                 SwingUtilities.convertPointToScreen(point, this.leftPanel);

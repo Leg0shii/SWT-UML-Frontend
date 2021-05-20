@@ -24,7 +24,6 @@ public class AdminEditClassroomPanel extends GUI {
             case GERMAN -> setupGUI("neue Klassenstufe", "Zurücksetzen", "Migrieren", "Löschen", "Abbrechen");
             case ENGLISH -> setupGUI("New grade", "Reset", "Migrate", "Delete", "Cancel");
         }
-        this.colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
     }
 
     private void setupGUI(String grade, String reset, String migrate, String delete, String cancel){

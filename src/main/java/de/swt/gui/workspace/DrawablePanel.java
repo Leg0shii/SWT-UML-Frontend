@@ -5,7 +5,6 @@ import de.swt.drawing.DrawableUseCase;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.util.AccountType;
-import de.swt.util.Language;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,12 +29,11 @@ public class DrawablePanel extends GUI {
             case ENGLISH -> setupGUI("Create Task", "Remaining Time:  Minutes", "Show Task");
         }
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         setupListeners();
 
         this.drawPanel.setBackground(Color.WHITE);
         for (int i = 1; i < 4; i++) {
-            DrawableUseCase useCase = new DrawableUseCase(10, 10, i, "Pussy");
+            DrawableUseCase useCase = new DrawableUseCase(10, 10, i, "Test");
             this.drawPanel.add(useCase);
         }
         Drawable dbstickman = new Drawable(20, 20, Color.black);

@@ -2,11 +2,9 @@ package de.swt.gui.workspace;
 
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
-import de.swt.util.Language;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -35,7 +33,6 @@ public class CreateTaskPanel extends GUI {
             case ENGLISH -> setupGUI("Task", "Picture", "Create", "Cancel");
         }
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         setupListeners();
 
         this.selectedFile = null;

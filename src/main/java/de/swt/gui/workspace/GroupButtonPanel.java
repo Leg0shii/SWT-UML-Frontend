@@ -2,10 +2,8 @@ package de.swt.gui.workspace;
 
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
-import de.swt.util.Language;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 
 public class GroupButtonPanel extends GUI {
@@ -23,7 +21,6 @@ public class GroupButtonPanel extends GUI {
             case ENGLISH -> setupGUI("Terminate", "Watch");
         }
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         setupListeners();
     }
 

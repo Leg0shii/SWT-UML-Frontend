@@ -5,15 +5,10 @@ import de.swt.gui.GUIManager;
 import de.swt.logic.Group;
 import de.swt.logic.User;
 import de.swt.util.AccountType;
-import de.swt.util.Language;
-import org.w3c.dom.ls.LSOutput;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +39,6 @@ public class ObjectListPanel extends GUI {
             case ENGLISH -> setupGUI("Participants", "Groups", "Group", "Add Student");
         }
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         setupListeners();
     }
 
@@ -71,15 +65,14 @@ public class ObjectListPanel extends GUI {
             this.objectList.add(this.addStudentButton);
         }
         initForAccountType();
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         this.revalidate();
     }
 
     private void setupListeners() {
         this.switchButton.addActionListener(e1 -> {
                     if (!groupsList.isEmpty()) {
-                        this.showGroups = !this.showGroups;
                         closeAllPopups();
+                        this.showGroups = !this.showGroups;
                         this.updateGUI(this.groupsList, this.users);
                     } else {
                         if (popupCounter.get(1) % 2 == 0) {
@@ -123,10 +116,8 @@ public class ObjectListPanel extends GUI {
 
     private void setupObjectButtons(List<Group> groups, List<User> users) {
         this.objectList.removeAll();
-        System.out.println(popupCounter);
         popups.subList(2, popups.size()).clear();
         popupCounter.subList(2, popupCounter.size()).clear();
-        System.out.println(popupCounter);
         int counter = 2;
         if (showGroups) {
             for (Group group : groups) {
@@ -193,7 +184,6 @@ public class ObjectListPanel extends GUI {
                 revalidate();
             });
         }
-
     }
 
     // TODO: Implemented by other Group

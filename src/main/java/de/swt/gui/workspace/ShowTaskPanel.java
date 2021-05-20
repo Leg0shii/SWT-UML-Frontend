@@ -2,10 +2,8 @@ package de.swt.gui.workspace;
 
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
-import de.swt.util.Language;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 
 public class ShowTaskPanel extends GUI {
@@ -17,7 +15,6 @@ public class ShowTaskPanel extends GUI {
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         setupListeners();
     }
 

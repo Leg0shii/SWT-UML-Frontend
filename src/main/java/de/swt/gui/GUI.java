@@ -17,7 +17,7 @@ public class GUI extends JPanel {
         this.popups = new ArrayList<>();
         this.popupCounter = new ArrayList<>();
         this.childrenGUI = new ArrayList<>();
-        this.factory = new PopupFactory();
+        this.factory = PopupFactory.getSharedInstance();
     }
 
     public void incrementPopupCounter(int index) {
@@ -28,47 +28,9 @@ public class GUI extends JPanel {
 
     public void initPopups(int n) {
         for (int i = 0; i < n; i++) {
-            this.popupCounter.add(0);
-            this.popups.add(factory.getPopup(this, new JLabel(), this.getX(), this.getY()));
+            popupCounter.add(0);
+            popups.add(factory.getPopup(this, new JLabel(), this.getX(), this.getY()));
         }
-    }
-
-    public void colorComponents(Component[] components, Color[] colorScheme, int panelCounterStart) {
-        int panelCounter = panelCounterStart;
-        for (Component component : components) {
-            switch (component.getClass().getSimpleName()) {
-                case "JPanel" -> {
-                    if (panelCounter < 1) {
-                        component.setBackground(colorScheme[0]);
-                    } else {
-                        component.setBackground(colorScheme[1]);
-                    }
-                    panelCounter++;
-                }
-                case "JButton" -> {
-                    component.setBackground(colorScheme[3]);
-                    component.setForeground(colorScheme[2]);
-                }
-                case "JLabel" -> component.setForeground(colorScheme[2]);
-                case "JRadioButton" -> {
-                    component.setBackground(colorScheme[1]);
-                    component.setForeground(colorScheme[2]);
-                }
-            }
-        }
-    }
-
-    public Component[] getAllComponents(Container container, List<Component> list) {
-        for (Component component : container.getComponents()) {
-            if (component instanceof GUI) {
-                continue;
-            }
-            list.add(component);
-            if (component instanceof Container) {
-                getAllComponents((Container) component, list);
-            }
-        }
-        return list.toArray(new Component[0]);
     }
 
     public GUI[] getAllChildrenGUI(Container container, List<GUI> list) {

@@ -7,8 +7,9 @@ import de.swt.logic.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ClassroomGUI extends GUI {
@@ -26,6 +27,7 @@ public class ClassroomGUI extends GUI {
     private JScrollPane scrollPanel10;
     private JScrollPane scrollPanel11;
     private JScrollPane scrollPanel12;
+    private JPanel subPanel;
     private final List<GradePanel> gradePanels;
     private final CreateClassroomPanel createClassroomPanel;
 
@@ -38,7 +40,6 @@ public class ClassroomGUI extends GUI {
             case ENGLISH -> setupGUI("Grade 11", "Grade 10", "Grade 12", "Logout", "Create Classroom", "Private Workspace");
         }
 
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 0);
         setupActionListeners();
 
         this.gradePanel10.setLayout(new BoxLayout(gradePanel10, BoxLayout.Y_AXIS));
@@ -90,7 +91,7 @@ public class ClassroomGUI extends GUI {
                 JLabel supportNumber = new JLabel("No Support!");
                 supportPanel.add(supportNumber);
                 Point point = new Point(this.supportButton.getX(), this.supportButton.getY() - 30);
-                SwingUtilities.convertPointToScreen(point, this);
+                SwingUtilities.convertPointToScreen(point, subPanel);
                 popups.set(0, popupFactory.getPopup(this, supportPanel, point.x, point.y));
                 popups.get(0).show();
             }
@@ -111,7 +112,7 @@ public class ClassroomGUI extends GUI {
                 });
                 createClassroomPanel.addButton.addActionListener(e13 -> createClassroomPanel.addFunction());
                 Point point = new Point(this.createClassroomButton.getX(), this.createClassroomButton.getY() - 200);
-                SwingUtilities.convertPointToScreen(point, this);
+                SwingUtilities.convertPointToScreen(point, subPanel);
                 popups.set(1, popupFactory.getPopup(this, createClassroomPanel, point.x, point.y));
                 popups.get(1).show();
             }

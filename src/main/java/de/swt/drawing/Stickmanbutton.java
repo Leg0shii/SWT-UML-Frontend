@@ -1,7 +1,6 @@
 package de.swt.drawing;
 
 import de.swt.gui.GUIManager;
-import de.swt.gui.workspace.DrawablePanel;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;

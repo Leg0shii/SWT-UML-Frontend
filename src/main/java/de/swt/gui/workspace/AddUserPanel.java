@@ -2,10 +2,8 @@ package de.swt.gui.workspace;
 
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
-import de.swt.util.Language;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 
 public class AddUserPanel extends GUI {
@@ -24,8 +22,6 @@ public class AddUserPanel extends GUI {
             case GERMAN -> setupGUI("Schüler hinzufügen", "Schüler-ID", "Hinzufügen");
             case ENGLISH -> setupGUI("Add student", "Student ID", "Add");
         }
-
-        colorComponents(this.getAllComponents(this, new ArrayList<>()), guiManager.colorScheme, 1);
         setupListeners();
     }
 
