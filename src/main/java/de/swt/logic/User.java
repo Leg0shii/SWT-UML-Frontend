@@ -16,7 +16,7 @@ public class User {
     private AccountType accountType;
     private String firstname;
     private String surname;
-    private Course[] course;
+    private int[] course;
     private boolean online;
 
     public User(int id, String firstname, String surname) {

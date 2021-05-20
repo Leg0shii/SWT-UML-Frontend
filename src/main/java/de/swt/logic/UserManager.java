@@ -36,6 +36,7 @@ public class UserManager {
                 user.setSurname(resultSet.getString("surname"));
                 user.setAccountType(AccountType.valueOf(resultSet.getString("usertype")));
                 user.setOnline(false);
+                user.setCourse(loadCourses(id));
                 userHashMap.put(id, user);
             } else {
                 System.out.println("SOMETHING WENT WRONG WHILE LOADING USER!!!");
@@ -56,25 +57,14 @@ public class UserManager {
         }
     }
 
-    public Course[] loadCourses(int userid) throws SQLException {
-        Course[] courses = new Course[2];
+    public int[] loadCourses(int userid) throws SQLException {
+        int[] courses = new int[2];
         ResultSet resultSetUser = mySQL.query("SELECT mcourseid,scourseid FROM users WHERE userid = " + userid + ";");
-        ResultSet resultSetCourseM;
-        ResultSet resultSetCourseS;
-
-        if (resultSetUser.next()) {
-            resultSetCourseM = mySQL.query("SELECT * FROM courses WHERE courseid = " + resultSetUser.getInt("mcourseid") + ";");
-            resultSetCourseS = mySQL.query("SELECT * FROM courses WHERE courseid = " + resultSetUser.getInt("scourseid") + ";");
+        if(resultSetUser.next()) {
+            courses[0] = resultSetUser.getInt("mcourseid");
+            courses[1] = resultSetUser.getInt("scourseid");
         } else {
-            System.out.println("ERROR OCCURED WHILE LOADING IN COURSES!!!");
-            return null;
-        }
-
-        if (resultSetCourseM.next() && resultSetCourseS.next()) {
-            courses[0] = client.courseManager.loadCourse(resultSetCourseM.getInt("courseid"));
-            courses[1] = client.courseManager.loadCourse(resultSetCourseS.getInt("courseid"));
-        } else {
-            System.out.println("ERROR OCCURED WHILE LOADING IN COURSES!!!");
+            System.out.println("ERROR IN USER MANAGER!!!");
             return null;
         }
         return courses;
