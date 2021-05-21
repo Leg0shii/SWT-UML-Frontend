@@ -69,18 +69,7 @@ public class DanielMainTest {
             add(new Group(4, 10, 5, students, "TestWorkspace4"));
         }};
 
-        ArrayList<Date> dates = new ArrayList<>();
-        dates.add(new Date());
-        dates.add(new Date());
-        dates.add(new Date());
-
-        ArrayList<Course> courses = new ArrayList<>() {{
-            add(new Course(0, 10, "a", dates, new User(0, "prename", "surname"), students));
-            add(new Course(1, 11, "b", dates, new User(1, "prename", "surname"), students));
-            add(new Course(2, 12, "a", dates, new User(0, "prename", "surname"), students));
-        }};
-
-        GUIManager guiManager = new GUIManager(language, accountType);
+        GUIManager guiManager = new GUIManager(client, language, accountType);
         guiManager.setupGUIS();
         guiManager.updateGUIS(schools, userList, groups, userList, 0);
         guiManager.switchToLoginGUI();
@@ -124,12 +113,22 @@ public class DanielMainTest {
         button5.addActionListener(e -> {
             guiManager.workspaceGUI.setTask("Test Task");
         });
+        JButton button6 = new JButton("Switch to ClassroomGUI");
+        button6.addActionListener(e -> {
+            guiManager.switchToClassRoomGUI();
+        });
+        JButton button7 = new JButton("Switch to WorkspaceGUI" );
+        button7.addActionListener(e -> {
+            guiManager.switchToWorkspaceGUI();
+        });
         frame.setLayout(new FlowLayout());
         frame.add(button);
         frame.add(button2);
         frame.add(button3);
         frame.add(button4);
         frame.add(button5);
+        frame.add(button6);
+        frame.add(button7);
         frame.pack();
         frame.setVisible(true);
     }

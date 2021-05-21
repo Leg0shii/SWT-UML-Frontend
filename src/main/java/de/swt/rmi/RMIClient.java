@@ -68,7 +68,9 @@ public class RMIClient {
             System.out.println("ERROR WHILE INITIALIZING RMI CLIENT!!!");
             return null;
         }
+
         return server;
+
     }
 }
 

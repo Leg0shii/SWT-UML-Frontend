@@ -1,14 +1,12 @@
 package de.swt.gui.workspace;
 
-import de.swt.drawing.Drawable;
-import de.swt.drawing.DrawableUseCase;
+import de.swt.drawing.objects.DrawableObject;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.util.AccountType;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class DrawablePanel extends GUI {
     private JPanel mainPanel;
@@ -32,12 +30,6 @@ public class DrawablePanel extends GUI {
         setupListeners();
 
         this.drawPanel.setBackground(Color.WHITE);
-        for (int i = 1; i < 4; i++) {
-            DrawableUseCase useCase = new DrawableUseCase(10, 10, i, "Test");
-            this.drawPanel.add(useCase);
-        }
-        Drawable dbstickman = new Drawable(20, 20, Color.black);
-        this.drawPanel.add(dbstickman);
     }
 
     private void setupGUI(String task, String remaining, String showTask) {
@@ -107,5 +99,16 @@ public class DrawablePanel extends GUI {
     public void addToDrawPanel(JComponent component) {
         drawPanel.add(component);
         drawPanel.repaint();
+    }
+
+    public void closeAllPopups(){
+        for (Popup popup : popups) {
+            popupCounter.set(popups.indexOf(popup), 0);
+            popup.hide();
+        }
+        for (Component component : drawPanel.getComponents()){
+            DrawableObject object = (DrawableObject) component;
+            object.closeAllPopups();
+        }
     }
 }

@@ -26,7 +26,7 @@ public class Client {
         mySQL = dbManager.connectToDB();
 
         RMIClient rmiClient = new RMIClient();
-        server = rmiClient.initRMIClient();
+        //server = rmiClient.initRMIClient();
 
         courseManager = new CourseManager(instance);
         userManager = new UserManager(instance);

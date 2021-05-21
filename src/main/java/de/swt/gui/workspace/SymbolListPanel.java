@@ -1,6 +1,7 @@
 package de.swt.gui.workspace;
 
-import de.swt.drawing.Stickmanbutton;
+import de.swt.drawing.buttons.ActorButton;
+import de.swt.drawing.buttons.UseCaseButton;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 
@@ -9,7 +10,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -86,7 +86,9 @@ public class SymbolListPanel extends GUI {
 
         this.clickCounter = new int[1];
 
-        this.symbolPanel.add(new Stickmanbutton(10,10, guiManager));
+        this.symbolPanel.setLayout(new FlowLayout());
+        this.symbolPanel.add(new ActorButton(guiManager));
+        this.symbolPanel.add(new UseCaseButton(guiManager));
     }
 
     public void updateGUI() {
