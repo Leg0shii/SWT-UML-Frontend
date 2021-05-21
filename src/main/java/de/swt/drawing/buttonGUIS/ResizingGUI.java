@@ -23,8 +23,8 @@ public class ResizingGUI extends GUI {
     private JLabel scaleLabel;
     private JLabel rotationLabel;
     private JLabel colorLabel;
-    private JColorChooser colorChooser;
-    private RotatableObject associatedObject;
+    private final JColorChooser colorChooser;
+    private final RotatableObject associatedObject;
     private String description;
     private Color color;
     private double scale;

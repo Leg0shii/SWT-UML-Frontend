@@ -14,8 +14,8 @@ import java.util.HashMap;
 public class CourseManager {
 
     private final AsyncMySQL mySQL;
-    private HashMap<Integer, Course> courseHashMap;
-    private Client client;
+    private final HashMap<Integer, Course> courseHashMap;
+    private final Client client;
 
     public CourseManager(Client client) {
 

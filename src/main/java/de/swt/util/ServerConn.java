@@ -12,10 +12,10 @@ import java.rmi.RemoteException;
 public class ServerConn {
 
     private final int serverPort;
-    private ServerSocket serverSocket;
-    private byte[] byteMessage;
+    private final ServerSocket serverSocket;
+    private final byte[] byteMessage;
 
-    private Client client;
+    private final Client client;
 
     public ServerConn(Client client, int serverPort) throws IOException {
         this.client = client;

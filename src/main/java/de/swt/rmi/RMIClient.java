@@ -11,9 +11,9 @@ import java.util.Arrays;
 
 public class RMIClient {
     //private int clientID;
-    private String registryName;
-    private String serverAddress;
-    private int serverRMIPort;
+    private final String registryName;
+    private final String serverAddress;
+    private final int serverRMIPort;
 
     public RMIClient() {
         //Constructor

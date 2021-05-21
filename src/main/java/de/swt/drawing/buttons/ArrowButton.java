@@ -1,6 +1,5 @@
 package de.swt.drawing.buttons;
 
-import de.swt.drawing.objects.Actor;
 import de.swt.drawing.objects.Arrow;
 import de.swt.gui.GUIManager;
 
@@ -9,16 +8,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class ArrowButton extends DrawableObjectButton{
-    private int width;
-    private int height;
-    private int startX;
-    private int startY;
-    private int endX;
-    private int endY;
-    private int startYOffset;
-    private int endYOffset;
-    private int arrowHeadWidth;
-    private boolean arrowHeadOnRightSide;
+    public int width;
+    public int height;
+    public int startX;
+    public int startY;
+    public int endX;
+    public int endY;
+    public final int startYOffset;
+    public final int endYOffset;
+    public final int arrowHeadWidth;
+    public final boolean arrowHeadOnRightSide;
 
     public ArrowButton(GUIManager guiManager) {
         super(guiManager, "Arrow");

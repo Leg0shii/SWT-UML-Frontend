@@ -10,7 +10,7 @@ import java.awt.*;
 public class Actor extends DrawableObject {
     private int width;
     private int height;
-    private int verticalOffset;
+    private final int verticalOffset;
 
     public Actor(int x, int y, Color color, String description, double scale) {
         super(color, scale, description);

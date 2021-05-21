@@ -18,8 +18,8 @@ import java.util.function.Consumer;
  */
 public class AsyncMySQL {
 
-    private ExecutorService executor;
-    private MySQL sql;
+    private final ExecutorService executor;
+    private final MySQL sql;
 
     /**
      * Called when a new AsyncMySQL object is created.
@@ -136,11 +136,11 @@ public class AsyncMySQL {
 
     public static class MySQL {
 
-        private String host;
-        private String user;
-        private String password;
-        private String database;
-        private int port;
+        private final String host;
+        private final String user;
+        private final String password;
+        private final String database;
+        private final int port;
 
         private Connection conn;
 
@@ -204,13 +204,7 @@ public class AsyncMySQL {
 
             try {
 
-                if((this.conn == null) || (!this.conn.isValid(10)) || (this.conn.isClosed())) {
-
-                    return false;
-                } else {
-
-                    return true;
-                }
+                return (this.conn != null) && (this.conn.isValid(10)) && (!this.conn.isClosed());
 
             } catch (SQLException ignored) { ignored.printStackTrace(); }
 

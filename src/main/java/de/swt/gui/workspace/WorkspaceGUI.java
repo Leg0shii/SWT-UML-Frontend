@@ -21,10 +21,10 @@ public class WorkspaceGUI extends GUI {
     private JPanel midPanel;
     private JPanel rightPanel;
     private JButton sendTaskButton;
-    private ObjectListPanel objectListPanel;
-    private DrawablePanel drawablePanel;
+    private final ObjectListPanel objectListPanel;
+    private final DrawablePanel drawablePanel;
     private Group selectedGroup;
-    private SymbolListPanel symbolListPanel;
+    private final SymbolListPanel symbolListPanel;
 
     public WorkspaceGUI(GUIManager guiManager) {
         super(guiManager);

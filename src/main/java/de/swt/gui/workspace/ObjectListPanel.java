@@ -22,7 +22,7 @@ public class ObjectListPanel extends GUI {
     private String groups;
     private String group;
     private boolean showGroups;
-    private JButton addStudentButton;
+    private final JButton addStudentButton;
     private List<Group> groupsList;
     private List<User> users;
 

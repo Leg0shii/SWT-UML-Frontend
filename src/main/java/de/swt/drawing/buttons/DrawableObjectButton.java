@@ -7,7 +7,7 @@ import java.awt.*;
 
 public abstract class DrawableObjectButton extends JComponent {
     public final GUIManager guiManager;
-    public final String description;
+    public String description;
     public final double scale;
     public final Color color;
     public int offset;

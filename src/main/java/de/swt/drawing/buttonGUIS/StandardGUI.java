@@ -21,8 +21,8 @@ public class StandardGUI extends GUI {
     private JLabel scaleLabel;
     private JLabel colorLabel;
     private JButton colorButton;
-    private JColorChooser colorChooser;
-    private DrawableObject associatedObject;
+    private final JColorChooser colorChooser;
+    private final DrawableObject associatedObject;
     private String description;
     private Color color;
     private double scale;

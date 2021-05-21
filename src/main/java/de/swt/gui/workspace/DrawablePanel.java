@@ -16,7 +16,7 @@ public class DrawablePanel extends GUI {
     private JLabel remainingLabel;
     private JButton showTaskButton;
     private String task;
-    private Stack<JComponent> drawableObjects;
+    private final Stack<JComponent> drawableObjects;
 
     public DrawablePanel(GUIManager guiManager) {
         super(guiManager);
@@ -104,6 +104,7 @@ public class DrawablePanel extends GUI {
         object.init(guiManager);
         drawPanel.add(object);
         drawableObjects.add(object);
+        drawPanel.revalidate();
         drawPanel.repaint();
     }
 

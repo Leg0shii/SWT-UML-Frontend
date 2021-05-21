@@ -34,9 +34,11 @@ public class Client {
             e.printStackTrace();
             return;
         }
-
+/*
         RMIClient rmiClient = new RMIClient();
         server = rmiClient.initRMIClient();
+
+ */
 
         courseManager = new CourseManager(instance);
         userManager = new UserManager(instance);

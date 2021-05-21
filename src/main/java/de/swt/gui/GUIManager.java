@@ -26,7 +26,7 @@ public class GUIManager extends JFrame {
     public WorkspaceGUI workspaceGUI;
 
     private final List<GUI> childrenGUI;
-    private Client client;
+    private final Client client;
 
     public GUIManager(Client client,  Language language, AccountType accountType) {
         super("E-Learning Software");

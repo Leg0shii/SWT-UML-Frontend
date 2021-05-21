@@ -1,39 +1,25 @@
 package de.swt.drawing.objects;
 
-import de.swt.drawing.buttonGUIS.ResizingGUI;
-import de.swt.gui.GUI;
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 import static java.lang.Math.abs;
 
-public class Arrow extends RotatableObject {
-    public int width;
-    public int height;
-    public int startX;
-    public int startY;
-    public int endX;
-    public int endY;
-    public int arrowHeadWidth;
-    public final int arrowHeadWidthConstant;
-
-    public Arrow(int x, int y, Color color, double scale, String description) {
-        super(color, scale, description);
-        this.setBounds(x, y, 1, 1);
-        this.arrowHeadWidthConstant = 10;
-        this.arrowHeadWidth = (int) (arrowHeadWidthConstant * scale);
-        this.startYOffset = (int) (arrowHeadWidth / 2 * scale);
-        this.endYOffset = (int) (arrowHeadWidth / 2 * scale);
-        this.switchSides = true;
+public class DottedArrow extends Arrow{
+    public DottedArrow(int x, int y, Color color, double scale, String description) {
+        super(x, y, color, scale, description);
     }
 
     @Override
-    void drawFunction(Graphics2D g2d) {
-        BasicStroke stroke = new BasicStroke((float) scale);
-        g2d.setStroke(stroke);
+    void drawFunction(Graphics2D g2d){
+        Graphics2D g2dCopy = (Graphics2D) g2d.create();
+        Stroke dashed = new BasicStroke((float) scale, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
+                0, new float[]{9}, 0);
+        g2dCopy.setStroke(dashed);
         calculateWidthAndHeight(g2d);
-        g2d.drawLine(startX, startY, endX, endY);
+        g2dCopy.drawLine(startX, startY, endX, endY);
+        g2dCopy.dispose();
+        g2d.setStroke(new BasicStroke((float) scale));
         AffineTransform transform = g2d.getTransform();
         g2d.translate(offset + width / 2, offset + ((abs(endYOffset - startYOffset) + arrowHeadWidthConstant) / 2));
         if (Math.atan((float) width / (endYOffset - startYOffset)) > 0) {
@@ -65,24 +51,5 @@ public class Arrow extends RotatableObject {
             g2d.drawLine(0, 0, arrowHeadWidth / 2, +arrowHeadWidth / 2);
         }
         g2d.setTransform(transform2);
-    }
-
-    @Override
-    void calculateWidthAndHeight(Graphics2D g2d) {
-        this.textWidth = g2d.getFontMetrics().stringWidth(this.description);
-        this.textHeight = g2d.getFontMetrics().getHeight();
-        this.width = (int) (100 * scale);
-        this.arrowHeadWidth = (int) (arrowHeadWidthConstant * scale);
-        this.height = (int) ((abs(endYOffset - startYOffset) * scale + arrowHeadWidth));
-        this.startX = offset;
-        this.startY = offset + startYOffset + arrowHeadWidth / 2;
-        this.endX = offset + width;
-        this.endY = offset + endYOffset + arrowHeadWidth / 2;
-        this.setBounds(super.getX(), super.getY(), width + 2 * offset, textHeight / 2 + height + 2 * offset);
-    }
-
-    @Override
-    GUI createPopup() {
-        return new ResizingGUI(guiManager, this);
     }
 }
