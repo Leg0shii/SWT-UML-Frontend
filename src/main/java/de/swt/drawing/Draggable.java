@@ -73,16 +73,16 @@ public class Draggable extends JComponent implements Serializable {
             if (components.contains(component)){
                 continue;
             }
-            if (checkIfCrossingComponent(component, this, true)) {
+            if (checkIfCrossingComponent(component)) {
                 components.add(component);
             }
         }
         return components;
     }
 
-    private boolean checkIfCrossingComponent(Component component, Component component2, boolean secondTime) {
+    private boolean checkIfCrossingComponent(Component component) {
         Rectangle rect1 = component.getBounds();
-        Rectangle rect2 = component2.getBounds();
+        Rectangle rect2 = getBounds();
         return rect1.intersects(rect2);
     }
 }
