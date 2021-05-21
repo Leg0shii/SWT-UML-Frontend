@@ -5,6 +5,7 @@ import de.swt.gui.GUIManager;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -67,7 +68,7 @@ public class CreateTaskPanel extends GUI {
         fileChooser.setFileFilter(filter);
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
             this.selectedFile = fileChooser.getSelectedFile();
-            this.selectedFileLabel.setText(selectedFile.getName());
+            this.selectedFileLabel.setText(selectedFile.getName().substring(0,10)+"... "+selectedFile.getName().substring(selectedFile.getName().lastIndexOf(".")));
         }
     }
 

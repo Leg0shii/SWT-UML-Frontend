@@ -47,27 +47,11 @@ public class DanielMainTest {
         schools[1] = "Schule B";
         schools[2] = "Schule C";
 
-        // load from Database
-        ArrayList<User> students = new ArrayList<>() {{
-            add(new User(2, "Yoost1", "surname"));
-            add(new User(3, "Yoost2", "surname"));
-            add(new User(4, "Yoost3", "surname"));
-            add(new User(5, "Yoost4", "surname"));
-            add(new User(6, "Yoost5", "surname"));
-            add(new User(7, "Yoost6", "surname"));
-            add(new User(8, "Yoost7", "surname"));
-            add(new User(9, "Yoost8", "surname"));
-            add(new User(10, "Yoost9", "surname"));
-            add(new User(11, "Yoost10", "surname"));
-            add(new User(12, "Yoost11", "surname"));
-            add(new User(13, "Yoost12", "surname"));
-        }};
-
         ArrayList<Group> groups = new ArrayList<>() {{
-            add(new Group(1, 10, 5, students, "TestWorkspace1"));
-            add(new Group(2, 10, 5, students, "TestWorkspace2"));
-            add(new Group(3, 10, 5, students, "TestWorkspace3"));
-            add(new Group(4, 10, 5, students, "TestWorkspace4"));
+            add(new Group(1, 10, 5, userList, "TestWorkspace1"));
+            add(new Group(2, 10, 5, userList, "TestWorkspace2"));
+            add(new Group(3, 10, 5, userList, "TestWorkspace3"));
+            add(new Group(4, 10, 5, userList, "TestWorkspace4"));
         }};
 
         GUIManager guiManager = new GUIManager(client, language, accountType);

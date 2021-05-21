@@ -47,9 +47,6 @@ public class Draggable extends JComponent implements Serializable {
                     getParent().remove(component);
                     parent.addToDrawPanel((JComponent) component);
                 }
-                System.out.println("NEW !!");
-                System.out.println(orderedComponents);
-                System.out.println(Arrays.toString(getParent().getComponents()));
             }
         });
         //drag on drag
