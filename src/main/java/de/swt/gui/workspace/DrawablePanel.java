@@ -1,6 +1,5 @@
 package de.swt.gui.workspace;
 
-import de.swt.drawing.objects.Arrow;
 import de.swt.drawing.objects.DrawableObject;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
@@ -8,7 +7,6 @@ import de.swt.util.AccountType;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 import java.util.Stack;
 
 public class DrawablePanel extends GUI {
@@ -102,16 +100,20 @@ public class DrawablePanel extends GUI {
     }
 
     public void addToDrawPanel(JComponent component) {
-        drawPanel.add(component);
-        drawableObjects.add(component);
+        DrawableObject object = (DrawableObject) component;
+        object.init(guiManager);
+        drawPanel.add(object);
+        drawableObjects.add(object);
         drawPanel.repaint();
     }
 
-    public void removeLastDrawnObject() {
+    public boolean removeLastDrawnObject() {
         if (!drawableObjects.isEmpty()) {
             drawPanel.remove(drawableObjects.pop());
             drawPanel.repaint();
+            return true;
         }
+        return false;
     }
 
     public void closeAllPopups() {

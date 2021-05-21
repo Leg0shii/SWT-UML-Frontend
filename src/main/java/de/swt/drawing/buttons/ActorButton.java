@@ -20,7 +20,7 @@ public class ActorButton extends DrawableObjectButton {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                guiManager.addToDrawPanel(new Actor(50, 50, color, description, scale, guiManager));
+                guiManager.addToDrawPanel(new Actor(50, 50, color, description, scale));
             }
         });
     }

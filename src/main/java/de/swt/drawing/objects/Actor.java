@@ -12,8 +12,8 @@ public class Actor extends DrawableObject {
     private int height;
     private int verticalOffset;
 
-    public Actor(int x, int y, Color color, String description, double scale, GUIManager guiManager) {
-        super(color, scale, description, guiManager);
+    public Actor(int x, int y, Color color, String description, double scale) {
+        super(color, scale, description);
         setBounds(x, y, 1, 1);
         verticalOffset = offset;
     }

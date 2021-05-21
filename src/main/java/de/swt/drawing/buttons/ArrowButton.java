@@ -33,7 +33,7 @@ public class ArrowButton extends DrawableObjectButton{
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                guiManager.addToDrawPanel(new Arrow(50, 50, color, scale, description, guiManager));
+                guiManager.addToDrawPanel(new Arrow(50, 50, color, scale, description));
             }
         });
     }

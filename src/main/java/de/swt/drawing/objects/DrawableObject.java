@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.Serializable;
 
 public abstract class DrawableObject extends Draggable {
     public Color color;
@@ -16,21 +17,17 @@ public abstract class DrawableObject extends Draggable {
     public String description;
     public int textWidth;
     public int textHeight;
-    public Popup popup;
-    public PopupFactory factory;
-    public int popupCounter;
-    public GUIManager guiManager;
-    public GUI popupPanel;
+    public transient Popup popup;
+    public transient PopupFactory factory;
+    public transient int popupCounter;
+    public transient GUIManager guiManager;
+    public transient GUI popupPanel;
 
-    public DrawableObject(Color color, double scale, String description, GUIManager guiManager) {
+    public DrawableObject(Color color, double scale, String description) {
         this.color = color;
         this.scale = scale;
         this.description = description;
         this.offset = 5;
-        this.factory = PopupFactory.getSharedInstance();
-        this.popupCounter = 0;
-        this.guiManager = guiManager;
-        setupListeners();
     }
 
     public void updateComponent(String description, double scale, Color color) {
@@ -68,6 +65,14 @@ public abstract class DrawableObject extends Draggable {
                 popupCounter++;
             }
         });
+    }
+
+    public void init(GUIManager guiManager) {
+        this.guiManager = guiManager;
+        this.factory = PopupFactory.getSharedInstance();
+        this.popupCounter = 0;
+        super.initListeners();
+        setupListeners();
     }
 
     public void closeAllPopups() {

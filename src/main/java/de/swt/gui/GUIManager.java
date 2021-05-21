@@ -8,10 +8,13 @@ import de.swt.util.AccountType;
 import de.swt.util.Client;
 import de.swt.util.Language;
 import de.swt.logic.User;
+import org.apache.commons.lang3.SerializationUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GUIManager extends JFrame {
@@ -89,15 +92,19 @@ public class GUIManager extends JFrame {
         return this.client;
     }
 
-    public void removeLastDrawnObject() {
-        workspaceGUI.removeLastDrawnObject();
+    public boolean removeLastDrawnObject() {
+        return workspaceGUI.removeLastDrawnObject();
     }
 
     public Component[] getDrawnObjects(){
-        return workspaceGUI.getDrawnObjects();
+        Component[] components = workspaceGUI.getDrawnObjects();
+        return SerializationUtils.clone(components);
     }
 
     public void addDrawnObjects(Component[] components){
+        while (removeLastDrawnObject()){
+
+        }
         for (Component component : components){
             addToDrawPanel((JComponent) component);
         }

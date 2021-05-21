@@ -11,8 +11,8 @@ public abstract class RotatableObject extends DrawableObject{
     public int endXOffset;
     public boolean switchSides;
 
-    public RotatableObject(Color color, double scale, String description, GUIManager guiManager) {
-        super(color, scale, description, guiManager);
+    public RotatableObject(Color color, double scale, String description) {
+        super(color, scale, description);
     }
 
     public void updateComponent(String description, double scale, Color color, int startYOffset, int endYOffset, boolean switchSides){

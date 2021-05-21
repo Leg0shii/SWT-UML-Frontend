@@ -8,7 +8,6 @@ import de.swt.util.AccountType;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class WorkspaceGUI extends GUI {
@@ -165,8 +164,8 @@ public class WorkspaceGUI extends GUI {
         drawablePanel.addToDrawPanel(component);
     }
 
-    public void removeLastDrawnObject() {
-        drawablePanel.removeLastDrawnObject();
+    public boolean removeLastDrawnObject() {
+        return drawablePanel.removeLastDrawnObject();
     }
 
     public Component[] getDrawnObjects() {

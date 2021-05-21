@@ -12,8 +12,8 @@ public class UseCase extends DrawableObject {
     private int width;
     private int height;
 
-    public UseCase(int x, int y, double scale, String description, Color color, GUIManager guiManager) {
-        super(color, scale, description, guiManager);
+    public UseCase(int x, int y, double scale, String description, Color color) {
+        super(color, scale, description);
         this.setBounds(x, y, 1, 1);
     }
 

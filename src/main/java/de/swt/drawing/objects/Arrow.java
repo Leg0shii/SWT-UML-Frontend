@@ -20,8 +20,8 @@ public class Arrow extends RotatableObject {
     private int arrowHeadWidth;
     private final int arrowHeadWidthConstant;
 
-    public Arrow(int x, int y, Color color, double scale, String description, GUIManager guiManager) {
-        super(color, scale, description, guiManager);
+    public Arrow(int x, int y, Color color, double scale, String description) {
+        super(color, scale, description);
         this.setBounds(x, y, 1, 1);
         this.arrowHeadWidthConstant = 10;
         this.arrowHeadWidth = (int) (arrowHeadWidthConstant * scale);
