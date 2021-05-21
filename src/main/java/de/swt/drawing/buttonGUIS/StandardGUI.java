@@ -76,6 +76,8 @@ public class StandardGUI extends GUI {
         this.color = associatedObject.color;
         this.scale = associatedObject.scale;
         this.descriptionTextField.setEditable(true);
+        this.revalidate();
+        this.mainPanel.revalidate();
     }
 
     private void setupListeners() {

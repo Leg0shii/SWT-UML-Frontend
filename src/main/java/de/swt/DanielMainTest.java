@@ -17,6 +17,7 @@ import de.swt.logic.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.instrument.Instrumentation;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -117,9 +118,18 @@ public class DanielMainTest {
         button6.addActionListener(e -> {
             guiManager.switchToClassRoomGUI();
         });
-        JButton button7 = new JButton("Switch to WorkspaceGUI" );
+        JButton button7 = new JButton("Switch to WorkspaceGUI");
         button7.addActionListener(e -> {
             guiManager.switchToWorkspaceGUI();
+        });
+        final Component[][] savedComponents = new Component[1][1];
+        JButton button8 = new JButton("Save Drawn Objects");
+        button8.addActionListener(e -> {
+            savedComponents[0] = guiManager.getDrawnObjects();
+        });
+        JButton button9 = new JButton("Load Drawn Objects");
+        button9.addActionListener(e -> {
+            guiManager.addDrawnObjects(savedComponents[0]);
         });
         frame.setLayout(new FlowLayout());
         frame.add(button);
@@ -129,6 +139,8 @@ public class DanielMainTest {
         frame.add(button5);
         frame.add(button6);
         frame.add(button7);
+        frame.add(button8);
+        frame.add(button9);
         frame.pack();
         frame.setVisible(true);
     }

@@ -81,10 +81,6 @@ public class GUIManager extends JFrame {
         workspaceGUI.addToDrawPanel(component);
     }
 
-    public void insertNewPanel() {
-
-    }
-
     public Language getLanguage() {
         return language;
     }
@@ -93,4 +89,17 @@ public class GUIManager extends JFrame {
         return this.client;
     }
 
+    public void removeLastDrawnObject() {
+        workspaceGUI.removeLastDrawnObject();
+    }
+
+    public Component[] getDrawnObjects(){
+        return workspaceGUI.getDrawnObjects();
+    }
+
+    public void addDrawnObjects(Component[] components){
+        for (Component component : components){
+            addToDrawPanel((JComponent) component);
+        }
+    }
 }

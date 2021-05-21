@@ -93,6 +93,8 @@ public class ResizingGUI extends GUI {
         this.endYOffset = associatedObject.endYOffset;
         this.switchSides = associatedObject.switchSides;
         this.descriptionTextField.setEditable(true);
+        this.revalidate();
+        this.mainPanel.revalidate();
     }
 
     private void setupListeners() {

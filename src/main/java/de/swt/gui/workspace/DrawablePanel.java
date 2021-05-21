@@ -8,6 +8,8 @@ import de.swt.util.AccountType;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import java.util.Stack;
 
 public class DrawablePanel extends GUI {
     private JPanel mainPanel;
@@ -16,12 +18,14 @@ public class DrawablePanel extends GUI {
     private JLabel remainingLabel;
     private JButton showTaskButton;
     private String task;
+    private Stack<JComponent> drawableObjects;
 
     public DrawablePanel(GUIManager guiManager) {
         super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         this.drawPanel.setLayout(null);
+        this.drawableObjects = new Stack<>();
 
         switch (guiManager.language) {
             case GERMAN -> setupGUI("Aufgabe erstellen", "Verbleibende Zeit:  Minuten", "Aufgabe anzeigen");
@@ -99,7 +103,15 @@ public class DrawablePanel extends GUI {
 
     public void addToDrawPanel(JComponent component) {
         drawPanel.add(component);
+        drawableObjects.add(component);
         drawPanel.repaint();
+    }
+
+    public void removeLastDrawnObject() {
+        if (!drawableObjects.isEmpty()) {
+            drawPanel.remove(drawableObjects.pop());
+            drawPanel.repaint();
+        }
     }
 
     public void closeAllPopups() {
@@ -111,5 +123,9 @@ public class DrawablePanel extends GUI {
             DrawableObject object = (DrawableObject) component;
             object.closeAllPopups();
         }
+    }
+
+    public Component[] getDrawnObjects() {
+        return drawPanel.getComponents();
     }
 }

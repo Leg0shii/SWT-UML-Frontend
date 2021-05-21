@@ -164,4 +164,12 @@ public class WorkspaceGUI extends GUI {
     public void addToDrawPanel(JComponent component) {
         drawablePanel.addToDrawPanel(component);
     }
+
+    public void removeLastDrawnObject() {
+        drawablePanel.removeLastDrawnObject();
+    }
+
+    public Component[] getDrawnObjects() {
+        return drawablePanel.getDrawnObjects();
+    }
 }

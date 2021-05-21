@@ -24,11 +24,10 @@ public class SymbolListPanel extends GUI {
     private JPanel mainPanel;
     private JButton thumbsUpButton;
     private JButton thumbsDownButton;
-    private JButton drawButton;
+    private JToggleButton drawButton;
     private JButton clearButton;
     private JPanel toolPanel;
     public JPanel symbolPanel;
-    private int[] clickCounter;
 
     public SymbolListPanel(GUIManager guiManager) {
         super(guiManager);
@@ -66,18 +65,6 @@ public class SymbolListPanel extends GUI {
         BufferedImage ret4 = new BufferedImage(20, 20, BufferedImage.TYPE_INT_ARGB);
         ret4.getGraphics().drawImage(image4, 0, 0, 20, 20, null);
         this.clearButton.setIcon(new ImageIcon(ret4));
-        thumbsUpButton.setContentAreaFilled(false);
-        thumbsUpButton.setFocusPainted(false);
-        thumbsUpButton.setBorderPainted(true);
-        thumbsDownButton.setContentAreaFilled(false);
-        thumbsDownButton.setFocusPainted(false);
-        thumbsDownButton.setBorderPainted(true);
-        clearButton.setContentAreaFilled(false);
-        clearButton.setFocusPainted(false);
-        clearButton.setBorderPainted(true);
-        drawButton.setContentAreaFilled(true);
-        drawButton.setFocusPainted(false);
-        drawButton.setBorderPainted(true);
         drawButton.setPreferredSize(new Dimension(20, 20));
 
         this.toolPanel.add(thumbsUpButton);
@@ -85,7 +72,6 @@ public class SymbolListPanel extends GUI {
         this.toolPanel.add(drawButton);
         this.toolPanel.add(clearButton);
 
-        this.clickCounter = new int[1];
 
         this.symbolPanel.setLayout(new FlowLayout());
         this.symbolPanel.add(new ActorButton(guiManager));
@@ -103,14 +89,11 @@ public class SymbolListPanel extends GUI {
         thumbsUpButton.addActionListener(e1 -> drawThumbUp());
         thumbsDownButton.addActionListener(e2 -> drawThumbDown());
         drawButton.addActionListener(e3 -> {
-            if (clickCounter[0] % 2 == 0) {
+            if (drawButton.isSelected()) {
                 enableDraw();
-                drawButton.setBorder(BorderFactory.createLoweredBevelBorder());
             } else {
                 disableDraw();
-                drawButton.setBorder(BorderFactory.createRaisedBevelBorder());
             }
-            clickCounter[0]++;
         });
         clearButton.addActionListener(e4 -> deleteLastDrawnObject());
     }
@@ -136,7 +119,7 @@ public class SymbolListPanel extends GUI {
     }
 
     private void deleteLastDrawnObject() {
-
+        guiManager.removeLastDrawnObject();
     }
 
 
