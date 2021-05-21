@@ -8,6 +8,8 @@ import de.swt.logic.UserManager;
 import de.swt.rmi.RMIClient;
 import de.swt.rmi.RMIServerInterface;
 
+import java.io.IOException;
+
 public class Client {
 
     public AsyncMySQL mySQL;
@@ -25,8 +27,16 @@ public class Client {
         dbManager = new DBManager();
         mySQL = dbManager.connectToDB();
 
+        try {
+            ServerConn serverConn = new ServerConn(instance, 50000);
+            serverConn.startServer();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
         RMIClient rmiClient = new RMIClient();
-        //server = rmiClient.initRMIClient();
+        server = rmiClient.initRMIClient();
 
         courseManager = new CourseManager(instance);
         userManager = new UserManager(instance);
