@@ -72,9 +72,30 @@ public class UserManager {
     }
 
     public boolean userLogin(int userid, String password) {
-        // add hash and salt later
-        try { return client.server.login(userid, password);
-        } catch (RemoteException ignored) { }
+        ResultSet resultSet = mySQL.query("SELECT upassword FROM users WHERE userid = " + userid + ";");
+        // get salt and hash later
+
+        try {
+            if (resultSet.next()) {
+                if(resultSet.getString("upassword").equals(password)) {
+                    User user = userHashMap.get(userid);
+                    user.setOnline(true);
+                    try {
+                        client.server.sendUser(user, userid, true);
+                    } catch (RemoteException ignore) {
+                        System.out.println("COULDNT USE sendUser()");
+                        return false;
+                    }
+                    return true;
+                }
+            } else {
+                System.out.println("LOGIN FAILED...");
+                return false;
+            }
+        } catch (SQLException ignored) {
+            System.out.println("LOGIN FAILED...");
+            return false;
+        }
         return false;
     }
 
