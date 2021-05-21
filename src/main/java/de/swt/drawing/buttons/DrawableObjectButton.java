@@ -20,7 +20,7 @@ public abstract class DrawableObjectButton extends JComponent {
         this.description = description;
         this.scale = 1.0;
         this.color = Color.BLACK;
-        this.offset = 3;
+        this.offset = 5;
         setupListeners();
     }
 

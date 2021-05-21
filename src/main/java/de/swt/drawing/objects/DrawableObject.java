@@ -26,7 +26,7 @@ public abstract class DrawableObject extends Draggable {
         this.color = color;
         this.scale = scale;
         this.description = description;
-        this.offset = 3;
+        this.offset = 5;
         this.factory = PopupFactory.getSharedInstance();
         this.popupCounter = 0;
         this.guiManager = guiManager;
@@ -59,7 +59,7 @@ public abstract class DrawableObject extends Draggable {
                     popupPanel = createPopup();
                     Point point = new Point(getX() + getWidth(), getY());
                     SwingUtilities.convertPointToScreen(point, getParent());
-                    popup = factory.getPopup(getParent(), popupPanel, point.x, point.y);
+                    popup = factory.getPopup(guiManager, popupPanel, point.x, point.y);
                     popup.show();
                 } else {
                     popup.hide();
@@ -70,10 +70,12 @@ public abstract class DrawableObject extends Draggable {
         });
     }
 
-    public void closeAllPopups(){
-        popup.hide();
-        popupPanel.closeAllPopups();
-        popupCounter = 0;
+    public void closeAllPopups() {
+        if (popup != null) {
+            popup.hide();
+            popupPanel.closeAllPopups();
+            popupCounter = 0;
+        }
     }
 
     abstract void calculateWidthAndHeight(Graphics2D g2d);

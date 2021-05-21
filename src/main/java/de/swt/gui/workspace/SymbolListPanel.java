@@ -1,6 +1,7 @@
 package de.swt.gui.workspace;
 
 import de.swt.drawing.buttons.ActorButton;
+import de.swt.drawing.buttons.ArrowButton;
 import de.swt.drawing.buttons.UseCaseButton;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
@@ -43,7 +44,7 @@ public class SymbolListPanel extends GUI {
     }
 
     private void setupGUI() throws IOException {
-        this.toolPanel.setLayout(new GridLayout(1,4));
+        this.toolPanel.setLayout(new GridLayout(1, 4));
         this.toolPanel.removeAll();
         this.thumbsUpButton.setText("");
         this.thumbsDownButton.setText("");
@@ -77,7 +78,7 @@ public class SymbolListPanel extends GUI {
         drawButton.setContentAreaFilled(true);
         drawButton.setFocusPainted(false);
         drawButton.setBorderPainted(true);
-        drawButton.setPreferredSize(new Dimension(20,20));
+        drawButton.setPreferredSize(new Dimension(20, 20));
 
         this.toolPanel.add(thumbsUpButton);
         this.toolPanel.add(thumbsDownButton);
@@ -89,10 +90,13 @@ public class SymbolListPanel extends GUI {
         this.symbolPanel.setLayout(new FlowLayout());
         this.symbolPanel.add(new ActorButton(guiManager));
         this.symbolPanel.add(new UseCaseButton(guiManager));
+        this.symbolPanel.add(new ArrowButton(guiManager));
+
+        updateGUI();
     }
 
     public void updateGUI() {
-
+        symbolPanel.setPreferredSize(new Dimension(this.getWidth(), 4*this.getHeight()/5));
     }
 
     private void setupListeners() {
@@ -134,9 +138,6 @@ public class SymbolListPanel extends GUI {
     private void deleteLastDrawnObject() {
 
     }
-
-
-
 
 
 }

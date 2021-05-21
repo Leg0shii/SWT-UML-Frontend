@@ -1,5 +1,6 @@
 package de.swt.gui.workspace;
 
+import de.swt.drawing.objects.Arrow;
 import de.swt.drawing.objects.DrawableObject;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
@@ -61,7 +62,7 @@ public class DrawablePanel extends GUI {
                 });
                 Point point = new Point(taskButton.getX() - this.getWidth() / 4, taskButton.getY() + taskButton.getHeight());
                 SwingUtilities.convertPointToScreen(point, this);
-                popups.set(0, factory.getPopup(this, createTaskPanel, point.x, point.y));
+                popups.set(0, factory.getPopup(guiManager, createTaskPanel, point.x, point.y));
                 popups.get(0).show();
             } else {
                 popups.get(0).hide();
@@ -75,7 +76,7 @@ public class DrawablePanel extends GUI {
                 showTaskPanel.updateGUI(task);
                 Point point = new Point(showTaskButton.getX() - this.getWidth() / 4, showTaskButton.getY() + showTaskButton.getHeight());
                 SwingUtilities.convertPointToScreen(point, this);
-                popups.set(1, popupFactory.getPopup(this, showTaskPanel, point.x, point.y));
+                popups.set(1, popupFactory.getPopup(guiManager, showTaskPanel, point.x, point.y));
                 popups.get(1).show();
             } else {
                 popups.get(1).hide();
@@ -101,12 +102,12 @@ public class DrawablePanel extends GUI {
         drawPanel.repaint();
     }
 
-    public void closeAllPopups(){
+    public void closeAllPopups() {
         for (Popup popup : popups) {
             popupCounter.set(popups.indexOf(popup), 0);
             popup.hide();
         }
-        for (Component component : drawPanel.getComponents()){
+        for (Component component : drawPanel.getComponents()) {
             DrawableObject object = (DrawableObject) component;
             object.closeAllPopups();
         }

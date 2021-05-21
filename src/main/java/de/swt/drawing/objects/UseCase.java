@@ -6,6 +6,7 @@ import de.swt.gui.GUIManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 
 public class UseCase extends DrawableObject {
     private int width;
@@ -36,7 +37,6 @@ public class UseCase extends DrawableObject {
 
     @Override
     GUI createPopup() {
-        StandardGUI gui = new StandardGUI(guiManager, this);
-        return gui;
+        return new StandardGUI(guiManager, this);
     }
 }
