@@ -1,14 +1,13 @@
-package de.swt.rmi;
+package de.swt.server.rmi;
 
-import de.swt.Server;
-import de.swt.database.AsyncMySQL;
-import de.swt.database.DBManager;
-import de.swt.logic.course.Course;
-import de.swt.logic.course.CourseManager;
-import de.swt.logic.group.Group;
-import de.swt.logic.group.GroupManager;
-import de.swt.logic.user.User;
-import de.swt.logic.user.UserManager;
+import de.swt.server.Server;
+import de.swt.server.database.DBManager;
+import de.swt.server.logic.course.Course;
+import de.swt.server.logic.course.CourseManager;
+import de.swt.server.logic.group.Group;
+import de.swt.server.logic.group.GroupManager;
+import de.swt.server.logic.user.User;
+import de.swt.server.logic.user.UserManager;
 
 import java.rmi.RemoteException;
 import java.rmi.server.ServerNotActiveException;

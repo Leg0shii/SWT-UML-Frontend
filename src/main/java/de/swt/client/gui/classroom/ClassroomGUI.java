@@ -3,7 +3,7 @@ package de.swt.client.gui.classroom;
 import de.swt.client.gui.GUIManager;
 import de.swt.client.gui.GUI;
 import de.swt.client.util.AccountType;
-import de.swt.client.logic.User;
+import de.swt.client.clientlogic.User;
 
 import javax.swing.*;
 import java.awt.*;

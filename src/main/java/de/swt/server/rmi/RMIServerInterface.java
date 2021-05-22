@@ -1,9 +1,8 @@
-package de.swt.rmi;
+package de.swt.server.rmi;
 
-import de.swt.logic.course.Course;
-import de.swt.logic.group.Group;
-import de.swt.logic.user.User;
-import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
+import de.swt.server.logic.course.Course;
+import de.swt.server.logic.group.Group;
+import de.swt.server.logic.user.User;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

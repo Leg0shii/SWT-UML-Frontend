@@ -1,6 +1,6 @@
-package de.swt.util;
+package de.swt.server.util;
 
-import de.swt.Server;
+import de.swt.server.Server;
 
 import java.util.TimerTask;
 

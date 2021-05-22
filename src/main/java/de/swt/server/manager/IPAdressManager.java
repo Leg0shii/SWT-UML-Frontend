@@ -1,4 +1,4 @@
-package de.swt.manager;
+package de.swt.server.manager;
 
 import lombok.Getter;
 

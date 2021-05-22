@@ -3,12 +3,12 @@ package de.swt.client;
 import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
 import de.swt.client.gui.GUIManager;
 import de.swt.client.gui.classroom.GradePanel;
-import de.swt.client.logic.Group;
+import de.swt.client.clientlogic.Group;
 import de.swt.client.util.AccountType;
-import de.swt.client.logic.Course;
+import de.swt.client.clientlogic.Course;
 import de.swt.client.util.Client;
 import de.swt.client.util.Language;
-import de.swt.client.logic.User;
+import de.swt.client.clientlogic.User;
 
 
 import javax.swing.*;

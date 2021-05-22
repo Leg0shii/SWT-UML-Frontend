@@ -2,10 +2,10 @@ package de.swt.client.util;
 
 import de.swt.client.database.AsyncMySQL;
 import de.swt.client.database.DBManager;
-import de.swt.client.logic.CourseManager;
-import de.swt.client.logic.UserManager;
-import de.swt.client.rmi.RMIClient;
-import de.swt.client.rmi.RMIServerInterface;
+import de.swt.client.clientlogic.CourseManager;
+import de.swt.client.clientlogic.UserManager;
+import de.swt.client.clientrmi.RMIClient;
+import de.swt.client.clientrmi.RMIServerInterface;
 
 import java.io.IOException;
 import java.rmi.RemoteException;

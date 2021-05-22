@@ -1,4 +1,4 @@
-package de.swt.client.rmi;
+package de.swt.client.clientrmi;
 
 import java.nio.charset.StandardCharsets;
 import java.rmi.NotBoundException;
@@ -19,7 +19,7 @@ public class RMIClient {
         //Constructor
         //this.clientID = this.generateClientID();
         this.registryName = "RMIServer"; //Name in Registry
-        this.serverAddress = "185.181.10.193"; //Bennies Server
+        this.serverAddress = "localhost"; //Bennies Server
         this.serverRMIPort = 1099;
     }
 

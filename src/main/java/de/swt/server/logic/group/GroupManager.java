@@ -1,8 +1,8 @@
-package de.swt.logic.group;
+package de.swt.server.logic.group;
 
-import de.swt.Server;
-import de.swt.logic.user.User;
-import de.swt.util.AccountType;
+import de.swt.server.Server;
+import de.swt.server.logic.user.User;
+import de.swt.server.util.AccountType;
 import lombok.Getter;
 
 import java.sql.ResultSet;

@@ -1,4 +1,4 @@
-package de.swt.database;
+package de.swt.server.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

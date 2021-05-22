@@ -1,4 +1,4 @@
-package de.swt.logic.workspace;
+package de.swt.server.logic.workspace;
 
 public class WorkspaceManager {
 

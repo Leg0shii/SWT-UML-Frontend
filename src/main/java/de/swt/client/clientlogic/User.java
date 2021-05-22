@@ -1,4 +1,4 @@
-package de.swt.client.logic;
+package de.swt.client.clientlogic;
 
 import de.swt.client.util.AccountType;
 import lombok.AllArgsConstructor;

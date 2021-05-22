@@ -1,6 +1,6 @@
 package de.swt.client.util;
 
-import de.swt.client.logic.User;
+import de.swt.client.clientlogic.User;
 
 import java.io.DataInputStream;
 import java.io.IOException;

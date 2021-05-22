@@ -1,9 +1,9 @@
-package de.swt.database;
+package de.swt.server.database;
 
-import de.swt.logic.course.Course;
-import de.swt.logic.group.Group;
-import de.swt.logic.user.User;
-import de.swt.util.AccountType;
+import de.swt.server.logic.course.Course;
+import de.swt.server.logic.group.Group;
+import de.swt.server.logic.user.User;
+import de.swt.server.util.AccountType;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

@@ -3,11 +3,11 @@ package de.swt.client.gui;
 import de.swt.client.gui.classroom.ClassroomGUI;
 import de.swt.client.gui.login.LoginGUI;
 import de.swt.client.gui.workspace.WorkspaceGUI;
-import de.swt.client.logic.Group;
+import de.swt.client.clientlogic.Group;
 import de.swt.client.util.AccountType;
 import de.swt.client.util.Client;
 import de.swt.client.util.Language;
-import de.swt.client.logic.User;
+import de.swt.client.clientlogic.User;
 import org.apache.commons.lang3.SerializationUtils;
 
 import javax.swing.*;

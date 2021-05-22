@@ -2,7 +2,7 @@ package de.swt.client.gui.workspace;
 
 import de.swt.client.gui.GUI;
 import de.swt.client.gui.GUIManager;
-import de.swt.client.logic.Group;
+import de.swt.client.clientlogic.Group;
 
 import javax.swing.*;
 import java.util.List;

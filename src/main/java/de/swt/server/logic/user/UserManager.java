@@ -1,9 +1,9 @@
-package de.swt.logic.user;
+package de.swt.server.logic.user;
 
-import de.swt.Server;
-import de.swt.database.AsyncMySQL;
-import de.swt.logic.course.Course;
-import de.swt.util.AccountType;
+import de.swt.server.Server;
+import de.swt.server.database.AsyncMySQL;
+import de.swt.server.logic.course.Course;
+import de.swt.server.util.AccountType;
 import lombok.Getter;
 
 import java.sql.ResultSet;

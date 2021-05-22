@@ -1,8 +1,8 @@
-package de.swt.client.rmi;
+package de.swt.client.clientrmi;
 
-import de.swt.client.logic.Course;
-import de.swt.client.logic.Group;
-import de.swt.client.logic.User;
+import de.swt.client.clientlogic.Course;
+import de.swt.client.clientlogic.Group;
+import de.swt.client.clientlogic.User;
 
 import java.rmi.*;
 

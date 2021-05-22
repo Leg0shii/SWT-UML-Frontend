@@ -1,4 +1,4 @@
-package de.swt;
+package de.swt.server;
 
 import java.io.IOException;
 

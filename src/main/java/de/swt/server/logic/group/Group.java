@@ -1,6 +1,5 @@
-package de.swt.logic.group;
+package de.swt.server.logic.group;
 
-import de.swt.logic.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

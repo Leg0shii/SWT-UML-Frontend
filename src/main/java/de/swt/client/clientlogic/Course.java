@@ -1,4 +1,4 @@
-package de.swt.client.logic;
+package de.swt.client.clientlogic;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

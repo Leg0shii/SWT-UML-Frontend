@@ -1,23 +1,22 @@
-package de.swt;
+package de.swt.server;
 
-import de.swt.database.AsyncMySQL;
-import de.swt.database.DBManager;
-import de.swt.logic.course.CourseManager;
-import de.swt.logic.group.GroupManager;
-import de.swt.logic.user.UserManager;
-import de.swt.manager.IPAdressManager;
-import de.swt.rmi.RMIServer;
-import de.swt.util.ServerConn;
+import de.swt.server.database.AsyncMySQL;
+import de.swt.server.database.DBManager;
+import de.swt.server.logic.course.CourseManager;
+import de.swt.server.logic.group.GroupManager;
+import de.swt.server.logic.user.UserManager;
+import de.swt.server.manager.IPAdressManager;
+import de.swt.server.rmi.RMIServer;
+import de.swt.server.util.ServerConn;
 
 import java.io.File;
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 public class Server {
 
-    public de.swt.util.ServerConn serverConn;
+    public ServerConn serverConn;
     public DBManager dbManager;
     public AsyncMySQL mySQL;
     public IPAdressManager ipAdressManager;

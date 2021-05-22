@@ -1,6 +1,6 @@
-package de.swt.logic.user;
+package de.swt.server.logic.user;
 
-import de.swt.util.AccountType;
+import de.swt.server.util.AccountType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

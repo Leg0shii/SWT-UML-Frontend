@@ -1,6 +1,6 @@
-package de.swt.util;
+package de.swt.server.util;
 
-import de.swt.manager.IPAdressManager;
+import de.swt.server.manager.IPAdressManager;
 
 import java.io.*;
 import java.net.*;

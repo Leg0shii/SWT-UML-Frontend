@@ -1,4 +1,4 @@
-package de.swt.util;
+package de.swt.server.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
