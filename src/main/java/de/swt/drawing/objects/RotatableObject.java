@@ -7,8 +7,6 @@ import java.awt.*;
 public abstract class RotatableObject extends DrawableObject{
     public int startYOffset;
     public int endYOffset;
-    public int startXOffset;
-    public int endXOffset;
     public boolean switchSides;
 
     public RotatableObject(Color color, double scale, String description) {

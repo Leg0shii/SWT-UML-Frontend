@@ -104,7 +104,6 @@ public class DrawablePanel extends GUI {
         object.init(guiManager);
         drawPanel.add(object);
         drawableObjects.add(object);
-        drawPanel.revalidate();
         drawPanel.repaint();
     }
 
