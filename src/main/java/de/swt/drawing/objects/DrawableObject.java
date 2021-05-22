@@ -63,6 +63,7 @@ public abstract class DrawableObject extends Draggable {
                     popupPanel.closeAllPopups();
                 }
                 popupCounter++;
+                System.out.println(getMouseListeners().length);
             }
         });
     }

@@ -17,6 +17,7 @@ import de.swt.logic.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
 import java.lang.instrument.Instrumentation;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -106,14 +107,29 @@ public class DanielMainTest {
         button7.addActionListener(e -> {
             guiManager.switchToWorkspaceGUI();
         });
-        final Component[][] savedComponents = new Component[1][1];
+        File file= new File("src\\main\\resources\\test.ser");
         JButton button8 = new JButton("Save Drawn Objects");
         button8.addActionListener(e -> {
-            savedComponents[0] = guiManager.getDrawnObjects();
+            try {
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+                objectOutputStream.writeObject(guiManager.getDrawnObjects());
+                objectOutputStream.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         });
         JButton button9 = new JButton("Load Drawn Objects");
         button9.addActionListener(e -> {
-            guiManager.addDrawnObjects(savedComponents[0]);
+            try {
+                FileInputStream fileInputStream = new FileInputStream(file);
+                ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+                Component[] list = (Component[]) objectInputStream.readObject();
+                objectInputStream.close();
+                guiManager.addDrawnObjects(list);
+            } catch (IOException | ClassNotFoundException ex) {
+                ex.printStackTrace();
+            }
         });
         frame.setLayout(new FlowLayout());
         frame.add(button);
