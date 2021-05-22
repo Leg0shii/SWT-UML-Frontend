@@ -82,6 +82,7 @@ public class UserManager {
                     user.setOnline(true);
                     try {
                         client.server.sendUser(user, userid, true);
+                        System.out.println("LOGIN SUCC...");
                     } catch (RemoteException ignore) {
                         System.out.println("COULDNT USE sendUser()");
                         return false;

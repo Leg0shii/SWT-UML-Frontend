@@ -42,7 +42,7 @@ public class Client {
         courseManager = new CourseManager(instance);
         userManager = new UserManager(instance);
 
-        try { System.out.println(server.ping(10));
+        try { System.out.println(server.ping(17));
         } catch (RemoteException ignored) { }
 
         loadAllInformation();
