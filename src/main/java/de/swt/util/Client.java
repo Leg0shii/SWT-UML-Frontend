@@ -9,6 +9,7 @@ import de.swt.rmi.RMIClient;
 import de.swt.rmi.RMIServerInterface;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 
 public class Client {
 
@@ -34,14 +35,15 @@ public class Client {
             e.printStackTrace();
             return;
         }
-/*
+
         RMIClient rmiClient = new RMIClient();
         server = rmiClient.initRMIClient();
 
- */
-
         courseManager = new CourseManager(instance);
         userManager = new UserManager(instance);
+
+        try { System.out.println(server.ping(10));
+        } catch (RemoteException ignored) { }
 
         loadAllInformation();
     }

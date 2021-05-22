@@ -50,7 +50,7 @@ public class RMIClient {
 
     public RMIServerInterface initRMIClient() {
 
-        System.setProperty("java.security.policy","file:///policy.policy");
+        System.setProperty("java.security.policy","file:./src/main/java/de/swt/policy.policy");
 
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
@@ -62,6 +62,7 @@ public class RMIClient {
         try {
             Registry registry = LocateRegistry.getRegistry(rmiClient.serverAddress, rmiClient.serverRMIPort);
             server = (RMIServerInterface)registry.lookup(rmiClient.registryName);
+            System.out.println("CONNECTED!!!");
         } catch (NotBoundException | RemoteException e) {
             e.printStackTrace();
             e.getCause();
