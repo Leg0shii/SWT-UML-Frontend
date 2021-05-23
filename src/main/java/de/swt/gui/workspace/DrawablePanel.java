@@ -110,7 +110,9 @@ public class DrawablePanel extends GUI {
 
     public boolean removeLastDrawnObject() {
         if (!drawableObjects.isEmpty()) {
-            drawPanel.remove(drawableObjects.pop());
+            DrawableObject object = (DrawableObject) drawableObjects.pop();
+            object.closeAllPopups();
+            drawPanel.remove(object);
             drawPanel.repaint();
             return true;
         }
