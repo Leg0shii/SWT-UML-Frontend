@@ -6,6 +6,10 @@ import de.swt.util.Client;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -81,7 +85,7 @@ public class UserManager {
 
         try {
             if (resultSet.next()) {
-                if(resultSet.getString("upassword").equals(password)) {
+                if(resultSet.getString("upassword").equals(hashLogin(userid, password))) {
                     User user = userHashMap.get(userid);
                     user.setOnline(true);
                     try {
@@ -105,6 +109,17 @@ public class UserManager {
             return false;
         }
         return false;
+    }
+
+    private String hashLogin(int userid, String password){
+        MessageDigest hasher = null;
+        try {
+            hasher = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException noSuchAlgorithmException) {
+            noSuchAlgorithmException.printStackTrace();
+        }
+        assert hasher != null;
+        return Arrays.toString(hasher.digest((userid + password).getBytes(StandardCharsets.UTF_8))); // This is the value that shall land in the database as "password"
     }
 
     public void userLogout() {

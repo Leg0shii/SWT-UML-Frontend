@@ -39,8 +39,8 @@ public class ResizingGUI extends GUI {
         colorChooser = new JColorChooser();
 
         switch (guiManager.language) {
-            case GERMAN -> setupGUI("Beschreibung", "Skalierung", "Farbe", "Farbe auswählen", "Breite", "Höhe");
-            case ENGLISH -> setupGUI("Description", "Scale", "Color", "Choose Color", "Width", "Height");
+            case GERMAN -> setupGUI("Beschreibung", "Liniendicke", "Farbe", "Farbe auswählen", "Breite", "Höhe");
+            case ENGLISH -> setupGUI("Description", "Line Thickness", "Color", "Choose Color", "Width", "Height");
         }
 
         setupListeners();
@@ -69,12 +69,12 @@ public class ResizingGUI extends GUI {
         }
         colorChooser.setPreviewPanel(new JPanel());
 
-        this.widthSlider.setMinimum(0);
+        this.widthSlider.setMinimum(10);
         this.widthSlider.setMaximum(guiManager.getWidth() / 2);
         this.widthSlider.setMinorTickSpacing(1);
         this.widthSlider.setPaintLabels(true);
 
-        this.heightSlider.setMinimum(0);
+        this.heightSlider.setMinimum(10);
         this.heightSlider.setMaximum(3 * guiManager.getHeight() / 4);
         this.heightSlider.setMinorTickSpacing(1);
         this.heightSlider.setPaintLabels(true);
