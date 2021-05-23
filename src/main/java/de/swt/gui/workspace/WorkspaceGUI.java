@@ -21,6 +21,7 @@ public class WorkspaceGUI extends GUI {
     private JPanel midPanel;
     private JPanel rightPanel;
     private JButton sendTaskButton;
+    private JMenuBar menuBar;
     private final ObjectListPanel objectListPanel;
     private final DrawablePanel drawablePanel;
     private Group selectedGroup;
@@ -112,6 +113,10 @@ public class WorkspaceGUI extends GUI {
         }
     }
 
+    private void initMenu(String file){
+        JMenu fileMenu = new JMenu(file);
+    }
+
     private void logout() {
         guiManager.switchToLoginGUI();
     }
@@ -166,6 +171,10 @@ public class WorkspaceGUI extends GUI {
 
     public boolean removeLastDrawnObject() {
         return drawablePanel.removeLastDrawnObject();
+    }
+
+    public Group getSelectedGroup(){
+        return selectedGroup;
     }
 
     public Component[] getDrawnObjects() {
