@@ -12,9 +12,7 @@ import org.apache.commons.lang3.SerializationUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class GUIManager extends JFrame {

@@ -2,9 +2,9 @@ package de.swt.gui.login;
 
 import de.swt.gui.GUIManager;
 import de.swt.gui.GUI;
+import de.swt.util.Language;
 
 import javax.swing.*;
-import java.util.ArrayList;
 
 public class LoginGUI extends GUI {
     private JPanel mainPanel;

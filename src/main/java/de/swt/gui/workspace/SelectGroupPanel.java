@@ -5,7 +5,6 @@ import de.swt.gui.GUIManager;
 import de.swt.logic.Group;
 
 import javax.swing.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SelectGroupPanel extends GUI {

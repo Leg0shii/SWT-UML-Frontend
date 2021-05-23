@@ -1,6 +1,6 @@
 package de.swt.drawing.objects;
 
-import de.swt.drawing.buttonGUIS.ResizingGUI;
+import de.swt.drawing.buttonGUIS.RotatingGUI;
 import de.swt.gui.GUI;
 
 import java.awt.*;
@@ -83,6 +83,6 @@ public class Arrow extends RotatableObject {
 
     @Override
     GUI createPopup() {
-        return new ResizingGUI(guiManager, this);
+        return new RotatingGUI(guiManager, this);
     }
 }

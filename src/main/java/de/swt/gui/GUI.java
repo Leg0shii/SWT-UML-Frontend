@@ -2,7 +2,6 @@ package de.swt.gui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 

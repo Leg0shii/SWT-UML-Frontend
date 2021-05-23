@@ -3,15 +3,13 @@ package de.swt.drawing.buttonGUIS;
 import de.swt.drawing.objects.DrawableObject;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
+import de.swt.util.Language;
 
 import javax.swing.*;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class StandardGUI extends GUI {
     private JPanel mainPanel;

@@ -1,9 +1,6 @@
 package de.swt.gui.workspace;
 
-import de.swt.drawing.buttons.ActorButton;
-import de.swt.drawing.buttons.ArrowButton;
-import de.swt.drawing.buttons.DottedArrowButton;
-import de.swt.drawing.buttons.UseCaseButton;
+import de.swt.drawing.buttons.*;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 
@@ -79,6 +76,7 @@ public class SymbolListPanel extends GUI {
         this.symbolPanel.add(new UseCaseButton(guiManager));
         this.symbolPanel.add(new ArrowButton(guiManager));
         this.symbolPanel.add(new DottedArrowButton(guiManager));
+        this.symbolPanel.add(new SystemBoxButton(guiManager));
 
         updateGUI();
     }

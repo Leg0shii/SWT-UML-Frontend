@@ -28,7 +28,7 @@ public class AsyncMySQL {
      * @param port port of mysql server (usually 3306)
      * @param user username (usually "root")
      * @param password password of username
-     * @param database de.swt.database to connect to
+     * @param database de.swt.client.database to connect to
      */
     public AsyncMySQL(String host, int port, String user, String password, String database) throws SQLException, ClassNotFoundException {
 
@@ -55,7 +55,7 @@ public class AsyncMySQL {
     }
 
     /**
-     * Can be used to insert a new record into the de.swt.database asynchronous if "auto increment"
+     * Can be used to insert a new record into the de.swt.client.database asynchronous if "auto increment"
      * is turned on for the "ID" column.
      * The returned integer in the consumer is the id that got generated.
      * @param insert sql insert query as a String

@@ -2,11 +2,8 @@ package de.swt.drawing.objects;
 
 import de.swt.drawing.buttonGUIS.StandardGUI;
 import de.swt.gui.GUI;
-import de.swt.gui.GUIManager;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 
 public class UseCase extends DrawableObject {
     private int width;

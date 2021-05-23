@@ -2,9 +2,7 @@ package de.swt.drawing.objects;
 
 import de.swt.drawing.buttonGUIS.StandardGUI;
 import de.swt.gui.GUI;
-import de.swt.gui.GUIManager;
 
-import javax.swing.*;
 import java.awt.*;
 
 public class Actor extends DrawableObject {

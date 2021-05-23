@@ -2,9 +2,9 @@ package de.swt.gui.classroom;
 
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
+import de.swt.util.Language;
 
 import javax.swing.*;
-import java.util.ArrayList;
 
 public class AdminEditClassroomPanel extends GUI {
     private JPanel mainPanel;

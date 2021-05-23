@@ -1,7 +1,5 @@
 package de.swt.drawing;
 
-import de.swt.gui.workspace.DrawablePanel;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -9,7 +7,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 //https://stackoverflow.com/questions/874360/swing-creating-a-draggable-component
 
@@ -42,10 +39,8 @@ public class Draggable extends JComponent implements Serializable {
                 ArrayList<Component> orderedComponents = new ArrayList<>();
                 orderedComponents.add(Draggable.this);
                 orderedComponents.addAll(underlyingComponents);
-                DrawablePanel parent = (DrawablePanel) getParent().getParent().getParent();
                 for (Component component : orderedComponents){
-                    getParent().remove(component);
-                    parent.addToDrawPanel((JComponent) component);
+                    getParent().add(component);
                 }
             }
         });
@@ -80,6 +75,6 @@ public class Draggable extends JComponent implements Serializable {
     private boolean checkIfCrossingComponent(Component component) {
         Rectangle rect1 = component.getBounds();
         Rectangle rect2 = getBounds();
-        return rect1.intersects(rect2);
+        return rect1.contains(rect2);
     }
 }

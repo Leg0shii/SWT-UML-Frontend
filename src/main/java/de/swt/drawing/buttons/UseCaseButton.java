@@ -32,7 +32,6 @@ public class UseCaseButton extends DrawableObjectButton {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 guiManager.addToDrawPanel(new UseCase(50, 50, 1, description, color));
-                setPreferredSize(new Dimension(width + offset * 2, height + offset * 2));
             }
         });
     }

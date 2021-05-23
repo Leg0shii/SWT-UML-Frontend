@@ -8,7 +8,6 @@ import de.swt.logic.User;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class GradePanel extends GUI {
     private Course course;

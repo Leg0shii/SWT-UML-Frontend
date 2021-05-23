@@ -5,7 +5,6 @@ import de.swt.gui.GUIManager;
 import de.swt.logic.User;
 
 import javax.swing.*;
-import java.util.ArrayList;
 
 public class RequestPanel extends GUI {
     private JPanel mainPanel;

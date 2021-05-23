@@ -1,6 +1,5 @@
 package de.swt.drawing.buttons;
 
-import de.swt.drawing.objects.Arrow;
 import de.swt.drawing.objects.DottedArrow;
 import de.swt.gui.GUIManager;
 

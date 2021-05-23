@@ -1,6 +1,6 @@
 package de.swt.drawing.buttonGUIS;
 
-import de.swt.drawing.objects.ResizableObject;
+import de.swt.drawing.objects.RotatableObject;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.util.Language;
@@ -11,27 +11,29 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 
-public class ResizingGUI extends GUI {
+import static java.lang.Math.abs;
+
+public class RotatingGUI extends GUI {
     private JPanel mainPanel;
+    private JCheckBox arrowHeadOrientationCheckBox;
     private JButton colorButton;
-    private JSlider scaleSlider;
-    private JSlider widthSlider;
-    private JSlider heightSlider;
     private JTextField descriptionTextField;
+    private JSlider scaleSlider;
+    private JSlider rotationSlider;
     private JLabel descriptionLabel;
     private JLabel scaleLabel;
-    private JLabel widthLabel;
-    private JLabel heightLabel;
+    private JLabel rotationLabel;
     private JLabel colorLabel;
     private final JColorChooser colorChooser;
-    private final ResizableObject associatedObject;
+    private final RotatableObject associatedObject;
     private String description;
     private Color color;
     private double scale;
-    public int height;
-    public int width;
+    public int startYOffset;
+    public int endYOffset;
+    public boolean switchSides;
 
-    public ResizingGUI(GUIManager guiManager, ResizableObject associatedObject) {
+    public RotatingGUI(GUIManager guiManager, RotatableObject associatedObject) {
         super(guiManager);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
@@ -39,21 +41,21 @@ public class ResizingGUI extends GUI {
         colorChooser = new JColorChooser();
 
         switch (guiManager.language) {
-            case GERMAN -> setupGUI("Beschreibung", "Skalierung", "Farbe", "Farbe auswählen", "Breite", "Höhe");
-            case ENGLISH -> setupGUI("Description", "Scale", "Color", "Choose Color", "Width", "Height");
+            case GERMAN -> setupGUI("Beschreibung", "Skalierung", "Farbe", "Farbe auswählen", "Rotation", "Pfeilspitze rechts");
+            case ENGLISH -> setupGUI("Description", "Scale", "Color", "Choose Color", "Rotation", "Arrow Head on the right");
         }
 
         setupListeners();
         updateGUI();
     }
 
-    private void setupGUI(String description, String scale, String color, String chooseColor, String width, String height) {
+    private void setupGUI(String description, String scale, String color, String chooseColor, String rotation, String arrowHeadOrientation) {
         this.descriptionLabel.setText(description);
         this.scaleLabel.setText(scale);
         this.colorLabel.setText(color);
         this.colorButton.setText(chooseColor);
-        this.widthLabel.setText(width);
-        this.heightLabel.setText(height);
+        this.rotationLabel.setText(rotation);
+        this.arrowHeadOrientationCheckBox.setText(arrowHeadOrientation);
         this.scaleSlider.setMinimum(5);
         this.scaleSlider.setMaximum(30);
         this.scaleSlider.setMinorTickSpacing(1);
@@ -69,19 +71,14 @@ public class ResizingGUI extends GUI {
         }
         colorChooser.setPreviewPanel(new JPanel());
 
-        this.widthSlider.setMinimum(0);
-        this.widthSlider.setMaximum(guiManager.getWidth() / 2);
-        this.widthSlider.setMinorTickSpacing(1);
-        this.widthSlider.setPaintLabels(true);
-
-        this.heightSlider.setMinimum(0);
-        this.heightSlider.setMaximum(3 * guiManager.getHeight() / 4);
-        this.heightSlider.setMinorTickSpacing(1);
-        this.heightSlider.setPaintLabels(true);
+        this.rotationSlider.setMinimum((int) (-100*associatedObject.scale));
+        this.rotationSlider.setMaximum((int) (100*associatedObject.scale));
+        this.rotationSlider.setMinorTickSpacing(1);
+        this.rotationSlider.setPaintLabels(true);
 
         this.scaleSlider.setValue((int) (associatedObject.scale * 10));
-        this.widthSlider.setValue(associatedObject.width);
-        this.heightSlider.setValue(associatedObject.height);
+        this.rotationSlider.setValue(associatedObject.endYOffset - associatedObject.startYOffset);
+        this.arrowHeadOrientationCheckBox.setSelected(associatedObject.switchSides);
         this.colorChooser.setColor(associatedObject.color);
         this.descriptionTextField.setText(associatedObject.description);
         this.descriptionTextField.setEditable(true);
@@ -93,8 +90,9 @@ public class ResizingGUI extends GUI {
         this.description = associatedObject.description;
         this.color = associatedObject.color;
         this.scale = associatedObject.scale;
-        this.width = associatedObject.width;
-        this.height = associatedObject.height;
+        this.startYOffset = associatedObject.startYOffset;
+        this.endYOffset = associatedObject.endYOffset;
+        this.switchSides = associatedObject.switchSides;
         this.descriptionTextField.setEditable(true);
         this.revalidate();
         this.mainPanel.revalidate();
@@ -104,19 +102,19 @@ public class ResizingGUI extends GUI {
         descriptionTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                associatedObject.updateComponent(descriptionTextField.getText(), scale, color, width, height);
+                associatedObject.updateComponent(descriptionTextField.getText(), scale, color, startYOffset, endYOffset, switchSides);
                 updateGUI();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                associatedObject.updateComponent(descriptionTextField.getText(), scale, color, width, height);
+                associatedObject.updateComponent(descriptionTextField.getText(), scale, color, startYOffset, endYOffset, switchSides);
                 updateGUI();
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                associatedObject.updateComponent(descriptionTextField.getText(), scale, color, width, height);
+                associatedObject.updateComponent(descriptionTextField.getText(), scale, color, startYOffset, endYOffset, switchSides);
                 updateGUI();
             }
         });
@@ -132,19 +130,24 @@ public class ResizingGUI extends GUI {
             incrementPopupCounter(0);
         });
         scaleSlider.addChangeListener(e -> {
-            associatedObject.updateComponent(description, convertSliderValue(scaleSlider.getValue()), color, width, height);
+            associatedObject.updateComponent(description, convertSliderValue(scaleSlider.getValue()), color, startYOffset, endYOffset, switchSides);
             updateGUI();
         });
         colorChooser.getSelectionModel().addChangeListener(e -> {
-            associatedObject.updateComponent(description, scale, colorChooser.getColor(), width, height);
+            associatedObject.updateComponent(description, scale, colorChooser.getColor(), startYOffset, endYOffset, switchSides);
             updateGUI();
         });
-        widthSlider.addChangeListener(e -> {
-            associatedObject.updateComponent(description, scale, color, widthSlider.getValue(), height);
-            updateGUI();
+        rotationSlider.addChangeListener(e -> {
+            if (rotationSlider.getValue() >= 0) {
+                associatedObject.updateComponent(description, scale, color, startYOffset, (int) (rotationSlider.getValue()*scale), switchSides);
+                updateGUI();
+            } else {
+                associatedObject.updateComponent(description, scale, color, (int) abs(rotationSlider.getValue()*scale), endYOffset, switchSides);
+                updateGUI();
+            }
         });
-        heightSlider.addChangeListener(e -> {
-            associatedObject.updateComponent(description, scale, color, width, heightSlider.getValue());
+        arrowHeadOrientationCheckBox.addChangeListener(e -> {
+            associatedObject.updateComponent(description, scale, color, startYOffset, endYOffset, arrowHeadOrientationCheckBox.isSelected());
             updateGUI();
         });
     }

@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.Serializable;
 
 public abstract class DrawableObject extends Draggable {
     public Color color;
@@ -63,6 +62,7 @@ public abstract class DrawableObject extends Draggable {
                     popupPanel.closeAllPopups();
                 }
                 popupCounter++;
+                System.out.println(getMouseListeners().length);
             }
         });
     }

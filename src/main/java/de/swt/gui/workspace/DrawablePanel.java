@@ -4,6 +4,7 @@ import de.swt.drawing.objects.DrawableObject;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.util.AccountType;
+import de.swt.util.Language;
 
 import javax.swing.*;
 import java.awt.*;
@@ -104,7 +105,6 @@ public class DrawablePanel extends GUI {
         object.init(guiManager);
         drawPanel.add(object);
         drawableObjects.add(object);
-        drawPanel.revalidate();
         drawPanel.repaint();
     }
 
