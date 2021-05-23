@@ -2,7 +2,7 @@ package de.swt.gui.classroom;
 
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
-import de.swt.logic.User;
+import de.swt.logic.user.User;
 
 import javax.swing.*;
 import java.util.ArrayList;

@@ -23,15 +23,6 @@ public class RMIClient {
         this.serverRMIPort = 1099;
     }
 
-    private int generateClientID() {
-        /*
-         * Funktion soll ClientID erstellen
-         * ggf Anfrage an Server auf offene IDs
-         * aus Testzwecken 42
-         */
-        return 42;
-    }
-
     private String hashFunction(String password) {
         MessageDigest digest = null;
         String passwordHash;

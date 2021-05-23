@@ -1,4 +1,4 @@
-package de.swt.logic;
+package de.swt.logic.user;
 
 import de.swt.database.AsyncMySQL;
 import de.swt.util.AccountType;
@@ -81,7 +81,8 @@ public class UserManager {
                     User user = userHashMap.get(userid);
                     user.setOnline(true);
                     try {
-                        client.server.sendUser(user, userid, true);
+                        // userid doesnt matter if update = true
+                        client.server.sendUser(user, 0, true);
                         System.out.println("LOGIN SUCC...");
                     } catch (RemoteException e) {
                         e.printStackTrace();

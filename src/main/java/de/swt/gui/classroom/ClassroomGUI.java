@@ -2,8 +2,8 @@ package de.swt.gui.classroom;
 
 import de.swt.gui.GUIManager;
 import de.swt.gui.GUI;
+import de.swt.logic.user.User;
 import de.swt.util.AccountType;
-import de.swt.logic.User;
 
 import javax.swing.*;
 import java.awt.*;

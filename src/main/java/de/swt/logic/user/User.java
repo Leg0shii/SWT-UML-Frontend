@@ -1,4 +1,4 @@
-package de.swt.logic;
+package de.swt.logic.user;
 
 import de.swt.util.AccountType;
 import lombok.AllArgsConstructor;
@@ -20,6 +20,8 @@ public class User implements Serializable {
     private String surname;
     private int[] course;
     private boolean online;
+    private boolean isInGroup;
+    private boolean isInCourse;
 
     public User(int id, String firstname, String surname) {
         this.id = id;
@@ -32,4 +34,3 @@ public class User implements Serializable {
     }
 
 }
-

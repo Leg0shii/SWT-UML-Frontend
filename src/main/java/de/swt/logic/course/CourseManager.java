@@ -1,6 +1,8 @@
-package de.swt.logic;
+package de.swt.logic.course;
 
 import de.swt.database.AsyncMySQL;
+import de.swt.logic.course.Course;
+import de.swt.logic.user.User;
 import de.swt.util.Client;
 import lombok.Getter;
 

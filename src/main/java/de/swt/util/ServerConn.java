@@ -1,6 +1,6 @@
 package de.swt.util;
 
-import de.swt.logic.User;
+import de.swt.logic.user.User;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -31,8 +31,8 @@ public class ServerConn {
 
         // use 1st and 2nd byte to define length!!!!
         int bytesRead;
-        byteMessage[0] = input.readByte();
         byteMessage[1] = input.readByte();
+        byteMessage[0] = input.readByte();
         ByteBuffer byteBuffer = ByteBuffer.wrap(byteMessage, 0 , 2);
 
         // this is transforms the bytes to read from current 2 bytes into int (big endian)
@@ -48,36 +48,8 @@ public class ServerConn {
         }
 
         // continue here with evalutating the recieved ping message from Client
-        evaluateCommand(dataString);
-    }
-
-    private void evaluateCommand(String command) {
-        String[] keyArgs = command.split(":");
-        String[] args = keyArgs[1].split(" ");
-
-        switch (keyArgs[0]) {
-            case "UU":
-                int clientID;
-                try { clientID = Integer.parseInt(args[0]);
-                } catch (NumberFormatException ignored) {
-                    System.out.println("CLIENT ID IS NOT A NUMBER");
-                    return;
-                }
-                try {
-                    client.userManager.getUserHashMap().remove(clientID);
-                    User user = client.server.sendUser(null, clientID, false);
-                    client.userManager.getUserHashMap().put(clientID, user);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                    return;
-                }
-                return;
-            case "LOGOUT":
-
-                return;
-            default:
-                return;
-        }
+        System.out.println("Recieved message: " + dataString);
+        //evaluateCommand(dataString);
     }
 
     public void startServer() {

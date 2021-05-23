@@ -2,20 +2,21 @@ package de.swt.util;
 
 import de.swt.database.AsyncMySQL;
 import de.swt.database.DBManager;
-import de.swt.logic.CourseManager;
-import de.swt.logic.UserManager;
+import de.swt.logic.course.CourseManager;
+import de.swt.logic.user.UserManager;
 import de.swt.rmi.RMIClient;
 import de.swt.rmi.RMIServerInterface;
 
-import java.io.IOException;
-import java.rmi.RemoteException;
+import java.util.Timer;
 
 public class Client {
+
+    public static Client instance;
+    public boolean loggedIn;
 
     public AsyncMySQL mySQL;
     public int userid;
     public DBManager dbManager;
-    public static Client instance;
 
     public CourseManager courseManager;
     public UserManager userManager;
@@ -24,12 +25,14 @@ public class Client {
     public void onStart() {
 
         instance = this;
+        loggedIn = false;
         dbManager = new DBManager();
         mySQL = dbManager.connectToDB();
 
         /* try {
             ServerConn serverConn = new ServerConn(instance, 50000);
             serverConn.startServer();
+            System.out.println("TCP Server started, listening on port 50000");
         } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -38,11 +41,11 @@ public class Client {
         RMIClient rmiClient = new RMIClient();
         server = rmiClient.initRMIClient();
 
+        Timer commandGetter = new Timer();
+        commandGetter.schedule(new ReadCommandList(instance), 1000, 5000);
+
         courseManager = new CourseManager(instance);
         userManager = new UserManager(instance);
-
-        //try { System.out.println(server.ping(17));
-        //} catch (RemoteException ignored) { }
 
         loadAllInformation();
     }

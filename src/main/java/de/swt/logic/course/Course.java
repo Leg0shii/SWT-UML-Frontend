@@ -1,10 +1,12 @@
-package de.swt.logic;
+package de.swt.logic.course;
 
+import de.swt.logic.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -12,7 +14,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Course{
+public class Course implements Serializable {
 
     private int id;
     private int grade;

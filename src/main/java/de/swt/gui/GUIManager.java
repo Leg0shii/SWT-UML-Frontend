@@ -3,11 +3,11 @@ package de.swt.gui;
 import de.swt.gui.classroom.ClassroomGUI;
 import de.swt.gui.login.LoginGUI;
 import de.swt.gui.workspace.WorkspaceGUI;
-import de.swt.logic.Group;
+import de.swt.logic.group.Group;
+import de.swt.logic.user.User;
 import de.swt.util.AccountType;
 import de.swt.util.Client;
 import de.swt.util.Language;
-import de.swt.logic.User;
 import org.apache.commons.lang3.SerializationUtils;
 
 import javax.swing.*;
@@ -48,7 +48,7 @@ public class GUIManager extends JFrame {
         this.childrenGUI.add(workspaceGUI);
     }
 
-    public void updateGUIS(String[] schools, ArrayList<User> students,  List<Group> groups, List<User> users, int remainingTime) {
+    public void updateGUIS(String[] schools, ArrayList<User> students, List<Group> groups, List<User> users, int remainingTime) {
         this.classroomGUI.updateGUI(students);
         this.loginGUI.updateGUI(schools);
         this.workspaceGUI.updateGUI(groups, users, remainingTime);
