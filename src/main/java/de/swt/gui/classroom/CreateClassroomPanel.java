@@ -2,7 +2,10 @@ package de.swt.gui.classroom;
 
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
+import de.swt.logic.course.Course;
+import de.swt.util.Client;
 import de.swt.util.Language;
+import de.swt.util.NextDate;
 
 import javax.swing.*;
 
@@ -65,6 +68,15 @@ public class CreateClassroomPanel extends GUI {
 
     // TODO : Other Group adds this Function!
     public void doneFunction(){
+        Client client = guiManager.getClient();
+        Course course = new Course();
+
+        course.setGrade(gradeComboBox.getSelectedIndex()+10);
+        course.setTeacher(client.userManager.getUserHashMap().get(Integer.parseInt(getTeacher())));
+        course.setDates(NextDate.getDateFromString(getDate()));
+        course.setName(getGradeName());
+
+        // continue here later
 
     }
 

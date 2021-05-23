@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 @Getter
 @Setter
@@ -18,7 +19,7 @@ public class User implements Serializable {
     private AccountType accountType;
     private String firstname;
     private String surname;
-    private int[] course;
+    private ArrayList<Integer> course;
     private boolean online;
     private boolean isInGroup;
     private boolean isInCourse;

@@ -5,9 +5,12 @@ import de.swt.gui.GUIManager;
 import de.swt.logic.course.Course;
 import de.swt.logic.user.User;
 import de.swt.util.AccountType;
+import de.swt.util.NextDate;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class GradePanel extends GUI {
     private Course course;
@@ -122,6 +125,32 @@ public class GradePanel extends GUI {
 
     // TODO: Other Group implements this
     private void enterFunction() {
+
+        // TODO: check if session is started
+        ArrayList<Long> longList = new ArrayList<>();
+        for(Date d : course.getDates()) {
+            longList.add(d.getTime());
+        }
+
+        Date earlierstDate = NextDate.getNextDate(longList);
+        if(guiManager.getClient().userManager.checkSessionStarted(earlierstDate)) {
+
+            // if user is allowed to join the course
+            int courseid = course.getId();
+            int uid = guiManager.getClient().userid;
+            User user = guiManager.getClient().userManager.getUserHashMap().get(uid);
+
+            if(user.getCourse().contains(courseid)) {
+
+                // allow user to join -> update user list for all that are inside
+
+            } else {
+
+                // send pop up to teacher
+
+            }
+
+        }
 
     }
 }

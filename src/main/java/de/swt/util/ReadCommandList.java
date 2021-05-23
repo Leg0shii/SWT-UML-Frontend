@@ -50,9 +50,6 @@ public class ReadCommandList extends TimerTask {
                     return;
                 }
                 return;
-            case "LOGOUT":
-
-                return;
             default:
                 return;
         }

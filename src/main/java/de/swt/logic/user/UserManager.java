@@ -9,6 +9,8 @@ import lombok.Setter;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 @Setter
@@ -58,17 +60,19 @@ public class UserManager {
         }
     }
 
-    private int[] loadCourses(int userid) throws SQLException {
-        int[] courses = new int[2];
-        ResultSet resultSetUser = mySQL.query("SELECT mcourseid,scourseid FROM users WHERE userid = " + userid + ";");
+    private ArrayList<Integer> loadCourses(int userid) throws SQLException {
+        ArrayList<Integer> courseList = new ArrayList<>();
+        ResultSet resultSetUser = mySQL.query("SELECT courseids FROM users WHERE userid = " + userid + ";");
         if(resultSetUser.next()) {
-            courses[0] = resultSetUser.getInt("mcourseid");
-            courses[1] = resultSetUser.getInt("scourseid");
+            String[] courses = resultSetUser.getString("courseids").split(";");
+            for(String course : courses) {
+                courseList.add(Integer.parseInt(course));
+            }
         } else {
             System.out.println("ERROR IN USER MANAGER!!!");
             return null;
         }
-        return courses;
+        return courseList;
     }
 
     public boolean userLogin(int userid, String password) {
@@ -83,6 +87,7 @@ public class UserManager {
                     try {
                         // userid doesnt matter if update = true
                         client.server.sendUser(user, 0, true);
+                        client.userid = userid;
                         System.out.println("LOGIN SUCC...");
                     } catch (RemoteException e) {
                         e.printStackTrace();
@@ -103,12 +108,24 @@ public class UserManager {
     }
 
     public void userLogout() {
-        userHashMap.get(client.userid).setOnline(false);
+
+        User user = userHashMap.get(client.userid);
+        user.setOnline(false);
+        user.setInCourse(false);
+        user.setInGroup(false);
+
+        try {
+            client.server.sendUser(user, 0, true);
+            System.out.println("LOGUT SUCC...");
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            System.out.println("COULDNT USE sendUser()");
+        }
     }
 
-    public boolean canJoinCourse(int courseid) {
-        return userHashMap.get(client.userid).getCourse()[0] == courseid
-            || userHashMap.get(client.userid).getCourse()[1] == courseid;
+    public boolean checkSessionStarted(Date date) {
+
+        return false;
     }
 
 }

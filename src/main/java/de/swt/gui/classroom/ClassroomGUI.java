@@ -120,6 +120,8 @@ public class ClassroomGUI extends GUI {
     }
 
     private void logout() {
+        // logs out user
+        guiManager.getClient().userManager.userLogout();
         guiManager.switchToLoginGUI();
     }
 
