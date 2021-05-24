@@ -31,7 +31,7 @@ public abstract class DrawableObjectButton extends JComponent {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(color);
-        g2d.setFont(new Font("Arial", Font.BOLD, (int) (g2d.getFont().getSize() * scale)));
+        g2d.setFont(new Font("Segoe UI", Font.BOLD, (int) (g2d.getFont().getSize() * scale)));
         drawButton(g2d);
     }
 

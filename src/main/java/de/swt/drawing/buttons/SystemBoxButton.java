@@ -47,6 +47,6 @@ public class SystemBoxButton extends DrawableObjectButton{
         g2d.drawLine(leftX, topY, leftX, bottomY);
         g2d.drawLine(leftX, bottomY, rightX, bottomY);
         g2d.drawLine(rightX, bottomY, rightX, topY);
-        g2d.drawString(description,leftX,topY);
+        g2d.drawString(description,leftX,topY-textHeight/2);
     }
 }
