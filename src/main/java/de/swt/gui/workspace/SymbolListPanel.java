@@ -18,11 +18,8 @@ import java.io.IOException;
 import java.util.Objects;
 
 /**
- * <div>Thumbs Up made by <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
- * <div>Thumbs Down made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
- * <div>Pencil made by <a href="https://www.flaticon.com/authors/prosymbols" title="Prosymbols">Prosymbols</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
- * <div>Trash bin made by <a href="https://www.flaticon.com/authors/bqlqn" title="bqlqn">bqlqn</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
- */
+ * <div>Icons from <a href="https://kordamp.org/ikonli/cheat-sheet-fluentui.html" title="Kordamp">Kordamp</a></div>
+*/
 
 public class SymbolListPanel extends GUI {
     private JPanel mainPanel;
