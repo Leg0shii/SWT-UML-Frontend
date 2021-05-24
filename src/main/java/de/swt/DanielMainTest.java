@@ -1,6 +1,7 @@
 package de.swt;
 
 import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatSolarizedLightIJTheme;
 import de.swt.gui.GUIManager;
 import de.swt.gui.classroom.GradePanel;
 import de.swt.logic.group.Group;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 public class DanielMainTest {
     public static void main(String[] args) {
         try {
-            UIManager.setLookAndFeel(new FlatArcOrangeIJTheme());
+            UIManager.setLookAndFeel(new FlatSolarizedLightIJTheme());
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
