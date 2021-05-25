@@ -9,13 +9,13 @@ import lombok.Setter;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 @Setter
 @Getter
@@ -140,7 +140,35 @@ public class UserManager {
 
     public boolean checkSessionStarted(Date date) {
 
-        return false;
+        /*Reads an individual date*/
+        System.out.println("dd.mm.yyyy HH:mm" + " Please Enter Date!");
+        Scanner scanner = new Scanner(System.in);
+        String str = scanner.nextLine();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+
+        try {
+            date = new SimpleDateFormat("dd.MM.yyyy HH:mm").parse(str);
+            System.out.println(dateFormat.format(date));
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        /*Reads the current date*/
+        Date date2 = new Date();
+        System.out.println(dateFormat.format(date2));
+
+        /*Adds 1 hour and 30 minutes to the current time of the date*/
+        Date date3 = new Date(date2.getTime() + TimeUnit.HOURS.toMillis(1) + TimeUnit.MINUTES.toMillis(30));
+        System.out.println(dateFormat.format(date3));
+
+        /*Checks whether the individual date is within the range of the
+        current date and the current date with the added 1 hour and 30 minutes*/
+        if (date.before(date3) && date.after(date2)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
