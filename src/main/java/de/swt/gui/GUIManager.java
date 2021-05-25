@@ -56,7 +56,11 @@ public class GUIManager extends JFrame {
     }
 
     public void switchToLoginGUI() {
-        this.getClient().userManager.userLogout();
+        try {
+            this.getClient().userManager.userLogout();
+        } catch (Exception ignored){
+
+        }
         closeAllPopups();
         this.setContentPane(loginGUI);
         this.setVisible(true);
