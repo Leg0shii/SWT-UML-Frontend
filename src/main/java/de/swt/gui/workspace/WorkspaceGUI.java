@@ -21,7 +21,6 @@ public class WorkspaceGUI extends GUI {
     private JPanel midPanel;
     private JPanel rightPanel;
     private JButton sendTaskButton;
-    private JMenuBar menuBar;
     private final ObjectListPanel objectListPanel;
     private final DrawablePanel drawablePanel;
     private Group selectedGroup;
@@ -59,6 +58,8 @@ public class WorkspaceGUI extends GUI {
         this.midPanel.add(drawablePanel);
         this.sendTaskButton.setText(sendTask);
         this.rightPanel.add(symbolListPanel);
+
+        this.menuPanel.add(new Menu(guiManager));
     }
 
     public void updateGUI(List<Group> groups, List<User> users, int remainingTime) {
@@ -113,13 +114,8 @@ public class WorkspaceGUI extends GUI {
         }
     }
 
-    private void initMenu(String file){
-        JMenu fileMenu = new JMenu(file);
-    }
-
     private void logout() {
         // logs out user
-        guiManager.getClient().userManager.userLogout();
         guiManager.switchToLoginGUI();
     }
 

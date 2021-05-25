@@ -104,26 +104,11 @@ public class DanielMainTest {
         File file= new File("src\\main\\resources\\test.ser");
         JButton button8 = new JButton("Save Drawn Objects");
         button8.addActionListener(e -> {
-            try {
-                FileOutputStream fileOutputStream = new FileOutputStream(file);
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-                objectOutputStream.writeObject(guiManager.getDrawnObjects());
-                objectOutputStream.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            guiManager.saveWorkspace(file);
         });
         JButton button9 = new JButton("Load Drawn Objects");
         button9.addActionListener(e -> {
-            try {
-                FileInputStream fileInputStream = new FileInputStream(file);
-                ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-                Component[] list = (Component[]) objectInputStream.readObject();
-                objectInputStream.close();
-                guiManager.addDrawnObjects(list);
-            } catch (IOException | ClassNotFoundException ex) {
-                ex.printStackTrace();
-            }
+            guiManager.loadWorkspace(file);
         });
         frame.setLayout(new FlowLayout());
         frame.add(button);

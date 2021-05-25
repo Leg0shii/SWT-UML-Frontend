@@ -12,6 +12,7 @@ import org.apache.commons.lang3.SerializationUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +56,7 @@ public class GUIManager extends JFrame {
     }
 
     public void switchToLoginGUI() {
+        this.getClient().userManager.userLogout();
         closeAllPopups();
         this.setContentPane(loginGUI);
         this.setVisible(true);
@@ -105,6 +107,29 @@ public class GUIManager extends JFrame {
         }
         for (Component component : components){
             addToDrawPanel((JComponent) component);
+        }
+    }
+
+    public void saveWorkspace(File file){
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(this.getDrawnObjects());
+            objectOutputStream.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void loadWorkspace(File file){
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            Component[] list = (Component[]) objectInputStream.readObject();
+            objectInputStream.close();
+            this.addDrawnObjects(list);
+        } catch (IOException | ClassNotFoundException ex) {
+            ex.printStackTrace();
         }
     }
 }
