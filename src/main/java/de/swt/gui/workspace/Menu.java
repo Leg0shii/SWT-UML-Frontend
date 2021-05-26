@@ -43,12 +43,9 @@ public class Menu extends JMenuBar {
     private void setupListeners() {
         saveFile.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("SER", ".ser");
-            fileChooser.setFileFilter(filter);
             int returnVal = fileChooser.showSaveDialog(guiManager.workspaceGUI);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
-                System.out.println("here " + file);
                 if (!file.getName().endsWith(".ser")) {
                     guiManager.saveWorkspace(new File(file + ".ser"));
                 } else {
@@ -58,7 +55,7 @@ public class Menu extends JMenuBar {
         });
         loadFile.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("SER", ".ser");
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Serialized Object (*.ser)", "ser");
             fileChooser.setFileFilter(filter);
             int returnVal = fileChooser.showOpenDialog(guiManager.workspaceGUI);
             if (returnVal == JFileChooser.APPROVE_OPTION) {

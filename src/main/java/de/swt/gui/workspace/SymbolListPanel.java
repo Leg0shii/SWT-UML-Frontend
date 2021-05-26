@@ -2,6 +2,8 @@ package de.swt.gui.workspace;
 
 import com.formdev.flatlaf.icons.*;
 import de.swt.drawing.buttons.*;
+import de.swt.drawing.objects.ThumbDown;
+import de.swt.drawing.objects.ThumbUp;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import org.kordamp.ikonli.IkonliIkonProvider;
@@ -102,11 +104,11 @@ public class SymbolListPanel extends GUI {
     }
 
     private void drawThumbUp() {
-
+        guiManager.addToDrawPanel(new ThumbUp(50,50,Color.black,1,""));
     }
 
     private void drawThumbDown() {
-
+        guiManager.addToDrawPanel(new ThumbDown(50,50,Color.black,1,""));
     }
 
     private void enableDraw() {

@@ -1,6 +1,5 @@
 package de.swt;
 
-import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatSolarizedLightIJTheme;
 import de.swt.gui.GUIManager;
 import de.swt.gui.classroom.GradePanel;
@@ -101,15 +100,6 @@ public class DanielMainTest {
         button7.addActionListener(e -> {
             guiManager.switchToWorkspaceGUI();
         });
-        File file= new File("src\\main\\resources\\test.ser");
-        JButton button8 = new JButton("Save Drawn Objects");
-        button8.addActionListener(e -> {
-            guiManager.saveWorkspace(file);
-        });
-        JButton button9 = new JButton("Load Drawn Objects");
-        button9.addActionListener(e -> {
-            guiManager.loadWorkspace(file);
-        });
         frame.setLayout(new FlowLayout());
         frame.add(button);
         frame.add(button2);
@@ -118,8 +108,6 @@ public class DanielMainTest {
         frame.add(button5);
         frame.add(button6);
         frame.add(button7);
-        frame.add(button8);
-        frame.add(button9);
         frame.pack();
         frame.setVisible(true);
     }

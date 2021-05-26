@@ -14,6 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GUIManager extends JFrame {
@@ -100,15 +101,29 @@ public class GUIManager extends JFrame {
         return workspaceGUI.removeLastDrawnObject();
     }
 
+    public boolean removeLastAnnotations(){
+        return workspaceGUI.removeLastAnnotations();
+    }
+
     public Component[] getDrawnObjects(){
         Component[] components = workspaceGUI.getDrawnObjects();
         return SerializationUtils.clone(components);
     }
 
-    public void addDrawnObjects(Component[] components){
-        while (removeLastDrawnObject()){
+    public Component[] getAnnotations(){
+        Component[] components = workspaceGUI.getAnnotations();
+        return SerializationUtils.clone(components);
+    }
 
+    public void addDrawnObjects(Component[] components){
+        while(removeLastDrawnObject()){}
+        for (Component component : components){
+            addToDrawPanel((JComponent) component);
         }
+    }
+
+    public void addAnnotations(Component[] components){
+        while(removeLastAnnotations()){}
         for (Component component : components){
             addToDrawPanel((JComponent) component);
         }
@@ -118,7 +133,10 @@ public class GUIManager extends JFrame {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(this.getDrawnObjects());
+            var allComponents = new Component[2][2];
+            allComponents[0] = this.getDrawnObjects();
+            allComponents[1] = this.getAnnotations();
+            objectOutputStream.writeObject(allComponents);
             objectOutputStream.close();
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -129,9 +147,12 @@ public class GUIManager extends JFrame {
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            Component[] list = (Component[]) objectInputStream.readObject();
+            Component[][] list = (Component[][]) objectInputStream.readObject();
+            Component[] objects = list[0];
+            Component[] annotations = list[1];
             objectInputStream.close();
-            this.addDrawnObjects(list);
+            this.addDrawnObjects(objects);
+            this.addAnnotations(annotations);
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }

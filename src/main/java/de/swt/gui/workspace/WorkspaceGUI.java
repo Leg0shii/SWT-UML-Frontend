@@ -178,4 +178,11 @@ public class WorkspaceGUI extends GUI {
     public Component[] getDrawnObjects() {
         return drawablePanel.getDrawnObjects();
     }
+    public Component[] getAnnotations(){
+        return drawablePanel.getAnnotations();
+    }
+
+    public boolean removeLastAnnotations() {
+        return drawablePanel.removeLastAnnotations();
+    }
 }

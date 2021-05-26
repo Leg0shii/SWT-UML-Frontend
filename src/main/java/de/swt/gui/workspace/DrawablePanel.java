@@ -8,6 +8,7 @@ import de.swt.util.Language;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Stack;
 
 public class DrawablePanel extends GUI {
@@ -111,10 +112,15 @@ public class DrawablePanel extends GUI {
     public boolean removeLastDrawnObject() {
         if (!drawableObjects.isEmpty()) {
             DrawableObject object = (DrawableObject) drawableObjects.pop();
-            object.closeAllPopups();
-            drawPanel.remove(object);
-            drawPanel.repaint();
-            return true;
+            if (!object.getClass().getSimpleName().matches("Thumb.*")) {
+                object.closeAllPopups();
+                drawPanel.remove(object);
+                drawPanel.repaint();
+                return true;
+            } else {
+                drawableObjects.push(object);
+                return false;
+            }
         }
         return false;
     }
@@ -131,6 +137,38 @@ public class DrawablePanel extends GUI {
     }
 
     public Component[] getDrawnObjects() {
-        return drawPanel.getComponents();
+        ArrayList<Component> components = new ArrayList<>();
+        for (Component component : drawPanel.getComponents()){
+            if (!component.getClass().getSimpleName().matches("Thumb.*")){
+                components.add(component);
+            }
+        }
+        return components.toArray(new Component[0]);
+    }
+
+    public Component[] getAnnotations() {
+        ArrayList<Component> components = new ArrayList<>();
+        for (Component component : drawPanel.getComponents()){
+            if (component.getClass().getSimpleName().matches("Thumb.*")){
+                components.add(component);
+            }
+        }
+        return components.toArray(new Component[0]);
+    }
+
+    public boolean removeLastAnnotations() {
+        if (!drawableObjects.isEmpty()) {
+            DrawableObject object = (DrawableObject) drawableObjects.pop();
+            if (object.getClass().getSimpleName().matches("Thumb.*")) {
+                object.closeAllPopups();
+                drawPanel.remove(object);
+                drawPanel.repaint();
+                return true;
+            } else {
+                drawableObjects.push(object);
+                return false;
+            }
+        }
+        return false;
     }
 }
