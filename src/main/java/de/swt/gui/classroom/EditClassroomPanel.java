@@ -4,17 +4,18 @@ import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.logic.course.Course;
 import de.swt.logic.user.User;
+import de.swt.logic.user.UserManager;
 import lombok.Setter;
 
 import javax.swing.*;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.List;
 
 @Setter
 public class EditClassroomPanel extends GUI {
-    private JPanel mainPanel;
     public JButton doneButton;
     public JButton cancelButton;
+    private JPanel mainPanel;
     private JTextField studentTextField;
     private JComboBox<String> studentComboBox;
     private JLabel studentComboBoxLabel;
@@ -56,76 +57,23 @@ public class EditClassroomPanel extends GUI {
         return (String) studentComboBox.getSelectedItem();
     }
 
-    // TODO: Other Group adds this Function
     public void doneFunction() {
+
+        UserManager userManager = guiManager.getClient().userManager;
+        User user = null;
+
         if (!getStudentToAdd().equals("")) {
-            int addStudentId = 0;
-            try {
-                addStudentId = Integer.parseInt(getStudentToAdd());
-            } catch (Exception e) {
-                System.out.println("Error while parsing Student, Please enter the User Id!");
-            }
-            if (guiManager.getClient().userManager.getUserHashMap().containsKey(addStudentId)) {
-                if (guiManager.getClient().userManager.getUserHashMap().get(addStudentId).getCourse().contains(course.getId())) {
-                    System.out.println("Error: Selected User to add already is in course!");
-                } else {
-                    try {
-                        User user = guiManager.getClient().userManager.getUserHashMap().get(addStudentId);
-                        StringBuilder courseidsAddStudent = new StringBuilder();
-                        courseidsAddStudent.append("\"");
-                        courseidsAddStudent.append(course.getId());
-                        for (int id : guiManager.getClient().userManager.getUserHashMap().get(addStudentId).getCourse()) {
-                            courseidsAddStudent.append("\\;").append(id);
-                        }
-                        courseidsAddStudent.append("\"");
-                        user.getCourse().add(course.getId());
-                        guiManager.getClient().server.sendUser(user,-1,true);
-                    } catch (Exception e) {
-                        System.out.println("Error while updating database");
-                    }
-                }
-            } else {
-                System.out.println("User doesn't exist");
-            }
+            user = userManager.getUserHashMap().get(Integer.parseInt(getStudentToAdd()));
+            userManager.setSingleCourse(user, course.getId());
         }
         if (!getStudentToRemove().equals("")) {
-            int removeStudentId = 0;
-            try {
-                removeStudentId = Integer.parseInt(getStudentToRemove());
-            } catch (Exception e) {
-                System.out.println("Error while parsing Student, Please enter the User Id!");
-            }
-            if (!guiManager.getClient().userManager.getUserHashMap().get(removeStudentId).getCourse().contains(course.getId())) {
-                System.out.println("Error: Selected User to remove isn't part of course!");
-            } else {
-                try {
-                    StringBuilder courseidsRemoveStudent = new StringBuilder();
-                    ArrayList<Integer> courseids = guiManager.getClient().userManager.getUserHashMap().get(removeStudentId).getCourse();
-                    courseids.remove(courseids.indexOf(course.getId()));
-                    if (!courseids.isEmpty()) {
-                        courseidsRemoveStudent.append("\"");
-                        courseidsRemoveStudent.append(courseids.get(0));
-                        if (courseids.size() > 1) {
-                            for (int course : courseids.subList(1, courseids.size() - 1)) {
-                                courseidsRemoveStudent.append("\\;").append(course);
-                            }
-                        }
-                        courseidsRemoveStudent.append("\"");
-                    } else {
-                        courseidsRemoveStudent.append("NULL");
-                    }
-                    guiManager.getClient().mySQL.update("UPDATE users SET courseids=" + courseidsRemoveStudent + " WHERE userid=" + removeStudentId + ";");
-                } catch (Exception e) {
-                    System.out.println("Error while updating database");
-                    e.printStackTrace();
-                }
-            }
+            user = userManager.getUserHashMap().get(Integer.parseInt(getStudentToRemove()));
+            userManager.removeSingleCourse(user, course.getId());
         }
-        try {
-            guiManager.getClient().userManager.cacheAllUserData();
-        } catch (Exception e) {
-            System.out.println("Error while caching new data");
-        }
+
+        try { guiManager.getClient().server.sendUser(user, -1, true); }
+        catch (RemoteException e) { e.printStackTrace(); }
+
         ArrayList<User> list = new ArrayList<>(guiManager.getClient().userManager.getUserHashMap().values());
         guiManager.classroomGUI.updateGUI(list);
     }

@@ -14,6 +14,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +53,11 @@ public class GUIManager extends JFrame {
         this.childrenGUI.add(classroomGUI);
         this.workspaceGUI = new WorkspaceGUI(this);
         this.childrenGUI.add(workspaceGUI);
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                client.userManager.userLogout();
+            }
+        });
     }
 
     public void updateGUIS(String[] schools, ArrayList<User> students, List<Group> groups, List<User> users, int remainingTime) {

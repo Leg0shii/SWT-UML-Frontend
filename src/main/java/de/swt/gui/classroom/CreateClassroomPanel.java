@@ -71,32 +71,21 @@ public class CreateClassroomPanel extends GUI {
     }
 
     public void doneFunction() {
-        Client client = guiManager.getClient();
-        if (course == null) {
-            course = new Course();
-        }
-        course.setGrade(gradeComboBox.getSelectedIndex() + 10);
-        course.setTeacherID(Integer.parseInt(getTeacher()));
-        course.setDates(NextDate.getDateFromString(getDate()));
-        course.setName(getGradeName());
 
-        try {
-            guiManager.getClient().server.sendCourse(course, 0, true);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        Course newCourse = new Course();
+
+        newCourse.setGrade(gradeComboBox.getSelectedIndex() + 10);
+        newCourse.setTeacherID(Integer.parseInt(getTeacher()));
+        newCourse.setDates(NextDate.getDateFromString(getDate()));
+        newCourse.setName(getGradeName());
+
+        try { guiManager.getClient().server.sendCourse(newCourse, 0, true); }
+        catch (RemoteException e) { e.printStackTrace(); }
+
+        guiManager.classroomGUI.updateGradePanels();
     }
 
     public void addFunction() {
-        if (course == null) {
-            course = new Course();
-        }
-        User user = guiManager.getClient().userManager.getUserHashMap().get(Integer.parseInt(getStudent()));
-        guiManager.getClient().userManager.setSingleCourse(user,course.getId());
-        try {
-            guiManager.getClient().server.sendUser(user,-1,true);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        // REMOVE BECAUSE ALREADY IN EDIT CLASSROOM!!
     }
 }

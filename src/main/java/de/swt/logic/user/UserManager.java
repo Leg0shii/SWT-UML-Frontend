@@ -181,5 +181,12 @@ public class UserManager {
         }
     }
 
+    public void removeSingleCourse(User user, int courseId){
+        if (user.getCourse().contains(courseId)) {
+            ArrayList<Integer> courses = user.getCourse();
+            courses.remove((Object) courseId);
+        }
+    }
+
 }
 
