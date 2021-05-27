@@ -47,6 +47,7 @@ public class CourseManager {
     }
 
     public void cacheAllCourseData() {
+        this.courseHashMap.clear();
         ResultSet resultSet = mySQL.query("SELECT courseid FROM courses;");
         try {
             while (resultSet.next()) {

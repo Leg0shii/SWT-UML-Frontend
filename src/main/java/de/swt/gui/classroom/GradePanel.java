@@ -55,6 +55,8 @@ public class GradePanel extends GUI {
         this.grade = course.getGrade();
         this.thisTeacherLabel.setText(course.getTeacher().getFullName());
         this.nextDateLabel.setText(String.valueOf(course.getDates().get(0)));
+        this.editClassroomPanel.setCourse(course);
+        this.adminEditClassroomPanel.setCourse(course);
     }
 
     public void setupActionListeners(AccountType accountType) {
@@ -63,11 +65,20 @@ public class GradePanel extends GUI {
                 this.editButton.addActionListener(e1 -> {
                     Point point = new Point(this.editButton.getX() - 2, 0);
                     SwingUtilities.convertPointToScreen(point, this);
-                    adminEditClassroomPanel.setPreferredSize(new Dimension(this.getWidth()+1, this.getHeight()+1));
+                    adminEditClassroomPanel.setPreferredSize(new Dimension(this.getWidth() + 1, this.getHeight() + 1));
                     adminEditClassroomPanel.cancelButton.addActionListener(e11 -> popups.get(0).hide());
-                    adminEditClassroomPanel.deleteButton.addActionListener(e12 -> adminEditClassroomPanel.deleteFunction());
-                    adminEditClassroomPanel.migrateButton.addActionListener(e13 -> adminEditClassroomPanel.migrateFunction());
-                    adminEditClassroomPanel.resetButton.addActionListener(e14 -> adminEditClassroomPanel.resetFunction());
+                    adminEditClassroomPanel.deleteButton.addActionListener(e12 -> {
+                        adminEditClassroomPanel.deleteFunction();
+                        popups.get(0).hide();
+                    });
+                    adminEditClassroomPanel.migrateButton.addActionListener(e13 -> {
+                        adminEditClassroomPanel.migrateFunction();
+                        popups.get(0).hide();
+                    });
+                    adminEditClassroomPanel.resetButton.addActionListener(e14 -> {
+                        adminEditClassroomPanel.resetFunction();
+                        popups.get(0).hide();
+                    });
                     popups.set(0, factory.getPopup(guiManager, adminEditClassroomPanel, point.x, point.y));
                     popups.get(0).show();
                 });
@@ -128,19 +139,19 @@ public class GradePanel extends GUI {
 
         // TODO: check if session is started
         ArrayList<Long> longList = new ArrayList<>();
-        for(Date d : course.getDates()) {
+        for (Date d : course.getDates()) {
             longList.add(d.getTime());
         }
 
         Date earlierstDate = NextDate.getNextDate(longList);
-        if(guiManager.getClient().userManager.checkSessionStarted(earlierstDate)) {
+        if (guiManager.getClient().userManager.checkSessionStarted(earlierstDate)) {
 
             // if user is allowed to join the course
             int courseid = course.getId();
             int uid = guiManager.getClient().userid;
             User user = guiManager.getClient().userManager.getUserHashMap().get(uid);
 
-            if(user.getCourse().contains(courseid)) {
+            if (user.getCourse().contains(courseid)) {
 
                 // allow user to join -> update user list for all that are inside
 

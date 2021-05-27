@@ -54,6 +54,7 @@ public class UserManager {
     }
 
     public void cacheAllUserData() {
+        userHashMap.clear();
         ResultSet resultSet = mySQL.query("SELECT * FROM users;");
         try {
             while (resultSet.next()) {
@@ -68,9 +69,11 @@ public class UserManager {
         ArrayList<Integer> courseList = new ArrayList<>();
         ResultSet resultSetUser = mySQL.query("SELECT courseids FROM users WHERE userid = " + userid + ";");
         if(resultSetUser.next()) {
-            String[] courses = resultSetUser.getString("courseids").split(";");
-            for(String course : courses) {
-                courseList.add(Integer.parseInt(course));
+            if (resultSetUser.getString("courseids") != null) {
+                String[] courses = resultSetUser.getString("courseids").split(";");
+                for (String course : courses) {
+                    courseList.add(Integer.parseInt(course));
+                }
             }
         } else {
             System.out.println("ERROR IN USER MANAGER!!!");
@@ -85,7 +88,7 @@ public class UserManager {
 
         try {
             if (resultSet.next()) {
-                if(resultSet.getString("upassword").equals(hashLogin(userid, password))) {
+                if(resultSet.getString("upassword").equals(password)) {
                     User user = userHashMap.get(userid);
                     user.setOnline(true);
                     try {
@@ -168,6 +171,13 @@ public class UserManager {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public void setSingleCourse(User user, int courseId){
+        if (!user.getCourse().contains(courseId)) {
+            ArrayList<Integer> courses = user.getCourse();
+            courses.add(courseId);
         }
     }
 

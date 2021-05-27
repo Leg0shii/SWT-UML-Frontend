@@ -27,7 +27,6 @@ public class SymbolListPanel extends GUI {
     private JPanel mainPanel;
     private JButton thumbsUpButton;
     private JButton thumbsDownButton;
-    private JToggleButton drawButton;
     private JButton clearButton;
     private JPanel toolPanel;
     public JPanel symbolPanel;
@@ -46,12 +45,10 @@ public class SymbolListPanel extends GUI {
         this.toolPanel.removeAll();
         this.thumbsUpButton.setText("");
         this.thumbsDownButton.setText("");
-        this.drawButton.setText("");
         this.clearButton.setText("");
 
         this.toolPanel.add(thumbsUpButton);
         this.toolPanel.add(thumbsDownButton);
-        this.toolPanel.add(drawButton);
         this.toolPanel.add(clearButton);
 
         FontIcon icon1 = new FontIcon();
@@ -62,10 +59,6 @@ public class SymbolListPanel extends GUI {
         icon2.setIkon(MaterialDesignT.THUMB_DOWN);
         icon2.setIconSize(25);
         thumbsDownButton.setIcon(icon2);
-        FontIcon icon3 = new FontIcon();
-        icon3.setIkon(MaterialDesignL.LEAD_PENCIL);
-        icon3.setIconSize(25);
-        drawButton.setIcon(icon3);
         FontIcon icon4 = new FontIcon();
         icon4.setIkon(MaterialDesignT.TRASH_CAN);
         icon4.setIconSize(25);
@@ -89,13 +82,6 @@ public class SymbolListPanel extends GUI {
     private void setupListeners() {
         thumbsUpButton.addActionListener(e1 -> drawThumbUp());
         thumbsDownButton.addActionListener(e2 -> drawThumbDown());
-        drawButton.addActionListener(e3 -> {
-            if (drawButton.isSelected()) {
-                enableDraw();
-            } else {
-                disableDraw();
-            }
-        });
         clearButton.addActionListener(e4 -> deleteLastDrawnObject());
     }
 
@@ -109,14 +95,6 @@ public class SymbolListPanel extends GUI {
 
     private void drawThumbDown() {
         guiManager.addToDrawPanel(new ThumbDown(50,50,Color.black,1,""));
-    }
-
-    private void enableDraw() {
-
-    }
-
-    private void disableDraw() {
-
     }
 
     private void deleteLastDrawnObject() {

@@ -1,5 +1,6 @@
 package de.swt.util;
 
+import de.swt.logic.course.Course;
 import de.swt.logic.user.User;
 
 import java.rmi.RemoteException;
@@ -16,10 +17,9 @@ public class ReadCommandList extends TimerTask {
 
     @Override
     public void run() {
-
         try {
-            if(client.loggedIn) {
-                ArrayList<String> commands = client.server.accessCommandQueue(client.userid);
+            ArrayList<String> commands = client.server.accessCommandQueue(client.userid);
+            if(commands != null) {
                 for (String command : commands) evaluteCommand(command);
             }
         } catch (RemoteException e) {
@@ -50,8 +50,24 @@ public class ReadCommandList extends TimerTask {
                     return;
                 }
                 return;
-            default:
+            case "CU":
+                int courseID;
+                try { courseID = Integer.parseInt(args[0]);
+                } catch (NumberFormatException ignored) {
+                    System.out.println("COURSE ID IS NOT A NUMBER");
+                    return;
+                }
+                try {
+                    client.courseManager.getCourseHashMap().remove(courseID);
+                    Course course = client.server.sendCourse(null, courseID, false);
+                    client.courseManager.getCourseHashMap().put(courseID, course);
+                    System.out.println("Updated incoming courseChange. Updated following courseID: " + course.getId());
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                    return;
+                }
                 return;
+            default:
         }
     }
 

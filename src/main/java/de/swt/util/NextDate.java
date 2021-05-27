@@ -1,5 +1,7 @@
 package de.swt.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -39,15 +41,13 @@ public class NextDate {
         String dates[] = dateString.split(";");
         ArrayList<Date> dateList = new ArrayList<>();
 
-        for(String sDate : dates) {
-            Date date = new Date();
-            String[] dateComponents = sDate.split("./");
-            date.setMinutes(Integer.parseInt(dateComponents[0]));
-            date.setHours(Integer.parseInt(dateComponents[1]));
-            date.setDate(Integer.parseInt(dateComponents[2]));
-            date.setMonth(Integer.parseInt(dateComponents[3]));
-            date.setYear(Integer.parseInt(dateComponents[4]));
-            dateList.add(date);
+        try {
+            for (String sDate : dates) {
+                Date date = new SimpleDateFormat("mm:hh:dd").parse(sDate);
+                dateList.add(date);
+            }
+        } catch (ParseException e){
+            System.out.println("Please enter date using format dd-MMM-yyyy HH:mm:ss");
         }
         return dateList;
     }

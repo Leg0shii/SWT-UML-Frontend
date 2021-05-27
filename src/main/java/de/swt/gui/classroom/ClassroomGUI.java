@@ -2,6 +2,7 @@ package de.swt.gui.classroom;
 
 import de.swt.gui.GUIManager;
 import de.swt.gui.GUI;
+import de.swt.logic.course.Course;
 import de.swt.logic.user.User;
 import de.swt.util.AccountType;
 
@@ -65,6 +66,7 @@ public class ClassroomGUI extends GUI {
 
     public void updateGUI(ArrayList<User> students) {
         removeAllGradePanels();
+        updateGradePanels();
         for (GradePanel gradePanel : gradePanels) {
             gradePanel.getEditClassroomPanel().updateGUI(students);
             switch (gradePanel.grade) {
@@ -136,6 +138,15 @@ public class ClassroomGUI extends GUI {
             }
         }
         return null;
+    }
+
+    public void updateGradePanels(){
+        gradePanels.clear();
+        for (Course course: guiManager.getClient().courseManager.getCourseHashMap().values()){
+            GradePanel gradePanel = new GradePanel(guiManager);
+            gradePanel.updateGUI(course);
+            gradePanels.add(gradePanel);
+        }
     }
 
     private void removeAllGradePanels() {

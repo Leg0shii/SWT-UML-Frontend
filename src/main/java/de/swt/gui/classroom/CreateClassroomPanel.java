@@ -3,11 +3,14 @@ package de.swt.gui.classroom;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.logic.course.Course;
+import de.swt.logic.user.User;
 import de.swt.util.Client;
 import de.swt.util.Language;
 import de.swt.util.NextDate;
 
 import javax.swing.*;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public class CreateClassroomPanel extends GUI {
     private JPanel mainPanel;
@@ -24,6 +27,7 @@ public class CreateClassroomPanel extends GUI {
     private JLabel teacherLabel;
     private JLabel dateLabel;
     private JLabel studentLabel;
+    private Course course;
 
     public CreateClassroomPanel(GUIManager guiManager) {
         super(guiManager);
@@ -66,22 +70,33 @@ public class CreateClassroomPanel extends GUI {
         return studentTextField.getText();
     }
 
-    // TODO : Other Group adds this Function!
-    public void doneFunction(){
+    public void doneFunction() {
         Client client = guiManager.getClient();
-        Course course = new Course();
-
-        course.setGrade(gradeComboBox.getSelectedIndex()+10);
-        course.setTeacher(client.userManager.getUserHashMap().get(Integer.parseInt(getTeacher())));
+        if (course == null) {
+            course = new Course();
+        }
+        course.setGrade(gradeComboBox.getSelectedIndex() + 10);
+        course.setTeacherID(Integer.parseInt(getTeacher()));
         course.setDates(NextDate.getDateFromString(getDate()));
         course.setName(getGradeName());
 
-        // continue here later
-
+        try {
+            guiManager.getClient().server.sendCourse(course, 0, true);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
-    // TODO: Other Group adds this Function
     public void addFunction() {
-
+        if (course == null) {
+            course = new Course();
+        }
+        User user = guiManager.getClient().userManager.getUserHashMap().get(Integer.parseInt(getStudent()));
+        guiManager.getClient().userManager.setSingleCourse(user,course.getId());
+        try {
+            guiManager.getClient().server.sendUser(user,-1,true);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -21,12 +21,14 @@ public abstract class DrawableObject extends Draggable {
     public transient int popupCounter;
     public transient GUIManager guiManager;
     public transient GUI popupPanel;
+    public int[] id;
 
     public DrawableObject(Color color, double scale, String description) {
         this.color = color;
         this.scale = scale;
         this.description = description;
         this.offset = 5;
+        this.id = new int[2];
     }
 
     public void updateComponent(String description, double scale, Color color) {
