@@ -5,6 +5,7 @@ import de.swt.logic.group.Group;
 import de.swt.logic.user.User;
 import de.swt.util.AccountType;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,9 +58,20 @@ public class DBManager {
         int isgroup = user.isInGroup() ? 1 : 0;
         int iscourse = user.isInCourse() ? 1 : 0;
 
-        mySQL.update("UPDATE users SET usertype = '" + accountType.toString() +
-            "',prename='" + firstname + "',surname='" + surname + "',courseids='" + course +
-            "',isonline=" + online + ",iscourse=" + iscourse + ",isgroup=" + isgroup + " WHERE userid = " + id + ";");
+        ResultSet rs = mySQL.query("SELECT userid FROM users WHERE userid = " + id);
+        try {
+            if(rs.next()) {
+                mySQL.update("UPDATE users SET usertype = '" + accountType.toString() +
+                    "',prename='" + firstname + "',surname='" + surname + "',courseids='" + course +
+                    "',isonline=" + online + ",iscourse=" + iscourse + ",isgroup=" + isgroup + " WHERE userid = " + id + ";");
+            } else {
+                mySQL.update("INSERT INTO users (usertype, prename, surname, courseids, isonline, iscourse, isgroup) VALUES " +
+                    "(" + accountType.toString() + ", '" + firstname + "','" + surname + "'," + course +
+                    ", " + online + ", " + isgroup + ", " + iscourse + ")");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateCourse(Course course) {
@@ -70,8 +82,18 @@ public class DBManager {
         String dates = datesToString(course.getDates());
         User teacher = course.getTeacher();
 
-        mySQL.update("UPDATE courses SET grade = " + grade + ",gradename='" + name + "',date='" + dates
-            + "',teacheri=" + teacher.getId() + " WHERE courseid = " + id + ";");
+        ResultSet rs = mySQL.query("SELECT courseid FROM courses WHERE courseid = " + id);
+        try {
+            if(rs.next()) {
+                mySQL.update("UPDATE courses SET grade = " + grade + ",gradename='" + name + "',date='" + dates
+                    + "',teacherid=" + teacher.getId() + " WHERE courseid = " + id + ";");
+            } else {
+                mySQL.update("INSERT INTO courses (grade, gradename, date, teacherid) VALUES " +
+                    "(" + grade + ", '" + name + "','" + dates + "'," + teacher.getId() + ")");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateGroups(Group group) {
@@ -102,10 +124,11 @@ public class DBManager {
         return stringOfDates;
     }
 
+    // TODO :
     private String courseToString(ArrayList<Integer> courses) {
         String courseString = "";
         for(int course : courses) {
-            courseString = courseString + ";" + course;
+            courseString =  course + ";" + courseString;
         }
         return courseString;
     }

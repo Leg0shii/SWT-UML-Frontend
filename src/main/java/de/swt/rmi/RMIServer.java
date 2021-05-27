@@ -60,6 +60,9 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
                 hashMap.put(user.getId(), new ArrayList<>());
             }
 
+            // if user is offline remove from commandlist
+            if(!user.isOnline()) hashMap.remove(userid);
+
             userManager.getUserHashMap().remove(user.getId());
             userManager.getUserHashMap().put(user.getId(), user);
             dbManager.updateUser(user);
@@ -79,7 +82,29 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
     @Override
     public Course sendCourse(Course course, int courseid, boolean update) throws RemoteException {
-        return null;
+        DBManager dbManager = server.dbManager;
+        Course updatedCourse = course;
+
+        // use update = true if you want to update the user data -> tells all other clients to update it too
+        // for this path the userid is ignored, it is only used to retrieve the user when update = false
+        if(update) {
+
+            courseManager.getCourseHashMap().remove(course.getId());
+            courseManager.getCourseHashMap().put(course.getId(), course);
+            dbManager.updateCourse(course);
+
+            // user is updated now so send ping to all connected clients to get the updated User
+            HashMap<Integer, ArrayList<String>> hashMap = server.commandManager.getCommandHashMap();
+            System.out.println("SENDING PING MESSAGE!!!");
+            for(int ids : hashMap.keySet()) {
+                hashMap.get(ids).add("CU:" + course.getId());
+            }
+
+        } else {
+            updatedCourse = courseManager.getCourseHashMap().get(courseid);
+            //updatedUser.setFirstname("New NAME LOL!!");
+        }
+        return updatedCourse;
     }
 
     @Override
