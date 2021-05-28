@@ -18,16 +18,12 @@ public class CreateClassroomPanel extends GUI {
     private JTextField gradeNameTextField;
     private JTextField teacherTextField;
     private JTextField dateTextField;
-    private JTextField studentTextField;
-    public JButton addButton;
     public JButton doneButton;
     public JButton cancelButton;
     private JLabel gradeLabel;
     private JLabel gradeNameLabel;
     private JLabel teacherLabel;
     private JLabel dateLabel;
-    private JLabel studentLabel;
-    private Course course;
 
     public CreateClassroomPanel(GUIManager guiManager) {
         super(guiManager);
@@ -35,18 +31,16 @@ public class CreateClassroomPanel extends GUI {
         this.add(mainPanel);
         this.setBorder(BorderFactory.createEtchedBorder());
         switch (guiManager.language) {
-            case GERMAN -> this.setupGUI("Klassenstufe", "Klassenname", "Lehrer", "Termin", "Schüler", "Hinzufügen", "Fertig", "Abbrechen");
-            case ENGLISH -> this.setupGUI("Grade", "Grade name", "Teacher", "Date", "Student", "Add", "Done", "Cancel");
+            case GERMAN -> this.setupGUI("Klassenstufe", "Klassenname", "Lehrer", "Termin",  "Fertig", "Abbrechen");
+            case ENGLISH -> this.setupGUI("Grade", "Grade name", "Teacher", "Date",  "Done", "Cancel");
         }
     }
 
-    private void setupGUI(String grade, String gradeName, String teacher, String date, String student, String add, String done, String cancel) {
+    private void setupGUI(String grade, String gradeName, String teacher, String date,  String done, String cancel) {
         this.gradeLabel.setText(grade);
         this.gradeNameLabel.setText(gradeName);
         this.teacherLabel.setText(teacher);
         this.dateLabel.setText(date);
-        this.studentLabel.setText(student);
-        this.addButton.setText(add);
         this.doneButton.setText(done);
         this.cancelButton.setText(cancel);
         this.gradeComboBox.addItem("10");
@@ -66,10 +60,6 @@ public class CreateClassroomPanel extends GUI {
         return dateTextField.getText();
     }
 
-    public String getStudent() {
-        return studentTextField.getText();
-    }
-
     public void doneFunction() {
 
         Course newCourse = new Course();
@@ -83,9 +73,5 @@ public class CreateClassroomPanel extends GUI {
         catch (RemoteException e) { e.printStackTrace(); }
 
         guiManager.classroomGUI.updateGradePanels();
-    }
-
-    public void addFunction() {
-        // REMOVE BECAUSE ALREADY IN EDIT CLASSROOM!!
     }
 }

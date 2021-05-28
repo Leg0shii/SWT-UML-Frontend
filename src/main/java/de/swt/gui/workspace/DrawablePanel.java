@@ -9,6 +9,7 @@ import de.swt.util.Language;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Stack;
 
 public class DrawablePanel extends GUI {
@@ -170,5 +171,18 @@ public class DrawablePanel extends GUI {
             }
         }
         return false;
+    }
+
+    public void removeAllIndexedObjects(Component[] objects) {
+        for (Component component : objects){
+            DrawableObject object = (DrawableObject) component;
+            for (JComponent stackComponent : drawableObjects){
+                DrawableObject stackObject = (DrawableObject) stackComponent;
+                if (Arrays.equals(object.getID(), stackObject.getID())){
+                    drawPanel.remove(stackObject);
+                    drawableObjects.remove(stackObject);
+                }
+            }
+        }
     }
 }

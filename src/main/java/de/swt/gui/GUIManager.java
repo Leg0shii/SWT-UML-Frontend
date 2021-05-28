@@ -33,6 +33,8 @@ public class GUIManager extends JFrame {
     private final List<GUI> childrenGUI;
     private final Client client;
 
+    private int drawableObjectCounter;
+
     public GUIManager(Client client,  Language language, AccountType accountType) {
         super("E-Learning Software");
         this.client = client;
@@ -44,6 +46,7 @@ public class GUIManager extends JFrame {
         this.language = language;
         this.accountType = accountType;
         this.childrenGUI = new ArrayList<>();
+        this.drawableObjectCounter = 0;
     }
 
     public void setupGUIS() {
@@ -161,10 +164,37 @@ public class GUIManager extends JFrame {
             Component[] objects = list[0];
             Component[] annotations = list[1];
             objectInputStream.close();
+            while (removeLastDrawnObject()){}
             this.addDrawnObjects(objects);
+            while (removeLastAnnotations()){}
             this.addAnnotations(annotations);
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public void syncWorkspace(File file){
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            Component[][] list = (Component[][]) objectInputStream.readObject();
+            Component[] objects = list[0];
+            Component[] annotations = list[1];
+            objectInputStream.close();
+            removeAllIndexedObjects(objects);
+            removeAllIndexedObjects(annotations);
+            addDrawnObjects(objects);
+            addAnnotations(annotations);
+        } catch (IOException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void removeAllIndexedObjects(Component[] objects) {
+        workspaceGUI.removeAllIndexedObjects(objects);
+    }
+
+    public int increaseObjectCounter(){
+        return this.drawableObjectCounter++;
     }
 }

@@ -110,7 +110,6 @@ public class ClassroomGUI extends GUI {
                     createClassroomPanel.doneFunction();
                     popups.get(1).hide();
                 });
-                createClassroomPanel.addButton.addActionListener(e13 -> createClassroomPanel.addFunction());
                 Point point = new Point(this.createClassroomButton.getX(), this.createClassroomButton.getY() - 200);
                 SwingUtilities.convertPointToScreen(point, subPanel);
                 popups.set(1, popupFactory.getPopup(this, createClassroomPanel, point.x, point.y));
@@ -196,10 +195,6 @@ public class ClassroomGUI extends GUI {
 
     public String getCreateClassroomDate() {
         return createClassroomPanel.getDate();
-    }
-
-    public String getCreateClassroomStudent() {
-        return createClassroomPanel.getStudent();
     }
 
     // TODO: Implemented by other Group

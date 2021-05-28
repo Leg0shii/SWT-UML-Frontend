@@ -9,6 +9,9 @@ import de.swt.util.NextDate;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -54,7 +57,8 @@ public class GradePanel extends GUI {
         this.gradeHeaderLabel.setText(gradeHeaderLabel.getText().split(" ")[0] + " " + course.getGrade() + " " + course.getName());
         this.grade = course.getGrade();
         this.thisTeacherLabel.setText(course.getTeacher().getFullName());
-        this.nextDateLabel.setText(String.valueOf(course.getDates().get(0)));
+        String date = getNextSessionDate();
+        this.nextDateLabel.setText(date);
         this.editClassroomPanel.setCourse(course);
         this.adminEditClassroomPanel.setCourse(course);
     }
@@ -132,6 +136,25 @@ public class GradePanel extends GUI {
 
     public AdminEditClassroomPanel getAdminEditClassroomPanel() {
         return adminEditClassroomPanel;
+    }
+
+    private String getNextSessionDate() {
+        SimpleDateFormat format = new SimpleDateFormat("E, H:m");
+        for (Date date : course.getDates()) {
+            String sDate = format.format(date);
+            Date now = new Date();
+            Date sessionDate = new Date();
+            try {
+                sessionDate = format.parse(sDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            int returnVal = now.compareTo(sessionDate);
+            if (returnVal > 0) {
+                return sDate;
+            }
+        }
+        return "ERROR";
     }
 
     // TODO: Other Group implements this

@@ -43,11 +43,12 @@ public class NextDate {
 
         try {
             for (String sDate : dates) {
-                Date date = new SimpleDateFormat("mm:hh:dd").parse(sDate);
+                Date date = new SimpleDateFormat("u, H:m").parse(sDate);
                 dateList.add(date);
+                System.out.println(date);
             }
         } catch (ParseException e){
-            System.out.println("Please enter date using format dd-MMM-yyyy HH:mm:ss");
+            System.out.println("Please enter date using format u, H:m where H = Hour m = Minute u = Number of Weekday (1 = Monday,..)");
         }
         return dateList;
     }
