@@ -15,10 +15,11 @@ import java.util.ArrayList;
 @NoArgsConstructor
 public class Group implements Serializable {
 
-    private int number;
+    private int id;
+    private int courseID;
     private int timeTillTermination;
     private int maxGroupSize;
-    private ArrayList<User> participants;
+    private ArrayList<Integer> participants;
     private String workspace;
 
 }

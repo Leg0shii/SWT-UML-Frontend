@@ -36,7 +36,7 @@ public class SelectGroupPanel extends GUI {
         this.groups = groups;
         this.selectGroupComboBox.removeAllItems();
         for (Group group : groups){
-            this.selectGroupComboBox.addItem(group.getNumber());
+            this.selectGroupComboBox.addItem(group.getId());
         }
     }
 
@@ -51,7 +51,7 @@ public class SelectGroupPanel extends GUI {
     public Group getSelectedGroup() {
         String selectedNumber = String.valueOf(this.selectGroupComboBox.getSelectedItem());
         for (Group group : groups){
-            if (group.getNumber() == Integer.parseInt(selectedNumber)){
+            if (group.getId() == Integer.parseInt(selectedNumber)){
                 return group;
             }
         }

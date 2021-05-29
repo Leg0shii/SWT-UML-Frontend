@@ -72,6 +72,7 @@ public class CreateClassroomPanel extends GUI {
         try { guiManager.getClient().server.sendCourse(newCourse, 0, true); }
         catch (RemoteException e) { e.printStackTrace(); }
 
+        guiManager.getClient().courseManager.cacheAllCourseData();
         guiManager.classroomGUI.updateGradePanels();
     }
 }

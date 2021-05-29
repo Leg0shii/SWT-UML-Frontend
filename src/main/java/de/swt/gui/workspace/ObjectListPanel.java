@@ -120,7 +120,7 @@ public class ObjectListPanel extends GUI {
         if (showGroups) {
             for (Group group : groups) {
                 JButton objectButton = new JButton();
-                objectButton.setText(this.group + " " + group.getNumber());
+                objectButton.setText(this.group + " " + group.getId());
                 setupListenerForObjectButton(objectButton, group, counter);
                 counter += 1;
                 this.objectList.add(objectButton);

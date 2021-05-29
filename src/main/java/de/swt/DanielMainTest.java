@@ -41,12 +41,7 @@ public class DanielMainTest {
         schools[1] = "Schule B";
         schools[2] = "Schule C";
 
-        ArrayList<Group> groups = new ArrayList<>() {{
-            add(new Group(1, 10, 5, userList, "TestWorkspace1"));
-            add(new Group(2, 10, 5, userList, "TestWorkspace2"));
-            add(new Group(3, 10, 5, userList, "TestWorkspace3"));
-            add(new Group(4, 10, 5, userList, "TestWorkspace4"));
-        }};
+        ArrayList<Group> groups = new ArrayList<>();
 
         GUIManager guiManager = new GUIManager(client, language, accountType);
         guiManager.setupGUIS();
