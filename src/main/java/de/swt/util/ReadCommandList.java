@@ -90,7 +90,7 @@ public class ReadCommandList extends TimerTask {
                 int sessionID;
                 try { sessionID = Integer.parseInt(args[0]);
                 } catch (NumberFormatException ignored) {
-                    System.out.println("GROUP ID IS NOT A NUMBER");
+                    System.out.println("SESSION ID IS NOT A NUMBER");
                     return;
                 }
                 try {
