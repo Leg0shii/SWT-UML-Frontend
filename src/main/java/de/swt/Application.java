@@ -24,12 +24,13 @@ public class Application {
         }
         this.accountType = accountType;
         this.language = language;
+        guiManager = new GUIManager(language, accountType);
+        guiManager.setupGUIS();
+        onStart();
         this.client = new Client();
         client.onStart();
-        guiManager = new GUIManager(client, language, accountType);
-        guiManager.setupGUIS();
+        guiManager.updateGUIManager(client);
         guiManager.updateGUIS(new ArrayList<>(guiManager.getClient().userManager.getUserHashMap().values()));
-        onStart();
     }
 
     private void onStart(){

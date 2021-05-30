@@ -26,6 +26,7 @@ public class Client {
     public GroupManager groupManager;
     public SessionManager sessionManager;
     public RMIServerInterface server;
+    private ServerConn serverConn;
 
     public void onStart() {
 
@@ -35,7 +36,7 @@ public class Client {
         mySQL = dbManager.connectToDB();
 
         try {
-            ServerConn serverConn = new ServerConn(instance, 50000);
+            serverConn = new ServerConn(instance, 50000);
             serverConn.startServer();
             System.out.println("TCP Server started, listening on port 50000");
         } catch (IOException e) {
@@ -58,7 +59,11 @@ public class Client {
     }
 
     public void onDisable() {
-
+        try {
+            serverConn.serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static Client getInstance() {

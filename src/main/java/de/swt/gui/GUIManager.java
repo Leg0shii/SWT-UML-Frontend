@@ -33,7 +33,7 @@ public class GUIManager extends JFrame {
     public WorkspaceGUI workspaceGUI;
 
     private final List<GUI> childrenGUI;
-    private final Client client;
+    private Client client;
 
     private int drawableObjectCounter;
 
@@ -41,9 +41,8 @@ public class GUIManager extends JFrame {
 
     public Session currentSession;
 
-    public GUIManager(Client client,  Language language, AccountType accountType) {
+    public GUIManager(Language language, AccountType accountType) {
         super("E-Learning Software");
-        this.client = client;
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(800, 450);
         this.setLocationRelativeTo(null);
@@ -53,9 +52,13 @@ public class GUIManager extends JFrame {
         this.accountType = accountType;
         this.childrenGUI = new ArrayList<>();
         this.drawableObjectCounter = 0;
-        this.currentSession = new Session(client.userid);
 
         this.state = WorkspaceState.EDITING;
+    }
+
+    public void updateGUIManager(Client client){
+        this.client = client;
+        this.currentSession = new Session(client.userid);
     }
 
     public void setupGUIS() {
@@ -67,7 +70,12 @@ public class GUIManager extends JFrame {
         this.childrenGUI.add(workspaceGUI);
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                client.userManager.userLogout();
+                try {
+                    client.userManager.userLogout();
+                    client.onDisable();
+                } catch (Exception ignored){
+
+                }
             }
         });
     }

@@ -17,7 +17,7 @@ public class GUI extends JPanel {
         this.popups = new ArrayList<>();
         this.popupCounter = new ArrayList<>();
         this.childrenGUI = new ArrayList<>();
-        this.factory = PopupFactory.getSharedInstance();
+        this.factory = new PopupFactory();
     }
 
     public void incrementPopupCounter(int index) {

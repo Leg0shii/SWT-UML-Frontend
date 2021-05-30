@@ -43,9 +43,11 @@ public class RMIClient {
 
         System.setProperty("java.security.policy","file:./src/main/java/de/swt/policy.policy");
 
+        /*
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
         }
+         */
 
         RMIServerInterface server;
 
