@@ -50,7 +50,7 @@ public class Client {
         server = rmiClient.initRMIClient();
 
         Timer commandGetter = new Timer();
-        commandGetter.schedule(new ReadCommandList(instance), 1000, 5000);
+        commandGetter.schedule(new ReadCommandList(instance), 1000, 100);
 
         courseManager = new CourseManager(instance);
         userManager = new UserManager(instance);
