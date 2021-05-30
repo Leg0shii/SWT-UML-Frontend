@@ -112,6 +112,9 @@ public class DrawablePanel extends GUI {
 
     public void addToDrawPanel(JComponent component) {
         DrawableObject object = (DrawableObject) component;
+        if (object == null) {
+            return;
+        }
         object.init(guiManager);
         drawPanel.add(object);
         drawableObjects.add(object);
@@ -198,7 +201,7 @@ public class DrawablePanel extends GUI {
     public void removeAllIndexedObjects(Component[] objects) {
         for (Component component : objects) {
             DrawableObject object = (DrawableObject) component;
-            if (object == null){
+            if (object == null) {
                 return;
             }
             for (JComponent stackComponent : drawableObjects) {
@@ -261,4 +264,5 @@ public class DrawablePanel extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }
