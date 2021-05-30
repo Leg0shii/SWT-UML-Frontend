@@ -4,6 +4,7 @@ import de.swt.logic.course.Course;
 import de.swt.logic.group.Group;
 import de.swt.logic.session.Session;
 import de.swt.logic.user.User;
+import de.swt.manager.CommandObject;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -20,18 +21,18 @@ public class ReadCommandList extends TimerTask {
     @Override
     public void run() {
         try {
-            ArrayList<String> commands = client.server.accessCommandQueue(client.userid);
+            ArrayList<CommandObject> commands = client.server.accessCommandQueue(client.userid);
             if(commands != null) {
-                for (String command : commands) evaluteCommand(command);
+                for (CommandObject command : commands) evaluteCommand(command);
             }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 
-    private void evaluteCommand(String command) {
+    private void evaluteCommand(CommandObject command) {
 
-        String[] keyArgs = command.split(":");
+        String[] keyArgs = command.getCommand().split(":");
         String[] args = keyArgs[1].split(" ");
 
         switch (keyArgs[0]) {
@@ -102,6 +103,10 @@ public class ReadCommandList extends TimerTask {
                     e.printStackTrace();
                     return;
                 }
+                break;
+            case "FU":
+
+                // save file here
                 break;
             default:
         }

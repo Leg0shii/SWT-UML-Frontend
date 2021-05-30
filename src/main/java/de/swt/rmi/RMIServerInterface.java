@@ -5,7 +5,9 @@ import de.swt.logic.group.Group;
 import de.swt.logic.TestClass;
 import de.swt.logic.session.Session;
 import de.swt.logic.user.User;
+import de.swt.manager.CommandObject;
 
+import java.io.File;
 import java.rmi.*;
 import java.util.ArrayList;
 
@@ -18,6 +20,7 @@ public interface RMIServerInterface extends Remote {
     Course sendCourse(Course course, int courseid, boolean update) throws RemoteException;
     Group sendGroup(Group group, int groupid, boolean update) throws RemoteException;
     Session sendSession(Session session, int idsession, boolean update) throws RemoteException;
-    ArrayList<String> accessCommandQueue(int userid) throws RemoteException;
+    ArrayList<CommandObject> accessCommandQueue(int userid) throws RemoteException;
+    void updateWorkspaceFile(byte[] bytes) throws RemoteException;
 }
 
