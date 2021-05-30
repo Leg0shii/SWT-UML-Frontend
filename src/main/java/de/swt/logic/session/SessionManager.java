@@ -29,7 +29,7 @@ public class SessionManager {
     public Session loadSession(int id) throws SQLException {
         Session session;
         if (!sessionHashMap.containsKey(id)) {
-            ResultSet resultSet = mySQL.query("SELECT * FROM sessions WHERE sessionid = " + id + ";");
+            ResultSet resultSet = mySQL.query("SELECT * FROM sessions WHERE idsession = " + id + ";");
             if (resultSet.next()) {
                 session = new Session(-1);
                 session.setId(Integer.parseInt(resultSet.getString("idsession")));
