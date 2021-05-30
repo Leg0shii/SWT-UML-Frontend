@@ -14,6 +14,6 @@ import java.io.Serializable;
 public class CommandObject implements Serializable {
 
     private String command;
-    private byte[] hasWorkspaceFile;
+    private byte[] workspaceFileBytes;
 
 }
