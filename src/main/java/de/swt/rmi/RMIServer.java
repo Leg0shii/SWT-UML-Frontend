@@ -12,9 +12,10 @@ import de.swt.logic.session.SessionManager;
 import de.swt.logic.user.User;
 import de.swt.logic.user.UserManager;
 import de.swt.manager.CommandManager;
+import de.swt.manager.CommandObject;
 
+import java.io.File;
 import java.rmi.RemoteException;
-import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     private SessionManager sessionManager;
     private Server server;
 
-    public RMIServer() throws RemoteException{
+    public RMIServer() throws RemoteException {
         this.port = 1099;
         this.server = Server.getInstance();
         this.userManager = server.userManager;
@@ -55,25 +56,28 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
         // use update = true if you want to update the user data -> tells all other clients to update it too
         // for this path the userid is ignored, it is only used to retrieve the user when update = false
-        if(update) {
+        if (update) {
 
             // if users first login, register it in command manager
             CommandManager commandManager = server.commandManager;
-            HashMap<Integer, ArrayList<String>> hashMap = commandManager.getCommandHashMap();
-            if(hashMap.containsKey(user.getId())) {
+            HashMap<Integer, ArrayList<CommandObject>> hashMap = commandManager.getCommandHashMap();
+            CommandObject commandObject = new CommandObject();
+            if (hashMap.containsKey(user.getId())) {
                 hashMap.put(user.getId(), new ArrayList<>());
             }
 
             // if user is offline remove from commandlist
-            if(!user.isOnline()) hashMap.remove(userid);
+            if (!user.isOnline()) hashMap.remove(userid);
 
             dbManager.updateUser(user);
             userManager.cacheAllUserData();
 
             // user is updated now so send ping to all connected clients to get the updated User
             System.out.println("SENDING PING MESSAGE!!!");
-            for(int ids : hashMap.keySet()) {
-                hashMap.get(ids).add("UU:" + user.getId());
+            for (int ids : hashMap.keySet()) {
+                commandObject.setCommand("UU:" + user.getId());
+                commandObject.setHasWorkspaceFile(null);
+                hashMap.get(ids).add(commandObject);
             }
 
         } else {
@@ -90,16 +94,19 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
         // use update = true if you want to update the user data -> tells all other clients to update it too
         // for this path the userid is ignored, it is only used to retrieve the user when update = false
-        if(update) {
+        if (update) {
 
             dbManager.updateCourse(course);
             courseManager.cacheAllCourseData();
 
             // user is updated now so send ping to all connected clients to get the updated User
-            HashMap<Integer, ArrayList<String>> hashMap = server.commandManager.getCommandHashMap();
-            System.out.println("SENDING PING MESSAGE!!!");
-            for(int ids : hashMap.keySet()) {
-                hashMap.get(ids).add("CU:" + course.getId());
+            HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
+            CommandObject commandObject = new CommandObject();
+            System.out.println("SENDING COURSE PING MESSAGE!!!");
+            for (int ids : hashMap.keySet()) {
+                commandObject.setCommand("CU:" + course.getId());
+                commandObject.setHasWorkspaceFile(null);
+                hashMap.get(ids).add(commandObject);
             }
 
         } else {
@@ -116,16 +123,19 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
         // use update = true if you want to update the user data -> tells all other clients to update it too
         // for this path the userid is ignored, it is only used to retrieve the user when update = false
-        if(update) {
+        if (update) {
 
             dbManager.updateGroups(group);
             groupManager.cacheAllGroupData();
 
             // user is updated now so send ping to all connected clients to get the updated User
-            HashMap<Integer, ArrayList<String>> hashMap = server.commandManager.getCommandHashMap();
-            System.out.println("SENDING PING MESSAGE!!!");
-            for(int ids : hashMap.keySet()) {
-                hashMap.get(ids).add("GU:" + group.getId());
+            HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
+            CommandObject commandObject = new CommandObject();
+            System.out.println("SENDING GROUP PING MESSAGE!!!");
+            for (int ids : hashMap.keySet()) {
+                commandObject.setCommand("GU:" + group.getId());
+                commandObject.setHasWorkspaceFile(null);
+                hashMap.get(ids).add(commandObject);
             }
 
         } else {
@@ -142,16 +152,19 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
         // use update = true if you want to update the user data -> tells all other clients to update it too
         // for this path the userid is ignored, it is only used to retrieve the user when update = false
-        if(update) {
+        if (update) {
 
             dbManager.updateSessions(session);
             sessionManager.cacheAllSessionData();
 
             // user is updated now so send ping to all connected clients to get the updated User
-            HashMap<Integer, ArrayList<String>> hashMap = server.commandManager.getCommandHashMap();
-            System.out.println("SENDING PING MESSAGE!!!");
-            for(int ids : hashMap.keySet()) {
-                hashMap.get(ids).add("SU:" + session.getId());
+            HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
+            CommandObject commandObject = new CommandObject();
+            System.out.println("SENDING SESSION PING MESSAGE!!!");
+            for (int ids : hashMap.keySet()) {
+                commandObject.setCommand("SU:" + session.getId());
+                commandObject.setHasWorkspaceFile(null);
+                hashMap.get(ids).add(commandObject);
             }
 
         } else {
@@ -162,14 +175,29 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     }
 
     @Override
-    public ArrayList<String> accessCommandQueue(int userid) throws RemoteException {
-        HashMap<Integer, ArrayList<String>> arrayListHashMap = server.commandManager.getCommandHashMap();
-        ArrayList<String> commandList = arrayListHashMap.get(userid);
+    public ArrayList<CommandObject> accessCommandQueue(int userid) throws RemoteException {
+        HashMap<Integer, ArrayList<CommandObject>> arrayListHashMap = server.commandManager.getCommandHashMap();
+        ArrayList<CommandObject> commandList = arrayListHashMap.get(userid);
 
         // reset command list
         arrayListHashMap.remove(userid);
         arrayListHashMap.put(userid, new ArrayList<>());
         return commandList;
+    }
+
+    @Override
+    public void updateWorkspaceFile(byte[] bytes) throws RemoteException {
+
+        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
+        CommandObject commandObject = new CommandObject();
+        System.out.println("SENDING WORKSPACE PING MESSAGE!!!");
+
+        for (int ids : hashMap.keySet()) {
+            commandObject.setCommand("FU:");
+            commandObject.setHasWorkspaceFile(bytes);
+            hashMap.get(ids).add(commandObject);
+        }
+
     }
 
 }

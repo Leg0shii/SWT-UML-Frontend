@@ -8,7 +8,7 @@ import java.util.HashMap;
 @Getter
 public class CommandManager {
 
-    private HashMap<Integer, ArrayList<String>> commandHashMap;
+    private HashMap<Integer, ArrayList<CommandObject>> commandHashMap;
 
     public CommandManager() {
         this.commandHashMap = new HashMap<>();
