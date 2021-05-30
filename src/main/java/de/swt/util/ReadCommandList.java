@@ -34,7 +34,10 @@ public class ReadCommandList extends TimerTask {
     private void evaluteCommand(CommandObject command) {
 
         String[] keyArgs = command.getCommand().split(":");
-        String[] args = keyArgs[1].split(" ");
+        String[] args = new String[0];
+        if (keyArgs.length > 1){
+            args = keyArgs[1].split(" ");
+        }
 
         switch (keyArgs[0]) {
             case "UU":

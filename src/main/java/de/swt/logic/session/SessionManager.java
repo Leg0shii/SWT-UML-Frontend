@@ -58,11 +58,13 @@ public class SessionManager {
         }
     }
 
-    private ArrayList<Integer> parseParticipants(String parseString){
+    private ArrayList<Integer> parseParticipants(String parseString) {
         ArrayList<Integer> list = new ArrayList<>();
         String[] sUserList = parseString.split(";");
-        for (String sUser : sUserList){
-            list.add(Integer.parseInt(sUser));
+        for (String sUser : sUserList) {
+            if (!sUser.equals("")) {
+                list.add(Integer.parseInt(sUser));
+            }
         }
         return list;
     }
