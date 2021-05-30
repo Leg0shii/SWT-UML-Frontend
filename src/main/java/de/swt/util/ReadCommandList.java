@@ -105,7 +105,7 @@ public class ReadCommandList extends TimerTask {
                 }
                 break;
             case "FU":
-
+                byte[] filebytes = command.getWorkspaceFileBytes();
                 // save file here
                 break;
             default:
