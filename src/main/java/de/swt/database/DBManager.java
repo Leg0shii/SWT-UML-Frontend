@@ -2,6 +2,7 @@ package de.swt.database;
 
 import de.swt.logic.course.Course;
 import de.swt.logic.group.Group;
+import de.swt.logic.session.Session;
 import de.swt.logic.user.User;
 import de.swt.util.AccountType;
 
@@ -98,14 +99,26 @@ public class DBManager {
 
     public void updateGroups(Group group) {
 
-        int groupid = group.getGroupid();
-        int courseid = group.getCourseid();
+        int groupid = group.getId();
+        int courseid = group.getCourseID();
         int timeTillTermination = group.getTimeTillTermination();
         int maxGroupSize = group.getMaxGroupSize();
         String participants = participantsToString(group.getParticipants());
 
         mySQL.update("UPDATE groups SET courseid = " + courseid + ",ttt=" + timeTillTermination
-            + ",maxGS=" + maxGroupSize + ",participants='" + participants + "' WHERE groupid = " + group + ";");
+            + ",maxGS=" + maxGroupSize + ",participants='" + participants + "' WHERE groupid = " + groupid + ";");
+    }
+
+    public void updateSessions(Session session){
+        int sessionid = session.getId();
+        String participants = participantsToString(session.getParticipants());
+        int master = session.getMaster();
+        String groups = participantsToString(session.getGroups());
+        int remainingtime = session.getRemainingTime();
+
+        mySQL.update("UPDATE sessions SET idsession = \""+sessionid+"\",participants=\""+participants+"\",master=\""+master
+                +"\",groups=\""+groups+"\",remainingtime=\""+remainingtime+"\";");
+
     }
 
     private String participantsToString(ArrayList<Integer> part) {
@@ -117,20 +130,20 @@ public class DBManager {
     }
 
     private String datesToString(ArrayList<Date> dates) {
-        String stringOfDates = "";
+        StringBuilder stringOfDates = new StringBuilder();
         for(Date date : dates) {
-            stringOfDates = date.getTime() + ";" + stringOfDates;
+            stringOfDates.insert(0, date.getTime() + ";");
         }
-        return stringOfDates;
+        return stringOfDates.toString();
     }
 
     // TODO :
     private String courseToString(ArrayList<Integer> courses) {
-        String courseString = "";
+        StringBuilder courseString = new StringBuilder();
         for(int course : courses) {
-            courseString =  course + ";" + courseString;
+            courseString.insert(0, course + ";");
         }
-        return courseString;
+        return courseString.toString();
     }
 
 }

@@ -4,6 +4,7 @@ import de.swt.database.AsyncMySQL;
 import de.swt.database.DBManager;
 import de.swt.logic.course.CourseManager;
 import de.swt.logic.group.GroupManager;
+import de.swt.logic.session.SessionManager;
 import de.swt.logic.user.UserManager;
 import de.swt.manager.CommandManager;
 import de.swt.rmi.InitRMIServer;
@@ -21,6 +22,7 @@ public class Server {
     public CourseManager courseManager;
     public UserManager userManager;
     public GroupManager groupManager;
+    public SessionManager sessionManager;
 
     public static Server getInstance() {
         return server;
@@ -46,6 +48,7 @@ public class Server {
         courseManager = new CourseManager(server);
         userManager = new UserManager(server);
         groupManager = new GroupManager(server);
+        sessionManager = new SessionManager(server);
 
         InitRMIServer initRMIServer = new InitRMIServer();
         initRMIServer.initRMIServer();

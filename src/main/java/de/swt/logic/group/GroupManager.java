@@ -27,9 +27,9 @@ public class GroupManager {
             try {
                 if (resultSet.next()) {
                     group = new Group();
-                    group.setGroupid(resultSet.getInt("groupid"));
+                    group.setId(resultSet.getInt("groupid"));
                     group.setMaxGroupSize(resultSet.getInt("maxGS"));
-                    group.setCourseid(resultSet.getInt("courseid"));
+                    group.setCourseID(resultSet.getInt("courseid"));
                     group.setParticipants(getParticipantsFromString("participants"));
                     group.setTimeTillTermination(resultSet.getInt("ttt"));
                     groupHashMap.put(id, group);

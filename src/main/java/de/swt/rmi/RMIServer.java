@@ -7,6 +7,8 @@ import de.swt.logic.course.Course;
 import de.swt.logic.course.CourseManager;
 import de.swt.logic.group.Group;
 import de.swt.logic.group.GroupManager;
+import de.swt.logic.session.Session;
+import de.swt.logic.session.SessionManager;
 import de.swt.logic.user.User;
 import de.swt.logic.user.UserManager;
 import de.swt.manager.CommandManager;
@@ -23,6 +25,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     private UserManager userManager;
     private CourseManager courseManager;
     private GroupManager groupManager;
+    private SessionManager sessionManager;
     private Server server;
 
     public RMIServer() throws RemoteException{
@@ -31,6 +34,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
         this.userManager = server.userManager;
         this.courseManager = server.courseManager;
         this.groupManager = server.groupManager;
+        this.sessionManager = server.sessionManager;
     }
 
     @Override
@@ -63,9 +67,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
             // if user is offline remove from commandlist
             if(!user.isOnline()) hashMap.remove(userid);
 
-            userManager.getUserHashMap().remove(user.getId());
-            userManager.getUserHashMap().put(user.getId(), user);
             dbManager.updateUser(user);
+            userManager.cacheAllUserData();
 
             // user is updated now so send ping to all connected clients to get the updated User
             System.out.println("SENDING PING MESSAGE!!!");
@@ -89,9 +92,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
         // for this path the userid is ignored, it is only used to retrieve the user when update = false
         if(update) {
 
-            courseManager.getCourseHashMap().remove(course.getId());
-            courseManager.getCourseHashMap().put(course.getId(), course);
             dbManager.updateCourse(course);
+            courseManager.cacheAllCourseData();
 
             // user is updated now so send ping to all connected clients to get the updated User
             HashMap<Integer, ArrayList<String>> hashMap = server.commandManager.getCommandHashMap();
@@ -109,7 +111,54 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
     @Override
     public Group sendGroup(Group group, int groupid, boolean update) throws RemoteException {
-        return null;
+        DBManager dbManager = server.dbManager;
+        Group updatedGroup = group;
+
+        // use update = true if you want to update the user data -> tells all other clients to update it too
+        // for this path the userid is ignored, it is only used to retrieve the user when update = false
+        if(update) {
+
+            dbManager.updateGroups(group);
+            groupManager.cacheAllGroupData();
+
+            // user is updated now so send ping to all connected clients to get the updated User
+            HashMap<Integer, ArrayList<String>> hashMap = server.commandManager.getCommandHashMap();
+            System.out.println("SENDING PING MESSAGE!!!");
+            for(int ids : hashMap.keySet()) {
+                hashMap.get(ids).add("GU:" + group.getId());
+            }
+
+        } else {
+            updatedGroup = groupManager.getGroupHashMap().get(groupid);
+            //updatedUser.setFirstname("New NAME LOL!!");
+        }
+        return updatedGroup;
+    }
+
+    @Override
+    public Session sendSession(Session session, int idsession, boolean update) throws RemoteException {
+        DBManager dbManager = server.dbManager;
+        Session updatedSession = session;
+
+        // use update = true if you want to update the user data -> tells all other clients to update it too
+        // for this path the userid is ignored, it is only used to retrieve the user when update = false
+        if(update) {
+
+            dbManager.updateSessions(session);
+            sessionManager.cacheAllSessionData();
+
+            // user is updated now so send ping to all connected clients to get the updated User
+            HashMap<Integer, ArrayList<String>> hashMap = server.commandManager.getCommandHashMap();
+            System.out.println("SENDING PING MESSAGE!!!");
+            for(int ids : hashMap.keySet()) {
+                hashMap.get(ids).add("SU:" + session.getId());
+            }
+
+        } else {
+            updatedSession = sessionManager.getSessionHashMap().get(idsession);
+            //updatedUser.setFirstname("New NAME LOL!!");
+        }
+        return updatedSession;
     }
 
     @Override
