@@ -8,6 +8,7 @@ import de.swt.util.AccountType;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ObjectListPanel extends GUI {
@@ -31,6 +32,8 @@ public class ObjectListPanel extends GUI {
         this.objectScrollPanel.setViewportView(objectList);
         this.addStudentButton = new JButton();
         this.objectList.setLayout(new GridLayout(0, 1));
+        this.groupsList = new ArrayList<>();
+        this.users = new ArrayList<>();
 
         switch (guiManager.language) {
             case GERMAN -> setupGUI("Teilnehmer", "Gruppen", "Gruppe", "Schüler hinzufügen");

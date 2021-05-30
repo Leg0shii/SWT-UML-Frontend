@@ -11,10 +11,8 @@ public class LoginGUI extends GUI {
     public JButton loginButton;
     private JTextField usernameTextField;
     private JPasswordField passwordField;
-    private JComboBox<String> schoolDropDown;
     private JLabel loginLabel;
     private JLabel passwordLabel;
-    private JLabel schoolLabel;
     private JLabel usernameLabel;
     private JPanel subPanel;
 
@@ -34,15 +32,10 @@ public class LoginGUI extends GUI {
         loginLabel.setText(login);
         usernameLabel.setText(username);
         passwordLabel.setText(password);
-        schoolLabel.setText(school);
         loginButton.setText(button);
     }
 
-    public void updateGUI(String[] schools){
-        schoolDropDown.removeAllItems();
-        for (String temp : schools) {
-            schoolDropDown.addItem(temp);
-        }
+    public void updateGUI(){
     }
 
     public void setupActionListeners(){
@@ -55,10 +48,6 @@ public class LoginGUI extends GUI {
 
     public String getUsername() {
         return usernameTextField.getText();
-    }
-
-    public String getSchool() {
-        return (String) schoolDropDown.getSelectedItem();
     }
 
     // TODO: Implemented by other Group
@@ -80,5 +69,6 @@ public class LoginGUI extends GUI {
             // TODO : Errorlabel if login fails
         }
     }
+
 
 }

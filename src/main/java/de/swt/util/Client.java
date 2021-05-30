@@ -3,6 +3,8 @@ package de.swt.util;
 import de.swt.database.AsyncMySQL;
 import de.swt.database.DBManager;
 import de.swt.logic.course.CourseManager;
+import de.swt.logic.group.GroupManager;
+import de.swt.logic.session.SessionManager;
 import de.swt.logic.user.UserManager;
 import de.swt.rmi.RMIClient;
 import de.swt.rmi.RMIServerInterface;
@@ -21,6 +23,8 @@ public class Client {
 
     public CourseManager courseManager;
     public UserManager userManager;
+    public GroupManager groupManager;
+    public SessionManager sessionManager;
     public RMIServerInterface server;
 
     public void onStart() {
@@ -47,6 +51,8 @@ public class Client {
 
         courseManager = new CourseManager(instance);
         userManager = new UserManager(instance);
+        groupManager = new GroupManager(instance);
+        sessionManager = new SessionManager(instance);
 
         loadAllInformation();
     }
@@ -62,6 +68,8 @@ public class Client {
     public void loadAllInformation() {
         courseManager.cacheAllCourseData();
         userManager.cacheAllUserData();
+        sessionManager.cacheAllSessionData();
+        groupManager.cacheAllGroupData();
     }
 
 }

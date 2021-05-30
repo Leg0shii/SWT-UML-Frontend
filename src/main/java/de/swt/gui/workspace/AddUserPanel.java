@@ -43,12 +43,18 @@ public class AddUserPanel extends GUI {
 
     }
 
-    public String getStudentID() {
-        return studentTextField.getText();
+    public int getStudentID() {
+        try {
+            return Integer.parseInt(studentTextField.getText());
+        } catch (Exception e){
+            System.out.println("ERROR TRY ENTERING A REAL NUMBER");
+        }
+        return -1;
     }
 
     // TODO: Implemented by Other Group
     private void addFunction() {
-
+        int studentId = getStudentID();
+        guiManager.currentSession.getParticipants().add(studentId);
     }
 }

@@ -79,6 +79,21 @@ public class ClassroomGUI extends GUI {
         this.revalidate();
     }
 
+    public void updateGUI() {
+        removeAllGradePanels();
+        updateGradePanels();
+        for (GradePanel gradePanel : gradePanels) {
+            gradePanel.getEditClassroomPanel().updateGUI();
+            switch (gradePanel.grade) {
+                case 10 -> gradePanel10.add(gradePanel);
+                case 11 -> gradePanel11.add(gradePanel);
+                case 12 -> gradePanel12.add(gradePanel);
+            }
+        }
+        this.initForAccountType();
+        this.revalidate();
+    }
+
     private void setupActionListeners() {
         PopupFactory popupFactory = new PopupFactory();
         this.supportButton.addActionListener(e -> {
@@ -201,4 +216,5 @@ public class ClassroomGUI extends GUI {
     private void privateWorkspaceFunction() {
         guiManager.switchToWorkspaceGUI();
     }
+
 }

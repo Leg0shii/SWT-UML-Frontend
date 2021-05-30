@@ -8,6 +8,7 @@ import de.swt.util.AccountType;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -63,16 +64,15 @@ public class WorkspaceGUI extends GUI {
         this.menuPanel.add(new Menu(guiManager));
     }
 
-    public void updateGUI(List<Group> groups, List<User> users, int remainingTime) {
-        this.objectListPanel.updateGUI(groups, users);
-        this.drawablePanel.updateGUI(remainingTime);
-        this.initForAccountType();
-        this.initForWorkspaceState();
-    }
-
-    public void updateGUI(){
-        this.objectListPanel.updateGUI();
-        this.drawablePanel.updateGUI();
+    public void updateGUI() {
+        ArrayList<User> users = new ArrayList<>();
+        for (int id : guiManager.currentSession.getParticipants()){
+            if (guiManager.getClient().userManager.getUserHashMap().containsKey(id)){
+                users.add(guiManager.getClient().userManager.getUserHashMap().get(id));
+            }
+        }
+        this.objectListPanel.updateGUI(new ArrayList<>(guiManager.getClient().groupManager.getGroupHashMap().values()), users);
+        this.drawablePanel.updateGUI(guiManager.currentSession.getRemainingTime());
         this.initForAccountType();
         this.initForWorkspaceState();
     }

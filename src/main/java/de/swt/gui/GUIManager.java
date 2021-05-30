@@ -4,6 +4,7 @@ import de.swt.gui.classroom.ClassroomGUI;
 import de.swt.gui.login.LoginGUI;
 import de.swt.gui.workspace.WorkspaceGUI;
 import de.swt.logic.group.Group;
+import de.swt.logic.session.Session;
 import de.swt.logic.user.User;
 import de.swt.util.AccountType;
 import de.swt.util.Client;
@@ -38,6 +39,8 @@ public class GUIManager extends JFrame {
 
     public WorkspaceState state;
 
+    public Session currentSession;
+
     public GUIManager(Client client,  Language language, AccountType accountType) {
         super("E-Learning Software");
         this.client = client;
@@ -50,6 +53,7 @@ public class GUIManager extends JFrame {
         this.accountType = accountType;
         this.childrenGUI = new ArrayList<>();
         this.drawableObjectCounter = 0;
+        this.currentSession = new Session(client.userid);
 
         this.state = WorkspaceState.EDITING;
     }
@@ -68,10 +72,16 @@ public class GUIManager extends JFrame {
         });
     }
 
-    public void updateGUIS(String[] schools, ArrayList<User> students, List<Group> groups, List<User> users, int remainingTime) {
+    public void updateGUIS(ArrayList<User> students) {
         this.classroomGUI.updateGUI(students);
-        this.loginGUI.updateGUI(schools);
-        this.workspaceGUI.updateGUI(groups, users, remainingTime);
+        this.loginGUI.updateGUI();
+        this.workspaceGUI.updateGUI();
+    }
+
+    public void updateGUIS(){
+        this.classroomGUI.updateGUI();
+        this.loginGUI.updateGUI();
+        this.workspaceGUI.updateGUI();
     }
 
     public void switchToLoginGUI() {

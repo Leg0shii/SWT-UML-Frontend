@@ -49,6 +49,9 @@ public class EditClassroomPanel extends GUI {
         }
     }
 
+    public void updateGUI() {
+    }
+
     public String getStudentToAdd() {
         return studentTextField.getText();
     }
@@ -77,4 +80,6 @@ public class EditClassroomPanel extends GUI {
         ArrayList<User> list = new ArrayList<>(guiManager.getClient().userManager.getUserHashMap().values());
         guiManager.classroomGUI.updateGUI(list);
     }
+
+
 }

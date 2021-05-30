@@ -1,6 +1,8 @@
 package de.swt.util;
 
 import de.swt.logic.course.Course;
+import de.swt.logic.group.Group;
+import de.swt.logic.session.Session;
 import de.swt.logic.user.User;
 
 import java.rmi.RemoteException;
@@ -49,7 +51,7 @@ public class ReadCommandList extends TimerTask {
                     e.printStackTrace();
                     return;
                 }
-                return;
+                break;
             case "CU":
                 int courseID;
                 try { courseID = Integer.parseInt(args[0]);
@@ -66,7 +68,41 @@ public class ReadCommandList extends TimerTask {
                     e.printStackTrace();
                     return;
                 }
-                return;
+                break;
+            case "GU":
+                int groupID;
+                try { groupID = Integer.parseInt(args[0]);
+                } catch (NumberFormatException ignored) {
+                    System.out.println("GROUP ID IS NOT A NUMBER");
+                    return;
+                }
+                try {
+                    client.groupManager.getGroupHashMap().remove(groupID);
+                    Group group = client.server.sendGroup(null, groupID, false);
+                    client.groupManager.getGroupHashMap().put(groupID, group);
+                    System.out.println("Updated incoming groupChange. Updated following groupID: " + group.getId());
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                break;
+            case "SU":
+                int sessionID;
+                try { sessionID = Integer.parseInt(args[0]);
+                } catch (NumberFormatException ignored) {
+                    System.out.println("GROUP ID IS NOT A NUMBER");
+                    return;
+                }
+                try {
+                    client.sessionManager.getSessionHashMap().remove(sessionID);
+                    Session session = client.server.sendSession(null, sessionID, false);
+                    client.sessionManager.getSessionHashMap().put(sessionID, session);
+                    System.out.println("Updated incoming sessionChange. Updated following sessionID: " + session.getId());
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                break;
             default:
         }
     }

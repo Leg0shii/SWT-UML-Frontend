@@ -45,7 +45,7 @@ public class GroupManager {
                 group.setParticipants(parseParticipants(resultSet.getString("participants")));
                 groupHashMap.put(id, group);
             } else {
-                System.out.println("SOMETHING WENT WRONG WHILE LOADING USER!!!");
+                System.out.println("SOMETHING WENT WRONG WHILE LOADING GROUP!!!");
                 return null;
             }
         } else group = groupHashMap.get(id);
@@ -59,6 +59,18 @@ public class GroupManager {
             list.add(Integer.parseInt(sUser));
         }
         return list;
+    }
+
+    public void cacheAllGroupData() {
+        this.groupHashMap.clear();
+        ResultSet resultSet = mySQL.query("SELECT groupid FROM groups;");
+        try {
+            while (resultSet.next()) {
+                loadGroup(resultSet.getInt("groupid"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
 
