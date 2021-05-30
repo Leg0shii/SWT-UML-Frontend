@@ -21,7 +21,7 @@ import java.util.Objects;
 
 /**
  * <div>Icons from <a href="https://kordamp.org/ikonli/cheat-sheet-fluentui.html" title="Kordamp">Kordamp</a></div>
-*/
+ */
 
 public class SymbolListPanel extends GUI {
     private JPanel mainPanel;
@@ -40,7 +40,7 @@ public class SymbolListPanel extends GUI {
         setupGUI();
     }
 
-    private void setupGUI(){
+    private void setupGUI() {
         this.toolPanel.setLayout(new GridLayout(1, 4));
         this.toolPanel.removeAll();
         this.thumbsUpButton.setText("");
@@ -76,13 +76,30 @@ public class SymbolListPanel extends GUI {
     }
 
     public void updateGUI() {
-        symbolPanel.setPreferredSize(new Dimension(3*guiManager.getWidth()/16, guiManager.getHeight()));
+        symbolPanel.setPreferredSize(new Dimension(3 * guiManager.getWidth() / 16, guiManager.getHeight()));
     }
 
     private void setupListeners() {
-        thumbsUpButton.addActionListener(e1 -> drawThumbUp());
-        thumbsDownButton.addActionListener(e2 -> drawThumbDown());
+        addAnnotationsOptions();
         clearButton.addActionListener(e4 -> deleteLastDrawnObject());
+    }
+
+    public void removeAnnotationOptions() {
+        if ((thumbsDownButton.getActionListeners().length > 0)) {
+            thumbsUpButton.removeActionListener(thumbsUpButton.getActionListeners()[0]);
+            thumbsDownButton.removeActionListener(thumbsDownButton.getActionListeners()[0]);
+            thumbsUpButton.setBackground(thumbsUpButton.getBackground().darker());
+            thumbsDownButton.setBackground(thumbsDownButton.getBackground().darker());
+        }
+    }
+
+    public void addAnnotationsOptions() {
+        if (!(thumbsDownButton.getActionListeners().length > 0)) {
+            thumbsUpButton.addActionListener(e1 -> drawThumbUp());
+            thumbsDownButton.addActionListener(e2 -> drawThumbDown());
+            thumbsUpButton.setBackground(thumbsUpButton.getBackground().brighter());
+            thumbsDownButton.setBackground(thumbsDownButton.getBackground().brighter());
+        }
     }
 
     private void initForAccountType() {
@@ -90,11 +107,11 @@ public class SymbolListPanel extends GUI {
     }
 
     private void drawThumbUp() {
-        guiManager.addToDrawPanel(new ThumbUp(50,50,Color.black,1,""));
+        guiManager.addToDrawPanel(new ThumbUp(50, 50, Color.black, 1, ""));
     }
 
     private void drawThumbDown() {
-        guiManager.addToDrawPanel(new ThumbDown(50,50,Color.black,1,""));
+        guiManager.addToDrawPanel(new ThumbDown(50, 50, Color.black, 1, ""));
     }
 
     private void deleteLastDrawnObject() {
@@ -102,4 +119,11 @@ public class SymbolListPanel extends GUI {
     }
 
 
+    public void removeEditingOptions() {
+        this.mainPanel.remove(symbolPanel);
+    }
+
+    public void addEditingOptions(){
+        this.mainPanel.add(symbolPanel,BorderLayout.CENTER);
+    }
 }

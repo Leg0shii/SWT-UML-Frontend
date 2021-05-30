@@ -66,6 +66,21 @@ public class ObjectListPanel extends GUI {
         this.revalidate();
     }
 
+    public void updateGUI() {
+        setupObjectButtons(groupsList, users);
+        if (showGroups) {
+            this.headerLabel.setText(this.groups);
+            this.switchButton.setText(this.participants);
+            this.objectList.remove(this.addStudentButton);
+        } else {
+            this.headerLabel.setText(participants);
+            this.switchButton.setText(this.groups);
+            this.objectList.add(this.addStudentButton);
+        }
+        initForAccountType();
+        this.revalidate();
+    }
+
     private void setupListeners() {
         this.switchButton.addActionListener(e1 -> {
                     if (!groupsList.isEmpty()) {
@@ -203,5 +218,4 @@ public class ObjectListPanel extends GUI {
     private void addUserFunction() {
 
     }
-
 }

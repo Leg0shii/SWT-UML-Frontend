@@ -9,6 +9,7 @@ import de.swt.util.AccountType;
 import de.swt.logic.course.Course;
 import de.swt.util.Client;
 import de.swt.util.Language;
+import de.swt.util.WorkspaceState;
 
 
 import javax.swing.*;
@@ -95,6 +96,18 @@ public class DanielMainTest {
         button7.addActionListener(e -> {
             guiManager.switchToWorkspaceGUI();
         });
+        JButton button8 = new JButton("Change Workspacestate to Viewing");
+        button8.addActionListener(e -> {
+            guiManager.setWorkspaceState(WorkspaceState.VIEWING);
+        });
+        JButton button9 = new JButton("Change Workspacestate to Annotating");
+        button9.addActionListener(e -> {
+            guiManager.setWorkspaceState(WorkspaceState.ANNOTATING);
+        });
+        JButton button10 = new JButton("Change Workspacestate to Editing");
+        button10.addActionListener(e -> {
+            guiManager.setWorkspaceState(WorkspaceState.EDITING);
+        });
         frame.setLayout(new FlowLayout());
         frame.add(button);
         frame.add(button2);
@@ -103,6 +116,9 @@ public class DanielMainTest {
         frame.add(button5);
         frame.add(button6);
         frame.add(button7);
+        frame.add(button8);
+        frame.add(button9);
+        frame.add(button10);
         frame.pack();
         frame.setVisible(true);
     }

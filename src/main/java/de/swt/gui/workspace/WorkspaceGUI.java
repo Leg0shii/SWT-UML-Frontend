@@ -8,6 +8,7 @@ import de.swt.util.AccountType;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
 
 public class WorkspaceGUI extends GUI {
@@ -66,6 +67,51 @@ public class WorkspaceGUI extends GUI {
         this.objectListPanel.updateGUI(groups, users);
         this.drawablePanel.updateGUI(remainingTime);
         this.initForAccountType();
+        this.initForWorkspaceState();
+    }
+
+    public void updateGUI(){
+        this.objectListPanel.updateGUI();
+        this.drawablePanel.updateGUI();
+        this.initForAccountType();
+        this.initForWorkspaceState();
+    }
+
+    private void initForWorkspaceState() {
+        switch (guiManager.state){
+            case VIEWING: {
+                this.mainPanel.removeAll();
+                this.mainPanel.revalidate();
+                this.mainPanel.add(midPanel, BorderLayout.CENTER);
+                this.drawablePanel.removeEditingOptions();
+                this.mainPanel.revalidate();
+                break;
+            }
+            case ANNOTATING: {
+                this.mainPanel.removeAll();
+                this.mainPanel.revalidate();
+                this.mainPanel.add(leftPanel, BorderLayout.WEST);
+                this.mainPanel.add(midPanel, BorderLayout.CENTER);
+                this.mainPanel.add(rightPanel, BorderLayout.EAST);
+                this.mainPanel.revalidate();
+                this.symbolListPanel.addAnnotationsOptions();
+                this.symbolListPanel.removeEditingOptions();
+                this.drawablePanel.addEditingOptions();
+                break;
+            }
+            case EDITING: {
+                this.mainPanel.removeAll();
+                this.mainPanel.revalidate();
+                this.mainPanel.add(leftPanel, BorderLayout.WEST);
+                this.mainPanel.add(midPanel, BorderLayout.CENTER);
+                this.mainPanel.add(rightPanel, BorderLayout.EAST);
+                this.mainPanel.revalidate();
+                this.symbolListPanel.removeAnnotationOptions();
+                this.symbolListPanel.addEditingOptions();
+                this.drawablePanel.addEditingOptions();
+                break;
+            }
+        }
     }
 
     private void setupListeners() {

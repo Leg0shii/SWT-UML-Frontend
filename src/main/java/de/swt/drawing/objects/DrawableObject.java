@@ -8,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.Arrays;
 
 public abstract class DrawableObject extends Draggable {
@@ -77,6 +79,15 @@ public abstract class DrawableObject extends Draggable {
         id[1] = guiManager.increaseObjectCounter();
         super.initListeners();
         setupListeners();
+    }
+
+    public void removeInteraction(){
+        for (MouseMotionListener listener : this.getMouseMotionListeners()){
+            this.removeMouseMotionListener(listener);
+        }
+        for (MouseListener listener : this.getMouseListeners()){
+            this.removeMouseListener(listener);
+        }
     }
 
     public void closeAllPopups() {

@@ -8,6 +8,7 @@ import de.swt.logic.user.User;
 import de.swt.util.AccountType;
 import de.swt.util.Client;
 import de.swt.util.Language;
+import de.swt.util.WorkspaceState;
 import org.apache.commons.lang3.SerializationUtils;
 
 import javax.swing.*;
@@ -35,6 +36,8 @@ public class GUIManager extends JFrame {
 
     private int drawableObjectCounter;
 
+    public WorkspaceState state;
+
     public GUIManager(Client client,  Language language, AccountType accountType) {
         super("E-Learning Software");
         this.client = client;
@@ -47,6 +50,8 @@ public class GUIManager extends JFrame {
         this.accountType = accountType;
         this.childrenGUI = new ArrayList<>();
         this.drawableObjectCounter = 0;
+
+        this.state = WorkspaceState.EDITING;
     }
 
     public void setupGUIS() {
@@ -196,5 +201,11 @@ public class GUIManager extends JFrame {
 
     public int increaseObjectCounter(){
         return this.drawableObjectCounter++;
+    }
+
+    public void setWorkspaceState(WorkspaceState state){
+        this.state = state;
+        this.workspaceGUI.updateGUI();
+        this.revalidate();
     }
 }

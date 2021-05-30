@@ -51,6 +51,10 @@ public class DrawablePanel extends GUI {
         initForAccountType();
     }
 
+    public void updateGUI() {
+        initForAccountType();
+    }
+
     private void setupListeners() {
         this.taskButton.addActionListener(e1 -> {
             if (popupCounter.get(0) % 2 == 0) {
@@ -110,6 +114,20 @@ public class DrawablePanel extends GUI {
         drawPanel.repaint();
     }
 
+    public void removeInteraction() {
+        for (JComponent object : drawableObjects) {
+            DrawableObject object1 = (DrawableObject) object;
+            object1.removeInteraction();
+        }
+    }
+
+    public void addInteraction() {
+        for (JComponent object : drawableObjects) {
+            DrawableObject object1 = (DrawableObject) object;
+            object1.init(guiManager);
+        }
+    }
+
     public boolean removeLastDrawnObject() {
         if (!drawableObjects.isEmpty()) {
             DrawableObject object = (DrawableObject) drawableObjects.pop();
@@ -139,8 +157,8 @@ public class DrawablePanel extends GUI {
 
     public Component[] getDrawnObjects() {
         ArrayList<Component> components = new ArrayList<>();
-        for (Component component : drawPanel.getComponents()){
-            if (!component.getClass().getSimpleName().matches("Thumb.*")){
+        for (Component component : drawPanel.getComponents()) {
+            if (!component.getClass().getSimpleName().matches("Thumb.*")) {
                 components.add(component);
             }
         }
@@ -149,8 +167,8 @@ public class DrawablePanel extends GUI {
 
     public Component[] getAnnotations() {
         ArrayList<Component> components = new ArrayList<>();
-        for (Component component : drawPanel.getComponents()){
-            if (component.getClass().getSimpleName().matches("Thumb.*")){
+        for (Component component : drawPanel.getComponents()) {
+            if (component.getClass().getSimpleName().matches("Thumb.*")) {
                 components.add(component);
             }
         }
@@ -174,15 +192,25 @@ public class DrawablePanel extends GUI {
     }
 
     public void removeAllIndexedObjects(Component[] objects) {
-        for (Component component : objects){
+        for (Component component : objects) {
             DrawableObject object = (DrawableObject) component;
-            for (JComponent stackComponent : drawableObjects){
+            for (JComponent stackComponent : drawableObjects) {
                 DrawableObject stackObject = (DrawableObject) stackComponent;
-                if (Arrays.equals(object.getID(), stackObject.getID())){
+                if (Arrays.equals(object.getID(), stackObject.getID())) {
                     drawPanel.remove(stackObject);
                     drawableObjects.remove(stackObject);
                 }
             }
+        }
+    }
+
+    public void removeEditingOptions() {
+        removeInteraction();
+    }
+
+    public void addEditingOptions() {
+        if (!drawableObjects.isEmpty() && drawableObjects.get(0).getMouseListeners().length == 0) {
+            addInteraction();
         }
     }
 }
