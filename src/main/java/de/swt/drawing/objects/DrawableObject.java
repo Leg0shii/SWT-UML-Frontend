@@ -86,6 +86,7 @@ public abstract class DrawableObject extends Draggable {
 
     public void init(GUIManager guiManager) {
         this.guiManager = guiManager;
+        this.wantsToChange = false;
         this.factory = PopupFactory.getSharedInstance();
         this.popupCounter = 0;
         id[0] = guiManager.getClient().userid;
