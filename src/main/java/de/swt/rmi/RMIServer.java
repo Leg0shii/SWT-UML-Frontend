@@ -76,7 +76,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
             System.out.println("SENDING PING MESSAGE!!!");
             for (int ids : hashMap.keySet()) {
                 commandObject.setCommand("UU:" + user.getId());
-                commandObject.setHasWorkspaceFile(null);
+                commandObject.setWorkspaceFileBytes(null);
                 hashMap.get(ids).add(commandObject);
             }
 
@@ -105,7 +105,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
             System.out.println("SENDING COURSE PING MESSAGE!!!");
             for (int ids : hashMap.keySet()) {
                 commandObject.setCommand("CU:" + course.getId());
-                commandObject.setHasWorkspaceFile(null);
+                commandObject.setWorkspaceFileBytes(null);
                 hashMap.get(ids).add(commandObject);
             }
 
@@ -134,7 +134,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
             System.out.println("SENDING GROUP PING MESSAGE!!!");
             for (int ids : hashMap.keySet()) {
                 commandObject.setCommand("GU:" + group.getId());
-                commandObject.setHasWorkspaceFile(null);
+                commandObject.setWorkspaceFileBytes(null);
                 hashMap.get(ids).add(commandObject);
             }
 
@@ -163,7 +163,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
             System.out.println("SENDING SESSION PING MESSAGE!!!");
             for (int ids : hashMap.keySet()) {
                 commandObject.setCommand("SU:" + session.getId());
-                commandObject.setHasWorkspaceFile(null);
+                commandObject.setWorkspaceFileBytes(null);
                 hashMap.get(ids).add(commandObject);
             }
 
@@ -194,7 +194,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
         for (int ids : hashMap.keySet()) {
             commandObject.setCommand("FU:");
-            commandObject.setHasWorkspaceFile(bytes);
+            commandObject.setWorkspaceFileBytes(bytes);
             hashMap.get(ids).add(commandObject);
         }
 
