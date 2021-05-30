@@ -20,7 +20,10 @@ public class Draggable extends JComponent implements Serializable {
     private volatile int myX;
     private volatile int myY;
 
+    public boolean wantsToChange;
+
     public Draggable() {
+        wantsToChange = false;
     }
 
     public void initListeners() {
@@ -33,6 +36,7 @@ public class Draggable extends JComponent implements Serializable {
 
                 myX = getX();
                 myY = getY();
+                wantsToChange = true;
             }
 
             @Override
@@ -44,6 +48,7 @@ public class Draggable extends JComponent implements Serializable {
                 for (Component component : orderedComponents){
                     getParent().add(component);
                 }
+                wantsToChange = false;
             }
         });
         //drag on drag

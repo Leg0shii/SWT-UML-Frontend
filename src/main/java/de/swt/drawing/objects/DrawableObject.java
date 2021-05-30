@@ -77,7 +77,9 @@ public abstract class DrawableObject extends Draggable {
         addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                guiManager.syncSingleObject(thisObject);
+                if (wantsToChange) {
+                    guiManager.syncSingleObject(thisObject);
+                }
             }
         });
     }
@@ -92,11 +94,11 @@ public abstract class DrawableObject extends Draggable {
         setupListeners();
     }
 
-    public void removeInteraction(){
-        for (MouseMotionListener listener : this.getMouseMotionListeners()){
+    public void removeInteraction() {
+        for (MouseMotionListener listener : this.getMouseMotionListeners()) {
             this.removeMouseMotionListener(listener);
         }
-        for (MouseListener listener : this.getMouseListeners()){
+        for (MouseListener listener : this.getMouseListeners()) {
             this.removeMouseListener(listener);
         }
     }
@@ -109,7 +111,7 @@ public abstract class DrawableObject extends Draggable {
         }
     }
 
-    public int[] getID(){
+    public int[] getID() {
         return id;
     }
 
