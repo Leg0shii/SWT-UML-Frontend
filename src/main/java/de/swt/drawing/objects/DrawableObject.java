@@ -74,9 +74,11 @@ public abstract class DrawableObject extends Draggable {
             }
         });
 
-        addPropertyChangeListener(new PropertyChangeListener() {
+        addMouseMotionListener(new MouseAdapter() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
+            public void mouseDragged(MouseEvent e) {
+                super.mouseDragged(e);
+                System.out.println("Property!");
                 if (wantsToChange) {
                     guiManager.syncSingleObject(thisObject);
                 }

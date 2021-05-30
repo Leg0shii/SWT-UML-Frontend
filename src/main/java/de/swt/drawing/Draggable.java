@@ -22,6 +22,7 @@ public class Draggable extends JComponent implements Serializable {
 
     public boolean wantsToChange;
 
+
     public Draggable() {
         wantsToChange = false;
     }
@@ -36,6 +37,7 @@ public class Draggable extends JComponent implements Serializable {
 
                 myX = getX();
                 myY = getY();
+                System.out.println("hello");
                 wantsToChange = true;
             }
 
@@ -59,6 +61,9 @@ public class Draggable extends JComponent implements Serializable {
                 int deltaY = e.getYOnScreen() - screenY;
 
                 setLocation(myX + deltaX, myY + deltaY);
+                System.out.println("Property!");
+                if (wantsToChange) {
+                }
             }
         });
     }
