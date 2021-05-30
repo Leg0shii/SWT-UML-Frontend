@@ -186,18 +186,36 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     }
 
     @Override
-    public void updateWorkspaceFile(byte[] bytes) throws RemoteException {
+    public void updateWorkspaceFile(byte[] bytes, int id) throws RemoteException {
 
         HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
         CommandObject commandObject = new CommandObject();
         System.out.println("SENDING WORKSPACE PING MESSAGE!!!");
 
-        for (int ids : hashMap.keySet()) {
-            commandObject.setCommand("FU:");
-            commandObject.setWorkspaceFileBytes(bytes);
-            hashMap.get(ids).add(commandObject);
+        for (Group group : groupManager.getGroupHashMap().values()){
+            if (group.getParticipants().contains(id)){
+                for (int ids : group.getParticipants()){
+                    if (id != ids){
+                        commandObject.setCommand("FU:");
+                        commandObject.setWorkspaceFileBytes(bytes);
+                        hashMap.get(ids).add(commandObject);
+                    }
+                }
+                return;
+            }
         }
 
+        for (Session session : sessionManager.getSessionHashMap().values()){
+            if (session.getMaster() == id){
+                for (int ids : session.getParticipants()){
+                    if (id != ids){
+                        commandObject.setCommand("FU:");
+                        commandObject.setWorkspaceFileBytes(bytes);
+                        hashMap.get(ids).add(commandObject);
+                    }
+                }
+            }
+        }
     }
 
 }
