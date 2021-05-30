@@ -2,6 +2,7 @@ package de.swt.util;
 
 import de.swt.database.AsyncMySQL;
 import de.swt.database.DBManager;
+import de.swt.gui.GUIManager;
 import de.swt.logic.course.CourseManager;
 import de.swt.logic.group.GroupManager;
 import de.swt.logic.session.SessionManager;
@@ -27,6 +28,7 @@ public class Client {
     public SessionManager sessionManager;
     public RMIServerInterface server;
     private ServerConn serverConn;
+    public GUIManager guiManager;
 
     public void onStart() {
 

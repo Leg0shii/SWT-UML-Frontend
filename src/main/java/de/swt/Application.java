@@ -29,6 +29,7 @@ public class Application {
         onStart();
         this.client = new Client();
         client.onStart();
+        client.guiManager = guiManager;
         guiManager.updateGUIManager(client);
         guiManager.updateGUIS(new ArrayList<>(guiManager.getClient().userManager.getUserHashMap().values()));
     }

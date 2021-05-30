@@ -21,6 +21,6 @@ public interface RMIServerInterface extends Remote {
     Group sendGroup(Group group, int groupid, boolean update) throws RemoteException;
     Session sendSession(Session session, int idsession, boolean update) throws RemoteException;
     ArrayList<CommandObject> accessCommandQueue(int userid) throws RemoteException;
-    void updateWorkspaceFile(byte[] bytes) throws RemoteException;
+    void updateWorkspaceFile(byte[] bytes, int id) throws RemoteException;
 }
 

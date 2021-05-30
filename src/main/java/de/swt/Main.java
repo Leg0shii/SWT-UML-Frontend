@@ -1,6 +1,7 @@
 package de.swt;
 
 import com.formdev.flatlaf.intellijthemes.FlatSolarizedLightIJTheme;
+import de.swt.drawing.objects.UseCase;
 import de.swt.gui.GUIManager;
 import de.swt.gui.classroom.GradePanel;
 import de.swt.logic.group.Group;
@@ -46,12 +47,17 @@ public class Main {
         button10.addActionListener(e -> {
             application.guiManager.setWorkspaceState(WorkspaceState.EDITING);
         });
+        JButton button11 = new JButton("Get Workspace Sync String");
+        button11.addActionListener(e -> {
+            application.guiManager.syncSingleObject(new UseCase(10,10,1,"Hello",Color.BLUE));
+        });
         frame.setLayout(new FlowLayout());
         frame.add(button6);
         frame.add(button7);
         frame.add(button8);
         frame.add(button9);
         frame.add(button10);
+        frame.add(button11);
         frame.pack();
         frame.setVisible(true);
     }

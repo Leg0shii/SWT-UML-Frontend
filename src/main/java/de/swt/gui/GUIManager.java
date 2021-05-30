@@ -1,5 +1,6 @@
 package de.swt.gui;
 
+import de.swt.drawing.objects.DrawableObject;
 import de.swt.gui.classroom.ClassroomGUI;
 import de.swt.gui.login.LoginGUI;
 import de.swt.gui.workspace.WorkspaceGUI;
@@ -10,6 +11,7 @@ import de.swt.util.AccountType;
 import de.swt.util.Client;
 import de.swt.util.Language;
 import de.swt.util.WorkspaceState;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SerializationUtils;
 
 import javax.swing.*;
@@ -56,7 +58,7 @@ public class GUIManager extends JFrame {
         this.state = WorkspaceState.EDITING;
     }
 
-    public void updateGUIManager(Client client){
+    public void updateGUIManager(Client client) {
         this.client = client;
         this.currentSession = new Session(client.userid);
     }
@@ -73,7 +75,7 @@ public class GUIManager extends JFrame {
                 try {
                     client.userManager.userLogout();
                     client.onDisable();
-                } catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
             }
@@ -86,7 +88,7 @@ public class GUIManager extends JFrame {
         this.workspaceGUI.updateGUI();
     }
 
-    public void updateGUIS(){
+    public void updateGUIS() {
         this.classroomGUI.updateGUI();
         this.loginGUI.updateGUI();
         this.workspaceGUI.updateGUI();
@@ -95,7 +97,7 @@ public class GUIManager extends JFrame {
     public void switchToLoginGUI() {
         try {
             this.getClient().userManager.userLogout();
-        } catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
         closeAllPopups();
@@ -115,13 +117,13 @@ public class GUIManager extends JFrame {
         this.setVisible(true);
     }
 
-    public void closeAllPopups(){
-        for (GUI childGUI : childrenGUI){
+    public void closeAllPopups() {
+        for (GUI childGUI : childrenGUI) {
             childGUI.closeAllPopups();
         }
     }
 
-    public void addToDrawPanel(JComponent component){
+    public void addToDrawPanel(JComponent component) {
         workspaceGUI.addToDrawPanel(component);
     }
 
@@ -137,35 +139,37 @@ public class GUIManager extends JFrame {
         return workspaceGUI.removeLastDrawnObject();
     }
 
-    public boolean removeLastAnnotations(){
+    public boolean removeLastAnnotations() {
         return workspaceGUI.removeLastAnnotations();
     }
 
-    public Component[] getDrawnObjects(){
+    public Component[] getDrawnObjects() {
         Component[] components = workspaceGUI.getDrawnObjects();
         return SerializationUtils.clone(components);
     }
 
-    public Component[] getAnnotations(){
+    public Component[] getAnnotations() {
         Component[] components = workspaceGUI.getAnnotations();
         return SerializationUtils.clone(components);
     }
 
-    public void addDrawnObjects(Component[] components){
-        while(removeLastDrawnObject()){}
-        for (Component component : components){
+    public void addDrawnObjects(Component[] components) {
+        while (removeLastDrawnObject()) {
+        }
+        for (Component component : components) {
             addToDrawPanel((JComponent) component);
         }
     }
 
-    public void addAnnotations(Component[] components){
-        while(removeLastAnnotations()){}
-        for (Component component : components){
+    public void addAnnotations(Component[] components) {
+        while (removeLastAnnotations()) {
+        }
+        for (Component component : components) {
             addToDrawPanel((JComponent) component);
         }
     }
 
-    public void saveWorkspace(File file){
+    public void saveWorkspace(File file) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
@@ -179,7 +183,7 @@ public class GUIManager extends JFrame {
         }
     }
 
-    public void loadWorkspace(File file){
+    public void loadWorkspace(File file) {
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
@@ -187,17 +191,21 @@ public class GUIManager extends JFrame {
             Component[] objects = list[0];
             Component[] annotations = list[1];
             objectInputStream.close();
-            while (removeLastDrawnObject()){}
+            while (removeLastDrawnObject()) {
+            }
             this.addDrawnObjects(objects);
-            while (removeLastAnnotations()){}
+            while (removeLastAnnotations()) {
+            }
             this.addAnnotations(annotations);
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
     }
 
-    public void syncWorkspace(File file){
+    public void syncWorkspace(byte[] input) {
         try {
+            File file = new File("input.ser");
+            FileUtils.writeByteArrayToFile(file,input);
             FileInputStream fileInputStream = new FileInputStream(file);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             Component[][] list = (Component[][]) objectInputStream.readObject();
@@ -213,15 +221,35 @@ public class GUIManager extends JFrame {
         }
     }
 
+    public void syncSingleObject(Component component){
+        try {
+            File file = new File("output.ser");
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            var allComponents = new Component[2][2];
+            if (!component.getClass().getSimpleName().matches("Thumb.*")) {
+                allComponents[0] = new Component[]{component};
+            } else {
+                allComponents[1] = new Component[]{component};
+            }
+            objectOutputStream.writeObject(allComponents);
+            objectOutputStream.close();
+            byte[] outByteArray = FileUtils.readFileToByteArray(file);
+            client.server.updateWorkspaceFile(outByteArray, client.userid);
+        } catch (Exception ignored){
+
+        }
+    }
+
     private void removeAllIndexedObjects(Component[] objects) {
         workspaceGUI.removeAllIndexedObjects(objects);
     }
 
-    public int increaseObjectCounter(){
+    public int increaseObjectCounter() {
         return this.drawableObjectCounter++;
     }
 
-    public void setWorkspaceState(WorkspaceState state){
+    public void setWorkspaceState(WorkspaceState state) {
         this.state = state;
         this.workspaceGUI.updateGUI();
         this.revalidate();

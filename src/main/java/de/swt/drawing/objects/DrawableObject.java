@@ -10,6 +10,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 
 public abstract class DrawableObject extends Draggable {
@@ -25,6 +27,7 @@ public abstract class DrawableObject extends Draggable {
     public transient GUIManager guiManager;
     public transient GUI popupPanel;
     private final int[] id;
+    private DrawableObject thisObject;
 
     public DrawableObject(Color color, double scale, String description) {
         this.color = color;
@@ -32,6 +35,7 @@ public abstract class DrawableObject extends Draggable {
         this.description = description;
         this.offset = 5;
         this.id = new int[2];
+        thisObject = this;
     }
 
     public void updateComponent(String description, double scale, Color color) {
@@ -67,6 +71,13 @@ public abstract class DrawableObject extends Draggable {
                     popupPanel.closeAllPopups();
                 }
                 popupCounter++;
+            }
+        });
+
+        addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                guiManager.syncSingleObject(thisObject);
             }
         });
     }

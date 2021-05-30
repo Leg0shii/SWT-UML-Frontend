@@ -16,6 +16,7 @@ public class ReadCommandList extends TimerTask {
 
     public ReadCommandList(Client client) {
         this.client = client;
+        System.out.println("Hello");
     }
 
     @Override
@@ -106,7 +107,12 @@ public class ReadCommandList extends TimerTask {
                 break;
             case "FU":
                 byte[] filebytes = command.getWorkspaceFileBytes();
-                // save file here
+                try {
+                    client.guiManager.syncWorkspace(filebytes);
+                    System.out.println("Updated incoming WorkspaceChange. Updated some Objects");
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
             default:
         }
