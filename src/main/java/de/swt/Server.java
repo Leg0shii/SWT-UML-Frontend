@@ -56,6 +56,7 @@ public class Server {
         courseManager.cacheAllCourseData();
         userManager.cacheAllUserData();
         groupManager.cacheAllGroupData();
+        sessionManager.cacheAllSessionData();
 
     }
 

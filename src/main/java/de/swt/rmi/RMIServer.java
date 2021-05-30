@@ -192,7 +192,10 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
         CommandObject commandObject = new CommandObject();
         System.out.println("SENDING WORKSPACE PING MESSAGE!!!");
 
+        System.out.println("Sync Initiator:" + id);
+
         for (Group group : groupManager.getGroupHashMap().values()){
+            System.out.println(group.getParticipants());
             if (group.getParticipants().contains(id)){
                 for (int ids : group.getParticipants()){
                     if (id != ids){
