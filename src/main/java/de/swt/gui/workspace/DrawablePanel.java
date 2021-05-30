@@ -198,6 +198,9 @@ public class DrawablePanel extends GUI {
     public void removeAllIndexedObjects(Component[] objects) {
         for (Component component : objects) {
             DrawableObject object = (DrawableObject) component;
+            if (object == null){
+                return;
+            }
             for (JComponent stackComponent : drawableObjects) {
                 DrawableObject stackObject = (DrawableObject) stackComponent;
                 if (Arrays.equals(object.getID(), stackObject.getID())) {

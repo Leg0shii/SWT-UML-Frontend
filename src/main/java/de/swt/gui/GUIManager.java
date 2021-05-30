@@ -209,6 +209,7 @@ public class GUIManager extends JFrame {
             FileInputStream fileInputStream = new FileInputStream(file);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             Component[][] list = (Component[][]) objectInputStream.readObject();
+            System.out.println(Arrays.deepToString(list));
             Component[] objects = list[0];
             Component[] annotations = list[1];
             objectInputStream.close();
