@@ -31,10 +31,10 @@ public class SessionManager {
         if (!sessionHashMap.containsKey(id)) {
             ResultSet resultSet = mySQL.query("SELECT * FROM sessions WHERE idsession = " + id + ";");
             if (resultSet.next()) {
-                session = new Session(-1);
+                session = new Session();
                 session.setId(Integer.parseInt(resultSet.getString("idsession")));
                 session.setParticipants(parseParticipants(resultSet.getString("participants")));
-                session.setMaster(Integer.parseInt(resultSet.getString("master")));
+                session.setMaster(parseParticipants(resultSet.getString("master")));
                 session.setRemainingTime(Integer.parseInt(resultSet.getString("remainingtime")));
                 session.setGroups(parseParticipants(resultSet.getString("groups")));
                 sessionHashMap.put(session.getId(), session);
