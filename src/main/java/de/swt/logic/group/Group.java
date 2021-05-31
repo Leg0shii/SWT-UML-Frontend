@@ -20,7 +20,6 @@ public class Group implements Serializable {
     private long timeTillTermination;
     private int maxGroupSize;
     private ArrayList<Integer> participants;
-    private String workspace;
 
 }
 

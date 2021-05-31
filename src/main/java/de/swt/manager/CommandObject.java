@@ -15,5 +15,6 @@ public class CommandObject implements Serializable {
 
     private String command;
     private byte[] workspaceFileBytes;
+    private byte[] taskBytes;
 
 }

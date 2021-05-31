@@ -14,16 +14,29 @@ import java.util.ArrayList;
 public interface RMIServerInterface extends Remote {
 
     TestClass testClass(TestClass testClass) throws RemoteException;
+
     int ping(int val) throws RemoteException;
 
     User sendUser(User user, int userid, boolean update) throws RemoteException;
+
     Course sendCourse(Course course, int courseid, boolean update) throws RemoteException;
+
     Group sendGroup(Group group, int groupid, boolean update) throws RemoteException;
+
     Session sendSession(Session session, int idsession, boolean update) throws RemoteException;
+
     ArrayList<CommandObject> accessCommandQueue(int userid) throws RemoteException;
+
     void updateWorkspaceFile(byte[] bytes, int id) throws RemoteException;
+
     int sendRequest(int originid, int teacherid) throws RemoteException;
-    int sendAnswer(int originid) throws RemoteException;
-    long getRemainingTime(int type, int subjectid) throws RemoteException;
+
+    int sendAnswer(int originid, int answer, int teacherid) throws RemoteException;
+
+    void deleteGroup(int groupId) throws RemoteException;
+
+    void deleteSession(int sessionId) throws RemoteException;
+
+    void sendTask(byte[] workspaceBytes, byte[] taskBytes, int id) throws RemoteException;
 }
 

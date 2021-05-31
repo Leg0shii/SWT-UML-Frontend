@@ -17,6 +17,7 @@ import de.swt.manager.CommandObject;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -77,6 +78,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
             for (int ids : hashMap.keySet()) {
                 commandObject.setCommand("UU:" + user.getId());
                 commandObject.setWorkspaceFileBytes(null);
+                commandObject.setTaskBytes(null);
                 hashMap.get(ids).add(commandObject);
             }
 
@@ -96,8 +98,9 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
         // for this path the userid is ignored, it is only used to retrieve the user when update = false
         if (update) {
 
-            dbManager.updateCourse(course);
+            int id = dbManager.updateCourse(course);
             courseManager.cacheAllCourseData();
+            updatedCourse = courseManager.loadCourse(id);
 
             // user is updated now so send ping to all connected clients to get the updated User
             HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
@@ -106,6 +109,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
             for (int ids : hashMap.keySet()) {
                 commandObject.setCommand("CU:" + course.getId());
                 commandObject.setWorkspaceFileBytes(null);
+                commandObject.setTaskBytes(null);
                 hashMap.get(ids).add(commandObject);
             }
 
@@ -125,16 +129,25 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
         // for this path the userid is ignored, it is only used to retrieve the user when update = false
         if (update) {
 
-            dbManager.updateGroups(group);
+            int id = dbManager.updateGroups(group);
             groupManager.cacheAllGroupData();
+            updatedGroup = groupManager.loadGroup(id);
+
+            Session session = new Session();
+            try {
+                session = sessionManager.loadSession(group.getCourseID());
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
 
             // user is updated now so send ping to all connected clients to get the updated User
             HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
             CommandObject commandObject = new CommandObject();
             System.out.println("SENDING GROUP PING MESSAGE!!!");
-            for (int ids : hashMap.keySet()) {
+            for (int ids : session.getParticipants()) {
                 commandObject.setCommand("GU:" + group.getId());
                 commandObject.setWorkspaceFileBytes(null);
+                commandObject.setTaskBytes(null);
                 hashMap.get(ids).add(commandObject);
             }
 
@@ -154,16 +167,23 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
         // for this path the userid is ignored, it is only used to retrieve the user when update = false
         if (update) {
 
-            dbManager.updateSessions(session);
+            int id = dbManager.updateSessions(session);
             sessionManager.cacheAllSessionData();
+            try {
+                updatedSession = sessionManager.loadSession(id);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
 
             // user is updated now so send ping to all connected clients to get the updated User
             HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
             CommandObject commandObject = new CommandObject();
             System.out.println("SENDING SESSION PING MESSAGE!!!");
             for (int ids : hashMap.keySet()) {
-                commandObject.setCommand("SU:" + session.getId());
+                commandObject.setCommand("SU:" + updatedSession.getId());
                 commandObject.setWorkspaceFileBytes(null);
+                commandObject.setTaskBytes(null);
                 hashMap.get(ids).add(commandObject);
             }
 
@@ -190,14 +210,15 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
         HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
         CommandObject commandObject = new CommandObject();
-        System.out.println("SENDING WORKSPACE PING MESSAGE!!!");
+        System.out.println("SENDING JOIN REQUEST PING MESSAGE!!!");
 
-        for (Group group : groupManager.getGroupHashMap().values()){
-            if (group.getParticipants().contains(id)){
-                for (int ids : group.getParticipants()){
-                    if (id != ids){
+        for (Group group : groupManager.getGroupHashMap().values()) {
+            if (group.getParticipants().contains(id)) {
+                for (int ids : group.getParticipants()) {
+                    if (id != ids) {
                         commandObject.setCommand("FU:");
                         commandObject.setWorkspaceFileBytes(bytes);
+                        commandObject.setTaskBytes(null);
                         hashMap.get(ids).add(commandObject);
                     }
                 }
@@ -205,12 +226,13 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
             }
         }
 
-        for (Session session : sessionManager.getSessionHashMap().values()){
-            if (session.getMaster().contains(id)){
-                for (int ids : session.getParticipants()){
-                    if (id != ids){
+        for (Session session : sessionManager.getSessionHashMap().values()) {
+            if (session.getMaster().contains(id)) {
+                for (int ids : session.getParticipants()) {
+                    if (id != ids) {
                         commandObject.setCommand("FU:");
                         commandObject.setWorkspaceFileBytes(bytes);
+                        commandObject.setTaskBytes(null);
                         hashMap.get(ids).add(commandObject);
                     }
                 }
@@ -221,37 +243,81 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     @Override
     public int sendRequest(int originid, int teacherid) throws RemoteException {
 
+        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
         CommandObject commandObject = new CommandObject();
-        System.out.println("SENDING SESSION REQUEST PING MESSAGE!!!");
-        if(userManager.getUserHashMap().containsKey(teacherid)) {
-            commandObject.setCommand("RE:"+originid);
+        if (userManager.getUserHashMap().containsKey(teacherid)) {
+            commandObject.setCommand("RE:" + originid);
+            commandObject.setWorkspaceFileBytes(null);
+            commandObject.setTaskBytes(null);
+            hashMap.get(teacherid).add(commandObject);
         }
+        System.out.println("SENDING SESSION REQUEST PING MESSAGE!!!");
         return 0;
     }
 
     @Override
-    public int sendAnswer(int originid) throws RemoteException {
-
+    public int sendAnswer(int originid, int answer, int teacherid) throws RemoteException {
+        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
         CommandObject commandObject = new CommandObject();
         System.out.println("SENDING SESSION ANSWER PING MESSAGE!!!");
-        if(userManager.getUserHashMap().containsKey(originid)) {
-            commandObject.setCommand("AN:"+originid);
+        if (userManager.getUserHashMap().containsKey(originid)) {
+            commandObject.setCommand("AN:" + originid + " " + answer + " " + teacherid);
+            commandObject.setWorkspaceFileBytes(null);
+            commandObject.setTaskBytes(null);
+            hashMap.get(originid).add(commandObject);
         }
         return 0;
     }
 
     @Override
-    public long getRemainingTime(int type, int subjectid) throws RemoteException {
-
+    public void deleteGroup(int groupId) {
+        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
         CommandObject commandObject = new CommandObject();
-        System.out.println("SENDING REMAININGTIME ANSWER PING MESSAGE!!!");
-
-        if(type == 0) {
-            commandObject.setCommand("RT:"+ sessionManager.getSessionHashMap().get(subjectid).getRemainingTime());
-        } else if (type == 1) {
-            commandObject.setCommand("RT:"+ groupManager.getGroupHashMap().get(subjectid).getTimeTillTermination());
+        System.out.println("SENDING DELETE GROUP PING MESSAGE!!!");
+        Group group = groupManager.getGroupHashMap().get(groupId);
+        server.dbManager.deleteGroup(groupId);
+        for (User user : userManager.getUserHashMap().values()) {
+            if (group.getParticipants().contains(user.getId())) {
+                commandObject.setCommand("DG:" + groupId);
+                commandObject.setWorkspaceFileBytes(null);
+                commandObject.setTaskBytes(null);
+                hashMap.get(user.getId()).add(commandObject);
+            }
         }
-        return 0;
+    }
+
+    @Override
+    public void deleteSession(int sessionId) {
+        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
+        CommandObject commandObject = new CommandObject();
+        System.out.println("SENDING DELETE SESSION PING MESSAGE!!!");
+        Session session = sessionManager.getSessionHashMap().get(sessionId);
+        server.dbManager.deleteSession(sessionId);
+        for (User user : userManager.getUserHashMap().values()) {
+            if (session.getParticipants().contains(user.getId())) {
+                commandObject.setCommand("DS:" + sessionId);
+                commandObject.setWorkspaceFileBytes(null);
+                commandObject.setTaskBytes(null);
+                hashMap.get(user.getId()).add(commandObject);
+            }
+        }
+    }
+
+    @Override
+    public void sendTask(byte[] workspaceBytes, byte[] taskBytes, int id){
+        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
+        CommandObject commandObject = new CommandObject();
+        System.out.println("SENDING SEND TASK PING MESSAGE!!!");
+        Session session = sessionManager.getSessionFromTeacherId(id);
+        for (int partId : session.getParticipants()){
+            if (partId == id){
+                continue;
+            }
+            commandObject.setCommand("ST:"+id);
+            commandObject.setWorkspaceFileBytes(workspaceBytes);
+            commandObject.setTaskBytes(taskBytes);
+            hashMap.get(partId).add(commandObject);
+        }
     }
 
 }
