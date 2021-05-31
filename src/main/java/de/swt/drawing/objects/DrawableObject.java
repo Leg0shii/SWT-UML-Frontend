@@ -88,7 +88,6 @@ public abstract class DrawableObject extends Draggable {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 guiManager.syncSingleObject(thisObject);
-                System.out.println(Arrays.toString(getID()));
             }
         });
     }
@@ -98,6 +97,7 @@ public abstract class DrawableObject extends Draggable {
         this.wantsToChange = false;
         this.factory = PopupFactory.getSharedInstance();
         this.popupCounter = 0;
+        System.out.println(Arrays.toString(this.id));
         if (Arrays.equals(this.id, new int[2])){
             id[0] = guiManager.getClient().userid;
             id[1] = guiManager.increaseObjectCounter();
