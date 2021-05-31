@@ -120,6 +120,8 @@ public class ReadCommandList extends TimerTask {
             case "RE":
 
                 break;
+            case "AN":
+
             default:
         }
     }
