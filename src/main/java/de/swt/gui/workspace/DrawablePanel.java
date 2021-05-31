@@ -205,17 +205,15 @@ public class DrawablePanel extends GUI {
             if (object == null) {
                 return;
             }
-            System.out.println(Arrays.toString(object.getID()) + " " + object);
             for (JComponent stackComponent : drawableObjects) {
                 DrawableObject stackObject = (DrawableObject) stackComponent;
-                System.out.println(Arrays.toString(stackObject.getID()) + " " + stackObject);
                 if (Arrays.equals(object.getID(), stackObject.getID())) {
-                    System.out.println("Removing " + stackObject + " because true");
                     componentsToRemove.add(stackObject);
                 }
             }
         }
         for (DrawableObject object1 : componentsToRemove) {
+            object1.closeAllPopups();
             drawPanel.remove(object1);
             drawableObjects.remove(object1);
         }
