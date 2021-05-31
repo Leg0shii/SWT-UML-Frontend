@@ -92,7 +92,7 @@ public class CreateTaskPanel extends GUI {
         try {
             byte[] workspaceBytes = FileUtils.readFileToByteArray(getSelectedFile());
             byte[] taskBytes = task.getBytes(StandardCharsets.UTF_8);
-            guiManager.getClient().server.sendTask(workspaceBytes,taskBytes,guiManager.getClient().userid);
+            guiManager.getClient().server.sendTask(workspaceBytes, taskBytes, guiManager.getClient().userid);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -154,4 +154,5 @@ public class CreateTaskPanel extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

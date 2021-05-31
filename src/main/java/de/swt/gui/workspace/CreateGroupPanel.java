@@ -5,6 +5,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.logic.group.Group;
+import de.swt.logic.session.Session;
 import de.swt.util.Language;
 
 import javax.swing.*;

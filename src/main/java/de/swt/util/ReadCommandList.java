@@ -19,7 +19,6 @@ public class ReadCommandList extends TimerTask {
 
     public ReadCommandList(Client client) {
         this.client = client;
-        System.out.println("Hello");
     }
 
     @Override
@@ -94,6 +93,7 @@ public class ReadCommandList extends TimerTask {
                     client.groupManager.getGroupHashMap().remove(groupID);
                     Group group = client.server.sendGroup(null, groupID, false);
                     client.groupManager.getGroupHashMap().put(groupID, group);
+                    client.guiManager.updateGUIS();
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     return;
@@ -169,14 +169,15 @@ public class ReadCommandList extends TimerTask {
                 client.guiManager.updateGUIS();
                 break;
             case "DG":
-                int groupId;
+                int groupId = -1;
                 try {
                     groupId = Integer.parseInt(args[0]);
-                    System.out.println("Received incoming Delete Group, Deleted "+groupId);
                     client.guiManager.currentGroup = null;
-                } catch (Exception ignored) {
-
+                    client.groupManager.getGroupHashMap().remove(groupId);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                System.out.println("Received incoming Delete Group, Deleted "+groupId);
                 client.guiManager.updateGUIS();
                 break;
             case "DS":
@@ -185,8 +186,9 @@ public class ReadCommandList extends TimerTask {
                     sessionId = Integer.parseInt(args[0]);
                     System.out.println("Received incoming Delete Session, Deleted "+sessionId);
                     client.guiManager.currentSession = null;
-                } catch (Exception ignored) {
-
+                    client.sessionManager.getSessionHashMap().remove(sessionId);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 client.guiManager.updateGUIS();
                 break;

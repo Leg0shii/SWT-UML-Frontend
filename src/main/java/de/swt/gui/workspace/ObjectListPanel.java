@@ -62,6 +62,9 @@ public class ObjectListPanel extends GUI {
     public void updateGUI(List<Group> groups, List<User> users) {
         this.groupsList = groups;
         this.users = users;
+        if (groupsList.isEmpty()) {
+            showGroups = false;
+        }
         setupObjectButtons(groups, users);
         if (showGroups) {
             this.headerLabel.setText(this.groups);
@@ -77,6 +80,9 @@ public class ObjectListPanel extends GUI {
     }
 
     public void updateGUI() {
+        if (groupsList.isEmpty()) {
+            showGroups = false;
+        }
         setupObjectButtons(groupsList, users);
         if (showGroups) {
             this.headerLabel.setText(this.groups);
@@ -115,7 +121,6 @@ public class ObjectListPanel extends GUI {
                             popups.get(1).hide();
                             popups.set(1, factory1.getPopup(guiManager, createGroupPanel.mainPanel, point.x, point.y));
                             popups.get(1).show();
-                            System.out.println(popups);
                         } else {
                             popups.get(1).hide();
                         }
@@ -222,7 +227,7 @@ public class ObjectListPanel extends GUI {
 
     private void removeStudent(User user) {
         Session session = guiManager.currentSession;
-        session.getParticipants().remove(user.getId());
+        session.getParticipants().remove((Integer) user.getId());
         try {
             guiManager.getClient().server.sendSession(session, session.getId(), true);
         } catch (RemoteException e) {
@@ -232,7 +237,7 @@ public class ObjectListPanel extends GUI {
 
     private void terminateGroup(Group group) {
         Session session = guiManager.currentSession;
-        session.getGroups().remove(group.getId());
+        session.getGroups().remove((Integer) group.getId());
         try {
             guiManager.getClient().server.sendSession(session, session.getId(), true);
             guiManager.getClient().server.deleteGroup(group.getId());

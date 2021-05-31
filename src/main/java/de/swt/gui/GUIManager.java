@@ -271,4 +271,17 @@ public class GUIManager extends JFrame {
         this.workspaceGUI.updateGUI();
         this.revalidate();
     }
+
+    public ArrayList<Group> getRelevantGroups(){
+        ArrayList<Group> groups = new ArrayList<>();
+        for (Group group : client.groupManager.getGroupHashMap().values()){
+            if (group == null){
+                continue;
+            }
+            if (group.getCourseID() == currentSession.getId()){
+                groups.add(group);
+            }
+        }
+        return groups;
+    }
 }
