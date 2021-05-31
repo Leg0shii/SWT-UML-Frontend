@@ -37,7 +37,8 @@ public class GroupManager {
                     System.out.println("SOMETHING WENT WRONG WHILE LOADING GROUP!!!");
                     return null;
                 }
-            } catch (SQLException ignored) { }
+            } catch (SQLException ignored) {
+            }
         } else group = groupHashMap.get(id);
         return group;
     }
@@ -57,7 +58,11 @@ public class GroupManager {
         String[] stringDates = string.split(";");
         ArrayList<Integer> list = new ArrayList<>();
         for (String singleDate : stringDates) {
-            list.add(Integer.parseInt(singleDate));
+            try {
+                list.add(Integer.parseInt(singleDate));
+            } catch (Exception ignored) {
+            }
+
         }
         return list;
     }
