@@ -73,15 +73,22 @@ public abstract class DrawableObject extends Draggable {
                 popupCounter++;
             }
         });
-
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
                 super.mouseDragged(e);
-                System.out.println("Property!");
                 if (wantsToChange) {
                     guiManager.syncSingleObject(thisObject);
                 }
+                System.out.println(Arrays.toString(getID()));
+            }
+        });
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                guiManager.syncSingleObject(thisObject);
+                System.out.println(Arrays.toString(getID()));
             }
         });
     }
