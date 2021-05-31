@@ -161,6 +161,12 @@ public class GUIManager extends JFrame {
         }
     }
 
+    public void addObjectsWithoutRemoval(Component[] components){
+        for (Component component : components) {
+            addToDrawPanel((JComponent) component);
+        }
+    }
+
     public void addAnnotations(Component[] components) {
         while (removeLastAnnotations()) {
         }
@@ -214,8 +220,8 @@ public class GUIManager extends JFrame {
             objectInputStream.close();
             removeAllIndexedObjects(objects);
             removeAllIndexedObjects(annotations);
-            addDrawnObjects(objects);
-            addAnnotations(annotations);
+            addObjectsWithoutRemoval(objects);
+            addObjectsWithoutRemoval(annotations);
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
