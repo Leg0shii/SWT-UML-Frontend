@@ -60,7 +60,7 @@ public class GUIManager extends JFrame {
 
     public void updateGUIManager(Client client) {
         this.client = client;
-        this.currentSession = new Session(client.userid);
+        this.currentSession = new Session();
     }
 
     public void setupGUIS() {
