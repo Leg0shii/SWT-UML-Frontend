@@ -199,6 +199,7 @@ public class DrawablePanel extends GUI {
     }
 
     public void removeAllIndexedObjects(Component[] objects) {
+        ArrayList<DrawableObject> componentsToRemove = new ArrayList<>();
         for (Component component : objects) {
             DrawableObject object = (DrawableObject) component;
             if (object == null) {
@@ -210,10 +211,13 @@ public class DrawablePanel extends GUI {
                 System.out.println(Arrays.toString(stackObject.getID()) + " " + stackObject);
                 if (Arrays.equals(object.getID(), stackObject.getID())) {
                     System.out.println("Removing " + stackObject + " because true");
-                    drawPanel.remove(stackObject);
-                    drawableObjects.remove(stackObject);
+                    componentsToRemove.add(stackObject);
                 }
             }
+        }
+        for (DrawableObject object1 : componentsToRemove) {
+            drawPanel.remove(object1);
+            drawableObjects.remove(object1);
         }
     }
 
