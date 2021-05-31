@@ -5,6 +5,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.logic.course.Course;
+import de.swt.logic.session.Session;
 import de.swt.logic.user.User;
 import de.swt.util.AccountType;
 import de.swt.util.NextDate;
@@ -12,6 +13,8 @@ import de.swt.util.NextDate;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -162,33 +165,34 @@ public class GradePanel extends GUI {
 
     // TODO: Other Group implements this
     private void enterFunction() {
-
-        // TODO: check if session is started
-        ArrayList<Long> longList = new ArrayList<>();
-        for (Date d : course.getDates()) {
-            longList.add(d.getTime());
-        }
-
-        Date earlierstDate = NextDate.getNextDate(longList);
-        if (guiManager.getClient().userManager.checkSessionStarted(earlierstDate)) {
-
-            // if user is allowed to join the course
-            int courseid = course.getId();
-            int uid = guiManager.getClient().userid;
-            User user = guiManager.getClient().userManager.getUserHashMap().get(uid);
-
-            if (user.getCourse().contains(courseid)) {
-
-                // allow user to join -> update user list for all that are inside
-
+        try {
+            if (guiManager.getClient().userManager.loadUser(guiManager.getClient().userid).getCourse().contains(course.getId())) {
+                Session session = guiManager.getClient().sessionManager.getSessionFromTeacherId(course.getTeacherID());
+                if (session == null) {
+                    if (guiManager.accountType.equals(AccountType.TEACHER)) {
+                        Session newSession = new Session();
+                        newSession.getMaster().add(guiManager.getClient().userid);
+                        newSession.setRemainingTime(120);
+                        newSession.getParticipants().add(guiManager.getClient().userid);
+                        guiManager.getClient().server.sendSession(newSession, -1, true);
+                    } else {
+                        enterButton.setBackground(Color.RED);
+                        switch (guiManager.language){
+                            case ENGLISH: enterButton.setText("Session not yet open");
+                            case GERMAN: enterButton.setText("Session nicht offen");
+                        }
+                    }
+                } else {
+                    session.getParticipants().add(guiManager.getClient().userid);
+                    guiManager.getClient().server.sendSession(session,-1,true);
+                    guiManager.switchToWorkspaceGUI();
+                }
             } else {
 
-                // send pop up to teacher
-
             }
-
+        } catch (SQLException | RemoteException throwables) {
+            throwables.printStackTrace();
         }
-
     }
 
     {
@@ -243,4 +247,5 @@ public class GradePanel extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

@@ -62,7 +62,7 @@ public class AddUserPanel extends GUI {
         int studentId = getStudentID();
         guiManager.currentSession.getParticipants().add(studentId);
         try {
-            guiManager.getClient().server.sendSession(guiManager.currentSession,-1,true);
+            guiManager.getClient().server.sendSession(guiManager.currentSession, -1, true);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -106,4 +106,5 @@ public class AddUserPanel extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }
