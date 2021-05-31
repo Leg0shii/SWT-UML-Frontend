@@ -222,9 +222,20 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     public int sendRequest(int originid, int teacherid) throws RemoteException {
 
         CommandObject commandObject = new CommandObject();
-        System.out.println("SENDING WORKSPACE PING MESSAGE!!!");
+        System.out.println("SENDING SESSION REQUEST PING MESSAGE!!!");
         if(userManager.getUserHashMap().containsKey(teacherid)) {
             commandObject.setCommand("RE:");
+        }
+        return 0;
+    }
+
+    @Override
+    public int sendAnswer(int originid) throws RemoteException {
+
+        CommandObject commandObject = new CommandObject();
+        System.out.println("SENDING SESSION ANSWER PING MESSAGE!!!");
+        if(userManager.getUserHashMap().containsKey(originid)) {
+            commandObject.setCommand("AN:");
         }
         return 0;
     }

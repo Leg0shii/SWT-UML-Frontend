@@ -23,5 +23,6 @@ public interface RMIServerInterface extends Remote {
     ArrayList<CommandObject> accessCommandQueue(int userid) throws RemoteException;
     void updateWorkspaceFile(byte[] bytes, int id) throws RemoteException;
     int sendRequest(int originid, int teacherid) throws RemoteException;
+    int sendAnswer(int originid) throws RemoteException;
 }
 
