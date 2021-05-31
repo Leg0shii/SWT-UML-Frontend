@@ -45,6 +45,9 @@ public class DBManager {
         mySQL.update("CREATE TABLE IF NOT EXISTS groups (groupid INT AUTO_INCREMENT, courseid INT" +
             ", ttt INT, maxGS INT, participants VARCHAR(255), PRIMARY KEY(groupid));");
 
+        mySQL.update("CREATE TABLE IF NOT EXISTS session (idsession INT AUTO_INCREMENT, participants VARCHAR(255)" +
+            ", master VARCHAR(25), groups VARCHAR(255), remainingtime VARCHAR(45), PRIMARY KEY(idsession));");
+
         return mySQL;
     }
 
@@ -105,8 +108,23 @@ public class DBManager {
         int maxGroupSize = group.getMaxGroupSize();
         String participants = participantsToString(group.getParticipants());
 
-        mySQL.update("UPDATE groups SET courseid = " + courseid + ",ttt=" + timeTillTermination
-            + ",maxGS=" + maxGroupSize + ",participants='" + participants + "' WHERE groupid = " + groupid + ";");
+        ResultSet rs = mySQL.query("SELECT groupid FROM courses WHERE groupid = " + groupid);
+        try {
+            if(rs.next()) {
+                mySQL.update("UPDATE groups SET courseid = " + courseid + ",ttt=" + timeTillTermination
+                    + ",maxGS=" + maxGroupSize + ",participants='" + participants + "' WHERE groupid = " + groupid + ";");
+            } else {
+                mySQL.query("INSERT INTO groups (courseid, ttt, maxGS, participants) VALUES " +
+                    "(" + courseid + ", " + timeTillTermination + ", " + maxGroupSize + ", '" + participants + "');");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteGroup(int groupid) {
+
+        mySQL.query("DELETE FROM groups WHERE groupid = " + groupid + ";");
     }
 
     public void updateSessions(Session session){
