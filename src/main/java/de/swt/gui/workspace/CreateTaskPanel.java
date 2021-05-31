@@ -75,7 +75,11 @@ public class CreateTaskPanel extends GUI {
         fileChooser.setFileFilter(filter);
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             this.selectedFile = fileChooser.getSelectedFile();
-            this.selectedFileLabel.setText(selectedFile.getName().substring(0, 10) + "... " + selectedFile.getName().substring(selectedFile.getName().lastIndexOf(".")));
+            if (selectedFile.getName().length() > 10) {
+                this.selectedFileLabel.setText(selectedFile.getName().substring(0, 10) + "... " + selectedFile.getName().substring(selectedFile.getName().lastIndexOf(".")));
+            } else {
+                this.selectedFileLabel.setText(selectedFile.getName());
+            }
         }
     }
 

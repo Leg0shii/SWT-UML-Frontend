@@ -10,6 +10,7 @@ import de.swt.util.AccountType;
 
 import javax.swing.*;
 import java.awt.*;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -216,7 +217,13 @@ public class WorkspaceGUI extends GUI {
         popups.set(2, factory.getPopup(this, selectGroupPanel, point.x, point.y));
         popups.get(2).show();
         selectGroupPanel.startTaskButton.addActionListener(e -> {
-            this.selectedGroup = selectGroupPanel.getSelectedGroup();
+            guiManager.currentGroup = selectGroupPanel.getSelectedGroup();
+            guiManager.currentGroup.getParticipants().add(guiManager.getClient().userid);
+            try {
+                guiManager.getClient().server.sendGroup(guiManager.currentGroup,guiManager.currentGroup.getId(),true);
+            } catch (RemoteException remoteException) {
+                remoteException.printStackTrace();
+            }
             popups.get(2).hide();
         });
     }
