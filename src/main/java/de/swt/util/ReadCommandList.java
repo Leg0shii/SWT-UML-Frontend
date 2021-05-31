@@ -122,6 +122,7 @@ public class ReadCommandList extends TimerTask {
                 break;
             case "AN":
 
+                break;
             default:
         }
     }
