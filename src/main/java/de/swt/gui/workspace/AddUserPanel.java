@@ -9,6 +9,7 @@ import de.swt.util.Language;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.rmi.RemoteException;
 
 public class AddUserPanel extends GUI {
     private JPanel mainPanel;
@@ -60,6 +61,11 @@ public class AddUserPanel extends GUI {
     private void addFunction() {
         int studentId = getStudentID();
         guiManager.currentSession.getParticipants().add(studentId);
+        try {
+            guiManager.getClient().server.sendSession(guiManager.currentSession,-1,true);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     {
