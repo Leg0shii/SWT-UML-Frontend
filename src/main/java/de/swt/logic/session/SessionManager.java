@@ -71,6 +71,7 @@ public class SessionManager {
 
     public Session getSessionFromTeacherId(int teacherId){
         for (Session session : getSessionHashMap().values()){
+            if (session == null) return null;
             if (session.getMaster().contains(teacherId)){
                 return session;
             }

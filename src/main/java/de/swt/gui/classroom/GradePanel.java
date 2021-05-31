@@ -69,6 +69,16 @@ public class GradePanel extends GUI {
         this.adminEditClassroomPanel.setCourse(course);
     }
 
+    private void initForAccountType() {
+        removeAllListeners();
+        setupActionListeners(guiManager.accountType);
+    }
+
+    private void removeAllListeners() {
+        editButton.removeAll();
+        enterButton.removeAll();
+    }
+
     public void setupActionListeners(AccountType accountType) {
         switch (accountType) {
             case ADMIN -> {
@@ -108,6 +118,8 @@ public class GradePanel extends GUI {
                     popups.get(0).show();
                 });
                 this.enterButton.addActionListener(e2 -> this.enterFunction());
+            } case STUDENT -> {
+                this.enterButton.addActionListener(e3 -> this.enterFunction());
             }
         }
     }
@@ -166,7 +178,7 @@ public class GradePanel extends GUI {
     // TODO: Other Group implements this
     private void enterFunction() {
         try {
-            if (guiManager.getClient().userManager.loadUser(guiManager.getClient().userid).getCourse().contains(course.getId())) {
+            if (guiManager.accountType.equals(AccountType.TEACHER) || guiManager.getClient().userManager.loadUser(guiManager.getClient().userid).getCourse().contains(course.getId())) {
                 Session session = guiManager.getClient().sessionManager.getSessionFromTeacherId(course.getTeacherID());
                 if (session == null) {
                     if (guiManager.accountType.equals(AccountType.TEACHER)) {
@@ -174,22 +186,28 @@ public class GradePanel extends GUI {
                         newSession.getMaster().add(guiManager.getClient().userid);
                         newSession.setRemainingTime(120);
                         newSession.getParticipants().add(guiManager.getClient().userid);
-                        guiManager.getClient().server.sendSession(newSession, -1, true);
+                        newSession = guiManager.getClient().server.sendSession(newSession, -1, true);
+                        guiManager.switchToWorkspaceGUI();
+                        guiManager.currentSession = newSession;
                     } else {
                         enterButton.setBackground(Color.RED);
-                        switch (guiManager.language){
-                            case ENGLISH: enterButton.setText("Session not yet open");
-                            case GERMAN: enterButton.setText("Session nicht offen");
+                        switch (guiManager.language) {
+                            case ENGLISH:
+                                enterButton.setText("Session not yet open");
+                            case GERMAN:
+                                enterButton.setText("Session nicht offen");
                         }
                     }
                 } else {
                     session.getParticipants().add(guiManager.getClient().userid);
-                    guiManager.getClient().server.sendSession(session,-1,true);
+                    session = guiManager.getClient().server.sendSession(session, -1, true);
                     guiManager.switchToWorkspaceGUI();
+                    guiManager.currentSession = session;
                 }
             } else {
-
+                guiManager.getClient().server.sendRequest(guiManager.getClient().userid, course.getTeacherID());
             }
+
         } catch (SQLException | RemoteException throwables) {
             throwables.printStackTrace();
         }

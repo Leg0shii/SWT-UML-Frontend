@@ -9,11 +9,13 @@ import de.swt.logic.user.User;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.rmi.RemoteException;
 
 public class RequestPanel extends GUI {
     private JPanel mainPanel;
     public JButton acceptButton;
     public JButton denyButton;
+    private User user;
     private JLabel requestLabel;
 
     public RequestPanel(GUIManager guiManager) {
@@ -36,6 +38,7 @@ public class RequestPanel extends GUI {
     }
 
     public void updateGUI(User user) {
+        this.user = user;
         String[] split = requestLabel.getText().split(" ");
         this.requestLabel.setText(user.getFullName() + " " + split[1] + " " + split[2]);
     }
@@ -48,14 +51,20 @@ public class RequestPanel extends GUI {
 
     }
 
-    // TODO: Implemented by other Group
     public void acceptFunction() {
-
+        try {
+            guiManager.getClient().server.sendAnswer(user.getId(), 1, guiManager.getClient().userid);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
-    // TODO: Implemented by other Group
     public void denyFunction() {
-
+        try {
+            guiManager.getClient().server.sendAnswer(user.getId(), 0, guiManager.getClient().userid);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     {

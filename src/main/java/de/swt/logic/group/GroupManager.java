@@ -52,11 +52,15 @@ public class GroupManager {
         return group;
     }
 
-    private ArrayList<Integer> parseParticipants(String parseString){
+    private ArrayList<Integer> parseParticipants(String parseString) {
         ArrayList<Integer> list = new ArrayList<>();
         String[] sUserList = parseString.split(";");
-        for (String sUser : sUserList){
-            list.add(Integer.parseInt(sUser));
+        for (String sUser : sUserList) {
+            try {
+                list.add(Integer.parseInt(sUser));
+            } catch (Exception ignored) {
+
+            }
         }
         return list;
     }
@@ -71,6 +75,14 @@ public class GroupManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public ArrayList<Group> getGroups() {
+        ArrayList<Group> groups = new ArrayList<>();
+        for (Group collectionGroup : getGroupHashMap().values()) {
+            groups.add(collectionGroup);
+        }
+        return groups;
     }
 }
 

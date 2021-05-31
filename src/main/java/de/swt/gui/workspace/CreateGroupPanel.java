@@ -4,18 +4,24 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
+import de.swt.logic.group.Group;
 import de.swt.util.Language;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CreateGroupPanel extends GUI {
-    private JPanel mainPanel;
+    public JPanel mainPanel;
     private JTextField numberTextField;
     private JTextField sizeTextField;
     private JTextField durationTextField;
-    private JButton createButton;
+    public JButton createButton;
     public JButton cancelButton;
     private JLabel headerLabel;
     private JLabel numberLabel;
@@ -25,7 +31,7 @@ public class CreateGroupPanel extends GUI {
 
     public CreateGroupPanel(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        this.setLayout(new GridLayout(1, 1));
         this.add(mainPanel);
 
         switch (guiManager.language) {
@@ -59,21 +65,31 @@ public class CreateGroupPanel extends GUI {
 
     }
 
-    public String getNumberText() {
-        return numberTextField.getText();
+    public int getNumberText() {
+        return Integer.parseInt(numberTextField.getText());
     }
 
-    public String getSizeText() {
-        return sizeTextField.getText();
+    public int getSizeText() {
+        return Integer.parseInt(sizeTextField.getText());
     }
 
-    public String getDurationText() {
-        return durationTextField.getText();
+    public int getDurationText() {
+        return Integer.parseInt(durationTextField.getText());
     }
 
-    // TODO: Implemented by other Group
     private void createFunction() {
-
+        for (int i = 0; i < getNumberText(); i++) {
+            Group group = new Group();
+            group.setCourseID(guiManager.currentSession.getId());
+            group.setTimeTillTermination(getDurationText());
+            group.setMaxGroupSize(getSizeText());
+            group.setParticipants(new ArrayList<>());
+            try {
+                guiManager.getClient().server.sendGroup(group, -1, true);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     {
@@ -108,10 +124,13 @@ public class CreateGroupPanel extends GUI {
         durationLabel.setText("Label");
         mainPanel.add(durationLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         numberTextField = new JTextField();
+        numberTextField.setEditable(true);
         mainPanel.add(numberTextField, new GridConstraints(1, 1, 1, 4, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         sizeTextField = new JTextField();
+        sizeTextField.setEditable(true);
         mainPanel.add(sizeTextField, new GridConstraints(2, 1, 1, 4, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         durationTextField = new JTextField();
+        durationTextField.setEditable(true);
         mainPanel.add(durationTextField, new GridConstraints(3, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         unitLabel = new JLabel();
         unitLabel.setText("Label");
@@ -133,4 +152,5 @@ public class CreateGroupPanel extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

@@ -68,15 +68,28 @@ public class WorkspaceGUI extends GUI {
 
     public void updateGUI() {
         ArrayList<User> users = new ArrayList<>();
-        for (int id : guiManager.currentSession.getParticipants()) {
-            if (guiManager.getClient().userManager.getUserHashMap().containsKey(id)) {
-                users.add(guiManager.getClient().userManager.getUserHashMap().get(id));
+        if (guiManager.currentGroup != null) {
+            for (int id : guiManager.currentGroup.getParticipants()) {
+                if (guiManager.getClient().userManager.getUserHashMap().containsKey(id)) {
+                    users.add(guiManager.getClient().userManager.getUserHashMap().get(id));
+                }
             }
+            this.drawablePanel.updateGUI(guiManager.currentGroup.getTimeTillTermination());
+            this.objectListPanel.updateGUI(new ArrayList<>(guiManager.getClient().groupManager.getGroupHashMap().values()), users);
+            this.initForAccountType();
+            this.initForWorkspaceState();
+        } else if (guiManager.currentSession != null) {
+            for (int id : guiManager.currentSession.getParticipants()) {
+                if (guiManager.getClient().userManager.getUserHashMap().containsKey(id)) {
+                    users.add(guiManager.getClient().userManager.getUserHashMap().get(id));
+                }
+            }
+            this.drawablePanel.updateGUI(guiManager.currentSession.getRemainingTime());
+            this.objectListPanel.updateGUI(new ArrayList<>(guiManager.getClient().groupManager.getGroupHashMap().values()), users);
+            this.initForAccountType();
+            this.initForWorkspaceState();
         }
-        this.objectListPanel.updateGUI(new ArrayList<>(guiManager.getClient().groupManager.getGroupHashMap().values()), users);
-        this.drawablePanel.updateGUI(guiManager.currentSession.getRemainingTime());
-        this.initForAccountType();
-        this.initForWorkspaceState();
+
     }
 
     private void initForWorkspaceState() {
@@ -193,7 +206,8 @@ public class WorkspaceGUI extends GUI {
         });
     }
 
-    public void sendTaskProposition(List<Group> groups) {
+    public void sendTaskProposition() {
+        ArrayList<Group> groups = guiManager.getClient().groupManager.getGroups();
         SelectGroupPanel selectGroupPanel = new SelectGroupPanel(guiManager);
         selectGroupPanel.updateGUI(groups);
         Point point = new Point(midPanel.getX() + midPanel.getWidth() / 2, midPanel.getY() + midPanel.getHeight() / 4);

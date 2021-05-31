@@ -42,6 +42,7 @@ public class GUIManager extends JFrame {
     public WorkspaceState state;
 
     public Session currentSession;
+    public Group currentGroup;
 
     public GUIManager(Language language, AccountType accountType) {
         super("E-Learning Software");
@@ -73,6 +74,8 @@ public class GUIManager extends JFrame {
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 try {
+                    client.server.deleteSession(currentSession.getId());
+                    currentSession = null;
                     client.userManager.userLogout();
                     client.onDisable();
                 } catch (Exception ignored) {
@@ -97,6 +100,14 @@ public class GUIManager extends JFrame {
     public void switchToLoginGUI() {
         try {
             this.getClient().userManager.userLogout();
+            if (!accountType.equals(AccountType.TEACHER)) {
+                this.currentSession.getParticipants().remove(client.userid);
+                this.client.server.sendSession(currentSession, currentSession.getId(), true);
+                this.currentSession = null;
+            } else {
+                this.client.server.deleteSession(currentSession.getId());
+                this.currentSession = null;
+            }
         } catch (Exception ignored) {
 
         }

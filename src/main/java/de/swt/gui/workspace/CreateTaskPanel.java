@@ -6,12 +6,15 @@ import com.intellij.uiDesigner.core.Spacer;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.util.Language;
+import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class CreateTaskPanel extends GUI {
     private JPanel mainPanel;
@@ -84,9 +87,15 @@ public class CreateTaskPanel extends GUI {
         return selectedFile;
     }
 
-    // TODO: Implemented by other Group
     public void createFunction() {
-
+        String task = getTaskText();
+        try {
+            byte[] workspaceBytes = FileUtils.readFileToByteArray(getSelectedFile());
+            byte[] taskBytes = task.getBytes(StandardCharsets.UTF_8);
+            guiManager.getClient().server.sendTask(workspaceBytes,taskBytes,guiManager.getClient().userid);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     {

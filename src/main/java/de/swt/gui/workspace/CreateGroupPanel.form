@@ -50,7 +50,9 @@
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <editable value="true"/>
+        </properties>
       </component>
       <component id="ffdba" class="javax.swing.JTextField" binding="sizeTextField">
         <constraints>
@@ -58,7 +60,9 @@
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <editable value="true"/>
+        </properties>
       </component>
       <component id="c1207" class="javax.swing.JTextField" binding="durationTextField">
         <constraints>
@@ -66,7 +70,9 @@
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <editable value="true"/>
+        </properties>
       </component>
       <component id="9ea86" class="javax.swing.JLabel" binding="unitLabel">
         <constraints>

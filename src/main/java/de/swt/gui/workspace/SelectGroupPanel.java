@@ -9,6 +9,7 @@ import de.swt.logic.group.Group;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.rmi.RemoteException;
 import java.util.List;
 
 public class SelectGroupPanel extends GUI {
@@ -45,7 +46,16 @@ public class SelectGroupPanel extends GUI {
     }
 
     private void setupListeners() {
-
+        startTaskButton.addActionListener(e -> {
+            Group selectedGroup = getSelectedGroup();
+            selectedGroup.getParticipants().add(guiManager.getClient().userid);
+            try {
+                guiManager.getClient().server.sendGroup(selectedGroup, selectedGroup.getId(), true);
+            } catch (RemoteException remoteException) {
+                remoteException.printStackTrace();
+            }
+            guiManager.currentGroup = selectedGroup;
+        });
     }
 
     private void initForAccountType() {

@@ -9,6 +9,7 @@ import de.swt.util.Language;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class LoginGUI extends GUI {
     private JPanel mainPanel;
@@ -67,6 +68,11 @@ public class LoginGUI extends GUI {
         String password = getPassword();
         if (guiManager.getClient().userManager.userLogin(loginID, password)) {
             guiManager.getClient().loggedIn = true;
+            try {
+                guiManager.accountType = guiManager.getClient().userManager.loadUser(guiManager.getClient().userid).getAccountType();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
             guiManager.switchToClassRoomGUI();
         } else {
             System.out.println("Login failed");

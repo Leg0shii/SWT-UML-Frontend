@@ -3,12 +3,13 @@ package de.swt.logic.session;
 import de.swt.logic.user.User;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 @Setter
 @Getter
 @AllArgsConstructor
-public class Session {
+public class Session implements Serializable {
     int id;
     ArrayList<Integer> participants;
     ArrayList<Integer> master;

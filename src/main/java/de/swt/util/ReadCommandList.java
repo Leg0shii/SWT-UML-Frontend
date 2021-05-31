@@ -6,8 +6,11 @@ import de.swt.logic.session.Session;
 import de.swt.logic.user.User;
 import de.swt.manager.CommandObject;
 
+import javax.swing.*;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.TimerTask;
 
 public class ReadCommandList extends TimerTask {
@@ -23,7 +26,7 @@ public class ReadCommandList extends TimerTask {
     public void run() {
         try {
             ArrayList<CommandObject> commands = client.server.accessCommandQueue(client.userid);
-            if(commands != null) {
+            if (commands != null) {
                 for (CommandObject command : commands) evaluteCommand(command);
             }
         } catch (RemoteException e) {
@@ -35,14 +38,15 @@ public class ReadCommandList extends TimerTask {
 
         String[] keyArgs = command.getCommand().split(":");
         String[] args = new String[0];
-        if (keyArgs.length > 1){
+        if (keyArgs.length > 1) {
             args = keyArgs[1].split(" ");
         }
 
         switch (keyArgs[0]) {
             case "UU":
                 int clientID;
-                try { clientID = Integer.parseInt(args[0]);
+                try {
+                    clientID = Integer.parseInt(args[0]);
                 } catch (NumberFormatException ignored) {
                     System.out.println("CLIENT ID IS NOT A NUMBER");
                     return;
@@ -56,14 +60,17 @@ public class ReadCommandList extends TimerTask {
                     e.printStackTrace();
                     return;
                 }
+                client.guiManager.updateGUIS();
                 break;
             case "CU":
                 int courseID;
-                try { courseID = Integer.parseInt(args[0]);
+                try {
+                    courseID = Integer.parseInt(args[0]);
                 } catch (NumberFormatException ignored) {
                     System.out.println("COURSE ID IS NOT A NUMBER");
                     return;
                 }
+                client.guiManager.updateGUIS();
                 try {
                     client.courseManager.getCourseHashMap().remove(courseID);
                     Course course = client.server.sendCourse(null, courseID, false);
@@ -73,10 +80,12 @@ public class ReadCommandList extends TimerTask {
                     e.printStackTrace();
                     return;
                 }
+                client.guiManager.updateGUIS();
                 break;
             case "GU":
                 int groupID;
-                try { groupID = Integer.parseInt(args[0]);
+                try {
+                    groupID = Integer.parseInt(args[0]);
                 } catch (NumberFormatException ignored) {
                     System.out.println("GROUP ID IS NOT A NUMBER");
                     return;
@@ -85,15 +94,17 @@ public class ReadCommandList extends TimerTask {
                     client.groupManager.getGroupHashMap().remove(groupID);
                     Group group = client.server.sendGroup(null, groupID, false);
                     client.groupManager.getGroupHashMap().put(groupID, group);
-                    System.out.println("Updated incoming groupChange. Updated following groupID: " + group.getId());
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     return;
                 }
+                client.guiManager.updateGUIS();
+                System.out.println("Updated incoming groupChange. Updated following groupID: " + groupID);
                 break;
             case "SU":
                 int sessionID;
-                try { sessionID = Integer.parseInt(args[0]);
+                try {
+                    sessionID = Integer.parseInt(args[0]);
                 } catch (NumberFormatException ignored) {
                     System.out.println("SESSION ID IS NOT A NUMBER");
                     return;
@@ -102,26 +113,98 @@ public class ReadCommandList extends TimerTask {
                     client.sessionManager.getSessionHashMap().remove(sessionID);
                     Session session = client.server.sendSession(null, sessionID, false);
                     client.sessionManager.getSessionHashMap().put(sessionID, session);
-                    System.out.println("Updated incoming sessionChange. Updated following sessionID: " + session.getId());
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     return;
                 }
+                client.guiManager.updateGUIS();
+                System.out.println("Updated incoming sessionChange. Updated following sessionID: " + sessionID);
                 break;
             case "FU":
                 byte[] filebytes = command.getWorkspaceFileBytes();
                 try {
                     client.guiManager.syncWorkspace(filebytes);
                     System.out.println("Updated incoming WorkspaceChange. Updated some Objects");
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
+                client.guiManager.updateGUIS();
                 break;
             case "RE":
-
+                int originId;
+                try {
+                    originId = Integer.parseInt(args[0]);
+                    User user = client.userManager.loadUser(originId);
+                    client.guiManager.workspaceGUI.sendRequest(user);
+                    System.out.println("Received incoming Join Request from "+originId);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+                client.guiManager.updateGUIS();
                 break;
             case "AN":
+                int answer;
+                int teacherId;
+                try {
+                    answer = Integer.parseInt(args[1]);
+                    teacherId = Integer.parseInt(args[2]);
+                    System.out.println("Received incoming Join Answer from "+teacherId);
+                    if (answer == 1) {
+                        Session session = client.sessionManager.getSessionFromTeacherId(teacherId);
+                        session.getParticipants().add(client.userid);
+                        client.server.sendSession(session, -1, true);
+                        client.guiManager.currentSession = session;
+                        client.guiManager.switchToWorkspaceGUI();
+                    } else {
+                        switch (client.guiManager.language) {
+                            case ENGLISH:
+                                JOptionPane.showMessageDialog(null, "Teacher denied Request!");
+                            case GERMAN:
+                                JOptionPane.showMessageDialog(null, "Lehrer hat Anfrage abgelehnt!");
+                        }
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                client.guiManager.updateGUIS();
+                break;
+            case "DG":
+                int groupId;
+                try {
+                    groupId = Integer.parseInt(args[0]);
+                    System.out.println("Received incoming Delete Group, Deleted "+groupId);
+                    client.guiManager.currentGroup = null;
+                } catch (Exception ignored) {
 
+                }
+                client.guiManager.updateGUIS();
+                break;
+            case "DS":
+                int sessionId;
+                try {
+                    sessionId = Integer.parseInt(args[0]);
+                    System.out.println("Received incoming Delete Session, Deleted "+sessionId);
+                    client.guiManager.currentSession = null;
+                } catch (Exception ignored) {
+
+                }
+                client.guiManager.updateGUIS();
+                break;
+            case "ST":
+                int teacherId2 = -1;
+                byte[] workspaceBytes = command.getWorkspaceFileBytes();
+                byte[] taskBytes = command.getTaskBytes();
+                try {
+                    teacherId2 = Integer.parseInt(args[0]);
+                    while (client.guiManager.workspaceGUI.removeLastDrawnObject()){}
+                    while (client.guiManager.workspaceGUI.removeLastAnnotations()){}
+                    client.guiManager.syncWorkspace(workspaceBytes);
+                    client.guiManager.workspaceGUI.sendTaskProposition();
+                    client.guiManager.workspaceGUI.setTask(Arrays.toString(taskBytes));
+                }catch (Exception ignored){
+
+                }
+                System.out.println("Received incoming Send Task from Teacher: "+teacherId2);
                 break;
             default:
         }

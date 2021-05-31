@@ -5,12 +5,16 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.logic.group.Group;
+import de.swt.logic.session.Session;
 import de.swt.logic.user.User;
 import de.swt.util.AccountType;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,13 +98,24 @@ public class ObjectListPanel extends GUI {
                         this.showGroups = !this.showGroups;
                         this.updateGUI(this.groupsList, this.users);
                     } else {
+
                         if (popupCounter.get(1) % 2 == 0) {
+                            PopupFactory factory1 = new PopupFactory();
                             CreateGroupPanel createGroupPanel = new CreateGroupPanel(guiManager);
+                            createGroupPanel.cancelButton.addActionListener(e -> {
+                                popups.get(1).hide();
+                                incrementPopupCounter(1);
+                            });
+                            createGroupPanel.createButton.addActionListener(e -> {
+                                popups.get(1).hide();
+                                incrementPopupCounter(1);
+                            });
                             Point point = new Point(switchButton.getX() + switchButton.getWidth(), switchButton.getY());
-                            SwingUtilities.convertPointToScreen(point, objectList);
+                            SwingUtilities.convertPointToScreen(point, guiManager);
                             popups.get(1).hide();
-                            popups.set(1, factory.getPopup(this, createGroupPanel, point.x, point.y));
+                            popups.set(1, factory1.getPopup(guiManager, createGroupPanel.mainPanel, point.x, point.y));
                             popups.get(1).show();
+                            System.out.println(popups);
                         } else {
                             popups.get(1).hide();
                         }
@@ -112,7 +127,7 @@ public class ObjectListPanel extends GUI {
             if (popupCounter.get(0) % 2 == 0) {
                 AddUserPanel addUserPanel = new AddUserPanel(guiManager);
                 addUserPanel.addButton.addActionListener(e21 -> {
-                    addUserFunction();
+                    addUserFunction(addUserPanel.getStudentID());
                 });
                 Point point = new Point(addStudentButton.getX() + addStudentButton.getWidth(), addStudentButton.getY());
                 SwingUtilities.convertPointToScreen(point, objectList);
@@ -205,24 +220,45 @@ public class ObjectListPanel extends GUI {
         }
     }
 
-    // TODO: Implemented by other Group
     private void removeStudent(User user) {
-
+        Session session = guiManager.currentSession;
+        session.getParticipants().remove(user.getId());
+        try {
+            guiManager.getClient().server.sendSession(session, session.getId(), true);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
-    // TODO: Implemented by other Group
     private void terminateGroup(Group group) {
-
+        Session session = guiManager.currentSession;
+        session.getGroups().remove(group.getId());
+        try {
+            guiManager.getClient().server.sendSession(session, session.getId(), true);
+            guiManager.getClient().server.deleteGroup(group.getId());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
-    // TODO: Implemented by other Group
     private void watchGroup(Group group) {
-
+        guiManager.currentGroup = group;
+        group.getParticipants().add(guiManager.getClient().userid);
+        try {
+            guiManager.getClient().server.sendGroup(group, group.getId(), true);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
-    // TODO: Implemented by other Group
-    private void addUserFunction() {
-
+    private void addUserFunction(int id) {
+        Session session = guiManager.currentSession;
+        session.getParticipants().add(id);
+        try {
+            guiManager.getClient().server.sendSession(session, session.getId(), true);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     {
@@ -266,4 +302,5 @@ public class ObjectListPanel extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }
