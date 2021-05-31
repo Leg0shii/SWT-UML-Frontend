@@ -10,14 +10,14 @@ import java.util.ArrayList;
 public class Session {
     int id;
     ArrayList<Integer> participants;
-    Integer master;
+    ArrayList<Integer> master;
     Integer remainingTime;
     ArrayList<Integer> groups;
 
-    public Session(int master){
+    public Session(){
         this.id = -1;
         this.participants = new ArrayList<>();
-        this.master = master;
+        this.master = new ArrayList<>();
         this.remainingTime = 0;
         this.groups = new ArrayList<>();
     }

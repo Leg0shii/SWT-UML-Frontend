@@ -112,7 +112,7 @@ public class DBManager {
     public void updateSessions(Session session){
         int sessionid = session.getId();
         String participants = participantsToString(session.getParticipants());
-        int master = session.getMaster();
+        String master = participantsToString(session.getMaster());
         String groups = participantsToString(session.getGroups());
         int remainingtime = session.getRemainingTime();
 

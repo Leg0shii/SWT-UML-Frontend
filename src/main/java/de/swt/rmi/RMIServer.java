@@ -206,7 +206,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
         }
 
         for (Session session : sessionManager.getSessionHashMap().values()){
-            if (session.getMaster() == id){
+            if (session.getMaster().contains(id)){
                 for (int ids : session.getParticipants()){
                     if (id != ids){
                         commandObject.setCommand("FU:");
