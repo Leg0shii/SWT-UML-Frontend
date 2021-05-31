@@ -8,9 +8,11 @@ import de.swt.logic.session.SessionManager;
 import de.swt.logic.user.UserManager;
 import de.swt.manager.CommandManager;
 import de.swt.rmi.InitRMIServer;
+import de.swt.util.SGCheck;
 import de.swt.util.ServerConn;
 
 import java.io.IOException;
+import java.util.Timer;
 
 public class Server {
 
@@ -57,6 +59,10 @@ public class Server {
         userManager.cacheAllUserData();
         groupManager.cacheAllGroupData();
         sessionManager.cacheAllSessionData();
+
+        // runs it ever minute
+        Timer courseTimer = new Timer();
+        courseTimer.schedule(new SGCheck(), 1000, 60000);
 
     }
 

@@ -17,7 +17,7 @@ public class Group implements Serializable {
 
     private int id;
     private int courseID;
-    private int timeTillTermination;
+    private long timeTillTermination;
     private int maxGroupSize;
     private ArrayList<Integer> participants;
     private String workspace;

@@ -31,7 +31,7 @@ public class GroupManager {
                     group.setMaxGroupSize(resultSet.getInt("maxGS"));
                     group.setCourseID(resultSet.getInt("courseid"));
                     group.setParticipants(getParticipantsFromString("participants"));
-                    group.setTimeTillTermination(resultSet.getInt("ttt"));
+                    group.setTimeTillTermination(resultSet.getLong("ttt"));
                     groupHashMap.put(id, group);
                 } else {
                     System.out.println("SOMETHING WENT WRONG WHILE LOADING GROUP!!!");

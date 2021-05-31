@@ -11,7 +11,7 @@ public class Session {
     int id;
     ArrayList<Integer> participants;
     ArrayList<Integer> master;
-    Integer remainingTime;
+    long remainingTime;
     ArrayList<Integer> groups;
 
     public Session(){

@@ -24,5 +24,6 @@ public interface RMIServerInterface extends Remote {
     void updateWorkspaceFile(byte[] bytes, int id) throws RemoteException;
     int sendRequest(int originid, int teacherid) throws RemoteException;
     int sendAnswer(int originid) throws RemoteException;
+    long getRemainingTime(int type, int subjectid) throws RemoteException;
 }
 

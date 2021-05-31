@@ -45,7 +45,7 @@ public class DBManager {
         mySQL.update("CREATE TABLE IF NOT EXISTS groups (groupid INT AUTO_INCREMENT, courseid INT" +
             ", ttt INT, maxGS INT, participants VARCHAR(255), PRIMARY KEY(groupid));");
 
-        mySQL.update("CREATE TABLE IF NOT EXISTS session (idsession INT AUTO_INCREMENT, participants VARCHAR(255)" +
+        mySQL.update("CREATE TABLE IF NOT EXISTS sessions (idsession INT AUTO_INCREMENT, participants VARCHAR(255)" +
             ", master VARCHAR(25), groups VARCHAR(255), remainingtime VARCHAR(45), PRIMARY KEY(idsession));");
 
         return mySQL;
@@ -104,7 +104,7 @@ public class DBManager {
 
         int groupid = group.getId();
         int courseid = group.getCourseID();
-        int timeTillTermination = group.getTimeTillTermination();
+        long timeTillTermination = group.getTimeTillTermination();
         int maxGroupSize = group.getMaxGroupSize();
         String participants = participantsToString(group.getParticipants());
 
@@ -132,7 +132,7 @@ public class DBManager {
         String participants = participantsToString(session.getParticipants());
         String master = participantsToString(session.getMaster());
         String groups = participantsToString(session.getGroups());
-        int remainingtime = session.getRemainingTime();
+        long remainingtime = session.getRemainingTime();
 
         mySQL.update("UPDATE sessions SET idsession = \""+sessionid+"\",participants=\""+participants+"\",master=\""+master
                 +"\",groups=\""+groups+"\",remainingtime=\""+remainingtime+"\";");

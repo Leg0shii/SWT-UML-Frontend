@@ -240,5 +240,19 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
         return 0;
     }
 
+    @Override
+    public long getRemainingTime(int type, int subjectid) throws RemoteException {
+
+        CommandObject commandObject = new CommandObject();
+        System.out.println("SENDING REMAININGTIME ANSWER PING MESSAGE!!!");
+
+        if(type == 0) {
+            commandObject.setCommand("RT:"+ sessionManager.getSessionHashMap().get(subjectid).getRemainingTime());
+        } else if (type == 1) {
+            commandObject.setCommand("RT:"+ groupManager.getGroupHashMap().get(subjectid).getTimeTillTermination());
+        }
+        return 0;
+    }
+
 }
 
