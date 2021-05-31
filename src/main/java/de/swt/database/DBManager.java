@@ -53,7 +53,7 @@ public class DBManager {
         return mySQL;
     }
 
-    public void updateUser(User user) {
+    public int updateUser(User user) {
 
         int id = user.getId();
         AccountType accountType = user.getAccountType();
@@ -74,10 +74,15 @@ public class DBManager {
                 mySQL.update("INSERT INTO users (usertype, prename, surname, courseids, isonline, iscourse, isgroup) VALUES " +
                         "(" + accountType.toString() + ", '" + firstname + "','" + surname + "'," + course +
                         ", " + online + ", " + isgroup + ", " + iscourse + ")");
+                ResultSet rs1 = mySQL.query("SELECT LAST_INSERT_ID()");
+                if (rs1.next()){
+                    id = rs1.getInt("last_insert_id()");
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return id;
     }
 
     public int updateCourse(Course course) {
@@ -96,10 +101,9 @@ public class DBManager {
             } else {
                 mySQL.update("INSERT INTO courses (grade, gradename, date, teacherid) VALUES " +
                         "(" + grade + ", '" + name + "','" + dates + "'," + teacher.getId() + ")");
-                ResultSet rs1 = mySQL.query("SELECT courseid FROM courses WHERE grade = " +grade +" AND gradename = '"+name
-                        +"' AND date = '"+dates+"' AND teacherid = "+teacher.getId()+";");
+                ResultSet rs1 = mySQL.query("SELECT LAST_INSERT_ID()");
                 if (rs1.next()){
-                    id = rs1.getInt("courseid");
+                    id = rs1.getInt("last_insert_id()");
                 }
             }
         } catch (SQLException e) {
@@ -124,10 +128,9 @@ public class DBManager {
             } else {
                 mySQL.update("INSERT INTO groups (courseid, ttt, maxGS, participants) VALUES " +
                         "(" + courseid + ", " + timeTillTermination + ", " + maxGroupSize + ", '" + participants + "');");
-                ResultSet rs1 = mySQL.query("SELECT groupid FROM groups WHERE courseid = " +courseid +" AND ttt = "+timeTillTermination
-                        +" AND maxGS = "+maxGroupSize+" AND participants = '"+participants+"';");
+                ResultSet rs1 = mySQL.query("SELECT LAST_INSERT_ID()");
                 if (rs1.next()){
-                    groupid = rs1.getInt("groupid");
+                    groupid = rs1.getInt("last_insert_id()");
                 }
             }
         } catch (SQLException e) {
@@ -159,11 +162,9 @@ public class DBManager {
             } else {
                 mySQL.update("INSERT INTO sessions (participants, master, groups, remainingtime) VALUES " +
                         "('" + participants + "', '" + master + "', '" + groups + "', '" + remainingtime + "');");
-                ResultSet rs1 = mySQL.query("SELECT idsession FROM sessions WHERE participants = '" +participants
-                        +"' AND master = '"+master
-                        +"' AND groups = '"+groups+"' AND remainingtime = '"+remainingtime+"';");
+                ResultSet rs1 = mySQL.query("SELECT LAST_INSERT_ID()");
                 if (rs1.next()){
-                    sessionid = rs1.getInt("idsession");
+                    sessionid = rs1.getInt("last_insert_id()");
                 }
             }
 

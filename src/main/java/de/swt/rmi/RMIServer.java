@@ -123,7 +123,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     @Override
     public Group sendGroup(Group group, int groupid, boolean update) throws RemoteException {
         DBManager dbManager = server.dbManager;
-        Group updatedGroup = group;
+        Group updatedGroup;
 
         // use update = true if you want to update the user data -> tells all other clients to update it too
         // for this path the userid is ignored, it is only used to retrieve the user when update = false
@@ -135,9 +135,15 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
             Session session = new Session();
             try {
-                session = sessionManager.loadSession(group.getCourseID());
+                session = sessionManager.loadSession(updatedGroup.getCourseID());
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+            }
+            session.getGroups().add(updatedGroup.getId());
+            try {
+                sendSession(session, session.getId(), true);
+            } catch (Exception ignored) {
+
             }
 
             // user is updated now so send ping to all connected clients to get the updated User
@@ -145,7 +151,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
             CommandObject commandObject = new CommandObject();
             System.out.println("SENDING GROUP PING MESSAGE!!!");
             for (int ids : session.getParticipants()) {
-                commandObject.setCommand("GU:" + group.getId());
+                commandObject.setCommand("GU:" + updatedGroup.getId());
                 commandObject.setWorkspaceFileBytes(null);
                 commandObject.setTaskBytes(null);
                 hashMap.get(ids).add(commandObject);
@@ -275,15 +281,16 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
         CommandObject commandObject = new CommandObject();
         System.out.println("SENDING DELETE GROUP PING MESSAGE!!!");
         Group group = groupManager.getGroupHashMap().get(groupId);
-        server.dbManager.deleteGroup(groupId);
+        Session session = sessionManager.getSessionHashMap().get(group.getCourseID());
         for (User user : userManager.getUserHashMap().values()) {
-            if (group.getParticipants().contains(user.getId())) {
+            if (session.getParticipants().contains(user.getId())) {
                 commandObject.setCommand("DG:" + groupId);
                 commandObject.setWorkspaceFileBytes(null);
                 commandObject.setTaskBytes(null);
                 hashMap.get(user.getId()).add(commandObject);
             }
         }
+        server.dbManager.deleteGroup(groupId);
     }
 
     @Override
@@ -292,7 +299,9 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
         CommandObject commandObject = new CommandObject();
         System.out.println("SENDING DELETE SESSION PING MESSAGE!!!");
         Session session = sessionManager.getSessionHashMap().get(sessionId);
-        server.dbManager.deleteSession(sessionId);
+        for (Integer groupId : session.getGroups()) {
+            deleteGroup(groupId);
+        }
         for (User user : userManager.getUserHashMap().values()) {
             if (session.getParticipants().contains(user.getId())) {
                 commandObject.setCommand("DS:" + sessionId);
@@ -301,19 +310,20 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
                 hashMap.get(user.getId()).add(commandObject);
             }
         }
+        server.dbManager.deleteSession(sessionId);
     }
 
     @Override
-    public void sendTask(byte[] workspaceBytes, byte[] taskBytes, int id){
+    public void sendTask(byte[] workspaceBytes, byte[] taskBytes, int id) {
         HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
         CommandObject commandObject = new CommandObject();
         System.out.println("SENDING SEND TASK PING MESSAGE!!!");
         Session session = sessionManager.getSessionFromTeacherId(id);
-        for (int partId : session.getParticipants()){
-            if (partId == id){
+        for (int partId : session.getParticipants()) {
+            if (partId == id) {
                 continue;
             }
-            commandObject.setCommand("ST:"+id);
+            commandObject.setCommand("ST:" + id);
             commandObject.setWorkspaceFileBytes(workspaceBytes);
             commandObject.setTaskBytes(taskBytes);
             hashMap.get(partId).add(commandObject);

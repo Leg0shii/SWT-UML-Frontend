@@ -22,31 +22,31 @@ public class SGCheck extends TimerTask {
         SessionManager sessionManager = Server.getInstance().sessionManager;
         GroupManager groupManager = Server.getInstance().groupManager;
         CommandManager commandManager = Server.getInstance().commandManager;
+        Server server = Server.getInstance();
 
-        for(Session session : sessionManager.getSessionHashMap().values()) {
-            if(session.getRemainingTime() <= System.currentTimeMillis()) {
-                for(int userid : session.getParticipants()) {
+        for (Session session : sessionManager.getSessionHashMap().values()) {
+            if (session.getRemainingTime() <= System.currentTimeMillis()) {
+                for (int userid : session.getParticipants()) {
                     // update user object further ?
-                    if(userManager.getUserHashMap().get(userid).isOnline()) {
+                    if (userManager.getUserHashMap().get(userid).isOnline()) {
                         commandManager.getCommandHashMap().get(userid).add(
-                            new CommandObject("LE:-1", null));
+                                new CommandObject("LE:-1", null, null));
                     }
                 }
             }
         }
 
-        for(Group group : groupManager.getGroupHashMap().values()) {
-            if(group.getTimeTillTermination() <= System.currentTimeMillis()) {
-                for(int userid : group.getParticipants()) {
+        for (Group group : groupManager.getGroupHashMap().values()) {
+            if (group.getTimeTillTermination() <= System.currentTimeMillis()) {
+                for (int userid : group.getParticipants()) {
                     // update user object further ?
-                    if(userManager.getUserHashMap().get(userid).isOnline()) {
+                    if (userManager.getUserHashMap().get(userid).isOnline()) {
                         commandManager.getCommandHashMap().get(userid).add(
-                            new CommandObject("LE:" + group.getCourseID(), null));
+                                new CommandObject("LE:" + group.getCourseID(), null, null));
                     }
                 }
             }
         }
-
     }
 
 }
