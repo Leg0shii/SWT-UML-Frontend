@@ -117,6 +117,9 @@ public class ReadCommandList extends TimerTask {
                     e.printStackTrace();
                 }
                 break;
+            case "RE":
+
+                break;
             default:
         }
     }

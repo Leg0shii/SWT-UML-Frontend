@@ -37,14 +37,14 @@ public class Client {
         dbManager = new DBManager();
         mySQL = dbManager.connectToDB();
 
-        try {
+        /* try {
             serverConn = new ServerConn(instance, 50000);
             serverConn.startServer();
             System.out.println("TCP Server started, listening on port 50000");
         } catch (IOException e) {
             e.printStackTrace();
             return;
-        }
+        } */
 
         RMIClient rmiClient = new RMIClient();
         server = rmiClient.initRMIClient();
