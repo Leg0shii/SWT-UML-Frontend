@@ -224,7 +224,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
         CommandObject commandObject = new CommandObject();
         System.out.println("SENDING SESSION REQUEST PING MESSAGE!!!");
         if(userManager.getUserHashMap().containsKey(teacherid)) {
-            commandObject.setCommand("RE:");
+            commandObject.setCommand("RE:"+originid);
         }
         return 0;
     }
@@ -235,7 +235,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
         CommandObject commandObject = new CommandObject();
         System.out.println("SENDING SESSION ANSWER PING MESSAGE!!!");
         if(userManager.getUserHashMap().containsKey(originid)) {
-            commandObject.setCommand("AN:");
+            commandObject.setCommand("AN:"+originid);
         }
         return 0;
     }
