@@ -7,6 +7,7 @@ import de.swt.gui.workspace.WorkspaceGUI;
 import de.swt.logic.group.Group;
 import de.swt.logic.session.Session;
 import de.swt.logic.user.User;
+import de.swt.logic.user.UserManager;
 import de.swt.util.AccountType;
 import de.swt.util.Client;
 import de.swt.util.Language;
@@ -21,9 +22,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 import java.util.List;
 
 public class GUIManager extends JFrame {
@@ -284,4 +283,28 @@ public class GUIManager extends JFrame {
         }
         return groups;
     }
+
+    public void timeUpdater() {
+
+        new Thread(new TimerTask() {
+
+            @Override
+            public void run() {
+
+                long time = 0;
+                if(currentSession != null) {
+                    time = currentSession.getRemainingTime();
+                    if(currentGroup != null) {
+                        time = currentGroup.getTimeTillTermination();
+                    }
+                }
+
+                int minutes = (int) time/60000;
+                // update minutes here
+
+            }
+        }).start();
+
+    }
+
 }

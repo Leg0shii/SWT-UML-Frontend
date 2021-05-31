@@ -82,7 +82,7 @@ public class CreateGroupPanel extends GUI {
         for (int i = 0; i < getNumberText(); i++) {
             Group group = new Group();
             group.setCourseID(guiManager.currentSession.getId());
-            group.setTimeTillTermination(getDurationText());
+            group.setTimeTillTermination(System.currentTimeMillis() + (getDurationText()*60000L));
             group.setMaxGroupSize(getSizeText());
             group.setParticipants(new ArrayList<>());
             try {

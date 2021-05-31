@@ -208,6 +208,16 @@ public class ReadCommandList extends TimerTask {
                 }
                 System.out.println("Received incoming Send Task from Teacher: "+teacherId2);
                 break;
+            // Leave Session or Group because its over
+            // Argument is -1 for Session termination
+            // Argument is courseid for Group termination to return back to Session
+            case "LE":
+                int val = Integer.parseInt(args[0]);
+                if(val == -1) {
+                    // open classroom overview / close session
+                } else {
+                    // return user back to page
+                }
             default:
         }
     }

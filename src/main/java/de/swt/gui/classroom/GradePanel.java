@@ -184,7 +184,7 @@ public class GradePanel extends GUI {
                     if (guiManager.accountType.equals(AccountType.TEACHER)) {
                         Session newSession = new Session();
                         newSession.getMaster().add(guiManager.getClient().userid);
-                        newSession.setRemainingTime(120);
+                        newSession.setRemainingTime(System.currentTimeMillis() + (120*60000L));
                         newSession.getParticipants().add(guiManager.getClient().userid);
                         newSession = guiManager.getClient().server.sendSession(newSession, -1, true);
                         guiManager.switchToWorkspaceGUI();

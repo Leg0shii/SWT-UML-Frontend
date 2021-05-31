@@ -38,5 +38,7 @@ public interface RMIServerInterface extends Remote {
     void deleteSession(int sessionId) throws RemoteException;
 
     void sendTask(byte[] workspaceBytes, byte[] taskBytes, int id) throws RemoteException;
+
+    long getRemainingTime(int type, int subjectid) throws RemoteException;
 }
 
