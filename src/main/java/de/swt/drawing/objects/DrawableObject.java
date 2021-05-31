@@ -36,6 +36,8 @@ public abstract class DrawableObject extends Draggable {
         this.offset = 5;
         this.id = new int[2];
         thisObject = this;
+        id[0] = guiManager.getClient().userid;
+        id[1] = guiManager.increaseObjectCounter();
     }
 
     public void updateComponent(String description, double scale, Color color) {
@@ -98,8 +100,6 @@ public abstract class DrawableObject extends Draggable {
         this.wantsToChange = false;
         this.factory = PopupFactory.getSharedInstance();
         this.popupCounter = 0;
-        id[0] = guiManager.getClient().userid;
-        id[1] = guiManager.increaseObjectCounter();
         super.initListeners();
         setupListeners();
     }
