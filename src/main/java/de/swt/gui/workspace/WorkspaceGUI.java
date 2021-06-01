@@ -75,7 +75,7 @@ public class WorkspaceGUI extends GUI {
                     users.add(guiManager.getClient().userManager.getUserHashMap().get(id));
                 }
             }
-            this.drawablePanel.updateGUI(guiManager.currentGroup.getTimeTillTermination());
+            this.drawablePanel.updateGUI((int) guiManager.currentGroup.getTimeTillTermination());
             this.objectListPanel.updateGUI(guiManager.getRelevantGroups(), users);
             this.initForAccountType();
             this.initForWorkspaceState();
@@ -85,7 +85,7 @@ public class WorkspaceGUI extends GUI {
                     users.add(guiManager.getClient().userManager.getUserHashMap().get(id));
                 }
             }
-            this.drawablePanel.updateGUI(guiManager.currentSession.getRemainingTime());
+            this.drawablePanel.updateGUI((int) guiManager.currentSession.getRemainingTime());
             this.objectListPanel.updateGUI(guiManager.getRelevantGroups(), users);
             this.initForAccountType();
             this.initForWorkspaceState();
