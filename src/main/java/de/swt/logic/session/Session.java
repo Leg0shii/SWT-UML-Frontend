@@ -14,4 +14,5 @@ public class Session implements Serializable {
     private ArrayList<Integer> userIds;
     private long remainingTime;
     private ArrayList<Integer> groupIds;
+    private ArrayList<Integer> masterIds;
 }
