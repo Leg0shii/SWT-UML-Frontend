@@ -1,6 +1,5 @@
 package de.swt.rmi;
 
-import de.swt.logic.TestClass;
 import de.swt.logic.course.Course;
 import de.swt.logic.group.Group;
 import de.swt.logic.session.Session;
