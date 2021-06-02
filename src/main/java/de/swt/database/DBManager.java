@@ -31,27 +31,65 @@ public class DBManager {
 
         connectToDB();
 
-        // create table for userdata
-        // decided to create two fields for courses instead of creating another table and saving all users that would be in a course in there
-        mySQL.update("CREATE TABLE IF NOT EXISTS users (userid INT AUTO_INCREMENT" +
-                ", prename VARCHAR(255), surname VARCHAR(255), usertype VARCHAR(255), courseids VARCHAR(255)" +
-                ", upassword VARCHAR(255), isonline BOOL, iscourse BOOL, isgroup BOOL, PRIMARY KEY(userid));");
-
-        // create table for courseata
-        // date format: STRING: "millis;millis;millis"
-        mySQL.update("CREATE TABLE IF NOT EXISTS courses (courseid INT AUTO_INCREMENT, grade INT" +
-                ", gradename VARCHAR(10), date VARCHAR(500), teacherid INT, PRIMARY KEY(courseid));");
-
-        //create table for groupdata
-        // participants format: STRING: "id;id;id;id;id"
-        mySQL.update("CREATE TABLE IF NOT EXISTS groups (groupid INT AUTO_INCREMENT, courseid INT" +
-                ", ttt INT, maxGS INT, participants VARCHAR(255), PRIMARY KEY(groupid));");
-
-        mySQL.update("CREATE TABLE IF NOT EXISTS sessions (idsession INT AUTO_INCREMENT, participants VARCHAR(255)" +
-            ", master VARCHAR(25), groups VARCHAR(255), remainingtime VARCHAR(45), PRIMARY KEY(idsession));");
+        initUsers();
+        initCourses();
+        initGroups();
+        // create table for session
+        /* mySQL.update("CREATE TABLE IF NOT EXISTS sessions " +
+            "(sessionid INT AUTO_INCREMENT, master VARCHAR(25), participants VARCHAR(255), groups VARCHAR(255), remainingtime VARCHAR(45), " +
+            "PRIMARY KEY(idsession));");
+         */
 
         return mySQL;
     }
+
+    private void initGroups() {
+
+        mySQL.update("CREATE TABLE IF NOT EXISTS useringroup " +
+            "(useringroupid INT AUTO_INCREMENT, userid INT, groupid INT, " +
+            "PRIMARY KEY(useringroupid));");
+
+        // create table for groups
+        mySQL.update("CREATE TABLE IF NOT EXISTS groups (groupid INT AUTO_INCREMENT, ttt INT, maxgs INT, useringroup INT, " +
+            "PRIMARY KEY(groupid), " +
+            "FOREIGN KEY (useringroupid) REFERENCES useringroup(useringroupid));");
+    }
+
+    private void initCourses() {
+        mySQL.update("CREATE TABLE IF NOT EXISTS activeuserincourse " +
+            "(activeuserincourseid INT AUTO_INCREMENT, userid INT, courseid INT, " +
+            "PRIMARY KEY(activeuserincourseid));");
+
+        mySQL.update("CREATE TABLE IF NOT EXISTS userincourse " +
+            "(userincourseid INT AUTO_INCREMENT, userid INT, courseid INT, " +
+            "PRIMARY KEY(userincourseid));");
+
+        mySQL.update("CREATE TABLE IF NOT EXISTS dateincourse " +
+            "(dateincourseid INT AUTO_INCREMENT, courseid INT, date DATE, " +
+            "PRIMARY KEY(dateincourseid));");
+
+        mySQL.update("CREATE TABLE IF NOT EXISTS groupincourse " +
+            "(groupincourseid INT AUTO_INCREMENT, groupid INT, courseid INT, " +
+            "PRIMARY KEY(groupincourseid));");
+
+        // create table for course
+        mySQL.update("CREATE TABLE IF NOT EXISTS courses " +
+            "(courseid INT AUTO_INCREMENT, grade INT, gradename VARCHAR(1), userincourseid INT, dateincourseid INT, " +
+            "groupincourse INT, activeuserincourse INT, teacherid INT, masterid INT, remainingtime INT, " +
+            "PRIMARY KEY(courseid), " +
+            "FOREIGN KEY (groupincourseid) REFERENCES groupincourse(groupincourseid), " +
+            "FOREIGN KEY (userincourseid) REFERENCES userincourse(userincourseid), " +
+            "FOREIGN KEY (dateincourseid) REFERENCES dateincourse(dateincourseid)," +
+            "FOREIGN KEY (activeuserincourseid) REFERENCES activeuserincourse(activeuserincourseid));");
+    }
+
+    private void initUsers() {
+        // create table for userdata
+        mySQL.update("CREATE TABLE IF NOT EXISTS users " +
+            "(userid INT AUTO_INCREMENT, prename VARCHAR(255), surname VARCHAR(255), usertype VARCHAR(255), upassword VARCHAR(255), active BOOL, " +
+            "PRIMARY KEY(userid));");
+    }
+
 
     public int updateUser(User user) {
 
