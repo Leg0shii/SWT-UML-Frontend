@@ -46,11 +46,12 @@ public class DBManager {
     private void initGroups() {
 
         mySQL.update("CREATE TABLE IF NOT EXISTS useringroup " +
-            "(useringroupid INT AUTO_INCREMENT, userid INT, groupid INT, " +
+            "(useringroupid INT AUTO_INCREMENT, userid INT NOT NULL, groupid INT NOT NULL, " +
             "PRIMARY KEY(useringroupid));");
 
         // create table for groups
-        mySQL.update("CREATE TABLE IF NOT EXISTS groups (groupid INT AUTO_INCREMENT, ttt INT, maxgs INT, useringroup INT, " +
+        mySQL.update("CREATE TABLE IF NOT EXISTS groups " +
+            "(groupid INT AUTO_INCREMENT, ttt INT DEFAULT 1, maxgs INT DEFAULT 10, useringroup INT NOT NULL, " +
             "PRIMARY KEY(groupid), " +
             "FOREIGN KEY (useringroupid) REFERENCES useringroup(useringroupid));");
     }
@@ -61,25 +62,26 @@ public class DBManager {
             "PRIMARY KEY(activeuserincourseid));"); */
 
         mySQL.update("CREATE TABLE IF NOT EXISTS userincourse " +
-            "(userincourseid INT AUTO_INCREMENT, userid INT, courseid INT, " +
+            "(userincourseid INT AUTO_INCREMENT, userid INT NOT NULL, courseid INT NOT NULL, " +
             "PRIMARY KEY(userincourseid));");
 
         mySQL.update("CREATE TABLE IF NOT EXISTS dateincourse " +
-            "(dateincourseid INT AUTO_INCREMENT, courseid INT, date DATE, " +
+            "(dateincourseid INT AUTO_INCREMENT, courseid INT NOT NULL, date DATE NOT NULL, " +
             "PRIMARY KEY(dateincourseid));");
 
         mySQL.update("CREATE TABLE IF NOT EXISTS groupincourse " +
-            "(groupincourseid INT AUTO_INCREMENT, groupid INT, courseid INT, " +
+            "(groupincourseid INT AUTO_INCREMENT, groupid INT NOT NULL, courseid INT NOT NULL, " +
             "PRIMARY KEY(groupincourseid));");
 
         mySQL.update("CREATE TABLE IF NOT EXISTS masterincourse " +
-            "(masterincourseid INT AUTO_INCREMENT, courseid INT, userid INT" +
+            "(masterincourseid INT AUTO_INCREMENT, courseid INT NOT NULL, userid INT NOT NULL" +
             "PRIMARY KEY(masterincourseid));");
 
         // create table for course
         mySQL.update("CREATE TABLE IF NOT EXISTS courses " +
-            "(courseid INT AUTO_INCREMENT, grade INT, gradename VARCHAR(1), userincourseid INT, dateincourseid INT, " +
-            "groupincourse INT, teacherid INT, masterid INT, remainingtime INT, " +
+            "(courseid INT AUTO_INCREMENT, grade INT DEFAULT 10, gradename VARCHAR(1) DEFAULT 'a', userincourseid INT NOT NULL, " +
+            "dateincourseid INT NOT NULL, masterincourseid INT NOT NULL, groupincourseid INT NOT NULL, " +
+            "teacherid INT NOT NULL, remainingtime INT DEFAULT 1, " +
             "PRIMARY KEY(courseid), " +
             "FOREIGN KEY (groupincourseid) REFERENCES groupincourse(groupincourseid), " +
             "FOREIGN KEY (userincourseid) REFERENCES userincourse(userincourseid), " +
@@ -91,7 +93,8 @@ public class DBManager {
     private void initUsers() {
         // create table for userdata
         mySQL.update("CREATE TABLE IF NOT EXISTS users " +
-            "(userid INT AUTO_INCREMENT, prename VARCHAR(255), surname VARCHAR(255), usertype VARCHAR(255), upassword VARCHAR(255), active BOOL, " +
+            "(userid INT AUTO_INCREMENT, prename VARCHAR(255) DEFAULT 'test', surname VARCHAR(255) DEFAULT 'user', " +
+            "usertype VARCHAR(255) DEFAULT STUDENT, upassword VARCHAR(255) DEFAULT '123', active BOOL DEFAULT 0, " +
             "PRIMARY KEY(userid));");
     }
 
