@@ -10,6 +10,7 @@ import de.swt.logic.session.Session;
 import de.swt.logic.session.SessionManager;
 import de.swt.logic.user.User;
 import de.swt.logic.user.UserManager;
+import de.swt.manager.ServerCommandManager;
 import de.swt.manager.UserCommandMananger;
 import de.swt.manager.CommandObject;
 
@@ -27,6 +28,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     private final SessionManager sessionManager;
     private final Server server;
     private final DBManager dbManager;
+    private final ServerCommandManager serverCommandManager;
+    private final UserCommandMananger userCommandMananger;
 
     public RMIServer() throws RemoteException {
         this.port = 1099;
@@ -36,6 +39,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
         this.groupManager = server.getGroupManager();
         this.sessionManager = server.getSessionManager();
         this.dbManager = server.getDbManager();
+        this.serverCommandManager = server.getServerCommandManager();
+        this.userCommandMananger = server.getUserCommandMananger();
     }
 
     @Override
