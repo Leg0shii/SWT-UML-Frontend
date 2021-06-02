@@ -75,7 +75,7 @@ public class DBManager {
         // create table for course
         mySQL.update("CREATE TABLE IF NOT EXISTS courses " +
             "(courseid INT AUTO_INCREMENT, grade INT, gradename VARCHAR(1), userincourseid INT, dateincourseid INT, " +
-            "groupincourse INT, activeuserincourse INT, teacherid INT, masterid INT, remainingtime INT, " +
+            "groupincourse INT, teacherid INT, masterid INT, remainingtime INT, " +
             "PRIMARY KEY(courseid), " +
             "FOREIGN KEY (groupincourseid) REFERENCES groupincourse(groupincourseid), " +
             "FOREIGN KEY (userincourseid) REFERENCES userincourse(userincourseid), " +
