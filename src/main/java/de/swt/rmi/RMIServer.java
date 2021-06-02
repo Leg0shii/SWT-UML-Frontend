@@ -10,6 +10,7 @@ import de.swt.logic.session.Session;
 import de.swt.logic.session.SessionManager;
 import de.swt.logic.user.User;
 import de.swt.logic.user.UserManager;
+import de.swt.manager.UserCommandMananger;
 import de.swt.manager.CommandObject;
 
 import java.rmi.RemoteException;
@@ -20,21 +21,21 @@ import java.util.HashMap;
 public class RMIServer extends UnicastRemoteObject implements RMIServerInterface {
 
     public int port;
-    private UserManager userManager;
-    private CourseManager courseManager;
-    private GroupManager groupManager;
-    private SessionManager sessionManager;
-    private Server server;
-    private DBManager dbManager;
+    private final UserManager userManager;
+    private final CourseManager courseManager;
+    private final GroupManager groupManager;
+    private final SessionManager sessionManager;
+    private final Server server;
+    private final DBManager dbManager;
 
     public RMIServer() throws RemoteException {
         this.port = 1099;
         this.server = Server.getInstance();
-        this.userManager = server.userManager;
-        this.courseManager = server.courseManager;
-        this.groupManager = server.groupManager;
-        this.sessionManager = server.sessionManager;
-        this.dbManager = server.dbManager;
+        this.userManager = server.getUserManager();
+        this.courseManager = server.getCourseManager();
+        this.groupManager = server.getGroupManager();
+        this.sessionManager = server.getSessionManager();
+        this.dbManager = server.getDbManager();
     }
 
     @Override
@@ -87,7 +88,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
     @Override
     public ArrayList<CommandObject> accessCommandQueue(int userid) throws RemoteException {
-        HashMap<Integer, ArrayList<CommandObject>> arrayListHashMap = server.commandManager.getCommandHashMap();
+        HashMap<Integer, ArrayList<CommandObject>> arrayListHashMap = server.getUserCommandMananger().getUserCommandQueue();
         ArrayList<CommandObject> commandList = arrayListHashMap.get(userid);
 
         // reset command list
@@ -99,7 +100,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     @Override
     public void updateWorkspaceFile(byte[] bytes, int id) throws RemoteException {
 
-        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
+        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.getUserCommandMananger().getUserCommandQueue();
         CommandObject commandObject = new CommandObject();
 
         for (Group group : (Group[]) groupManager.getHashMap().values().toArray()) {
@@ -135,7 +136,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     @Override
     public int sendRequest(int originId, int teacherId) throws RemoteException {
 
-        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
+        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.getUserCommandMananger().getUserCommandQueue();
         CommandObject commandObject = new CommandObject();
         if (userManager.getHashMap().containsKey(teacherId)) {
             System.out.println("[" + originId + "]: user to teacher request ping.");
@@ -149,7 +150,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
     @Override
     public int sendAnswer(int originid, int answer, int teacherid) throws RemoteException {
-        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
+        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.getUserCommandMananger().getUserCommandQueue();
         CommandObject commandObject = new CommandObject();
         if (userManager.getHashMap().containsKey(originid)) {
             System.out.println("[" + teacherid + "]: teacher to user accept ping.");
@@ -173,7 +174,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
     @Override
     public void sendTask(byte[] workspaceBytes, byte[] taskBytes, int id) {
-        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
+        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.getUserCommandMananger().getUserCommandQueue();
         CommandObject commandObject = new CommandObject();
         Session session = sessionManager.getSessionFromTeacherId(id);
         for (int partId : session.getUserIds()) {
