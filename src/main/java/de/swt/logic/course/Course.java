@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -16,6 +18,8 @@ public class Course implements Serializable {
     private int courseId;
     private int grade;
     private String gradeName;
+    private ArrayList<Date> dates;
+    private int teacherId;
 
 }
 
