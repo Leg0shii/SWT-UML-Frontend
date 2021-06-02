@@ -10,12 +10,10 @@ import de.swt.logic.session.Session;
 import de.swt.logic.session.SessionManager;
 import de.swt.logic.user.User;
 import de.swt.logic.user.UserManager;
-import de.swt.manager.CommandManager;
 import de.swt.manager.CommandObject;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -27,6 +25,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     private GroupManager groupManager;
     private SessionManager sessionManager;
     private Server server;
+    private DBManager dbManager;
 
     public RMIServer() throws RemoteException {
         this.port = 1099;
@@ -35,167 +34,55 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
         this.courseManager = server.courseManager;
         this.groupManager = server.groupManager;
         this.sessionManager = server.sessionManager;
+        this.dbManager = server.dbManager;
     }
 
     @Override
-    public TestClass testClass(TestClass testClass) throws RemoteException {
-        testClass.setFirstname("NEWNAME!!!");
-        return testClass;
+    public User getUser(int userId) throws RemoteException {
+        return (User) userManager.getHashMap().get(userId);
     }
 
     @Override
-    public int ping(int val) throws RemoteException {
-        return (int) Math.pow(val, 2);
+    public Course getCourse(int courseId) throws RemoteException {
+        return (Course) courseManager.getHashMap().get(courseId);
     }
 
     @Override
-    public User sendUser(User user, int userid, boolean update) throws RemoteException {
-        DBManager dbManager = server.dbManager;
-        User updatedUser = user;
-
-        // use update = true if you want to update the user data -> tells all other clients to update it too
-        // for this path the userid is ignored, it is only used to retrieve the user when update = false
-        if (update) {
-
-            // if users first login, register it in command manager
-            CommandManager commandManager = server.commandManager;
-            HashMap<Integer, ArrayList<CommandObject>> hashMap = commandManager.getCommandHashMap();
-            CommandObject commandObject = new CommandObject();
-            if (hashMap.containsKey(user.getId())) {
-                hashMap.put(user.getId(), new ArrayList<>());
-            }
-
-            // if user is offline remove from commandlist
-            if (!user.isOnline()) hashMap.remove(userid);
-
-            dbManager.updateUser(user);
-            userManager.cacheAllUserData();
-
-            // user is updated now so send ping to all connected clients to get the updated User
-            System.out.println("SENDING PING MESSAGE!!!");
-            for (int ids : hashMap.keySet()) {
-                commandObject.setCommand("UU:" + user.getId());
-                commandObject.setWorkspaceFileBytes(null);
-                commandObject.setTaskBytes(null);
-                hashMap.get(ids).add(commandObject);
-            }
-
-        } else {
-            updatedUser = userManager.getUserHashMap().get(userid);
-            //updatedUser.setFirstname("New NAME LOL!!");
-        }
-        return updatedUser;
+    public Group getGroup(int groupId) throws RemoteException {
+        return (Group) groupManager.getHashMap().get(groupId);
     }
 
     @Override
-    public Course sendCourse(Course course, int courseid, boolean update) throws RemoteException {
-        DBManager dbManager = server.dbManager;
-        Course updatedCourse = course;
-
-        // use update = true if you want to update the user data -> tells all other clients to update it too
-        // for this path the userid is ignored, it is only used to retrieve the user when update = false
-        if (update) {
-
-            int id = dbManager.updateCourse(course);
-            courseManager.cacheAllCourseData();
-            updatedCourse = courseManager.loadCourse(id);
-
-            // user is updated now so send ping to all connected clients to get the updated User
-            HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
-            CommandObject commandObject = new CommandObject();
-            System.out.println("SENDING COURSE PING MESSAGE!!!");
-            for (int ids : hashMap.keySet()) {
-                commandObject.setCommand("CU:" + course.getId());
-                commandObject.setWorkspaceFileBytes(null);
-                commandObject.setTaskBytes(null);
-                hashMap.get(ids).add(commandObject);
-            }
-
-        } else {
-            updatedCourse = courseManager.getCourseHashMap().get(courseid);
-            //updatedUser.setFirstname("New NAME LOL!!");
-        }
-        return updatedCourse;
+    public Session getSession(int sessionId) throws RemoteException {
+        return (Session) sessionManager.getHashMap().get(sessionId);
     }
 
     @Override
-    public Group sendGroup(Group group, int groupid, boolean update) throws RemoteException {
-        DBManager dbManager = server.dbManager;
-        Group updatedGroup;
-
-        // use update = true if you want to update the user data -> tells all other clients to update it too
-        // for this path the userid is ignored, it is only used to retrieve the user when update = false
-        if (update) {
-
-            int id = dbManager.updateGroups(group);
-            groupManager.cacheAllGroupData();
-            updatedGroup = groupManager.loadGroup(id);
-
-            Session session = new Session();
-            try {
-                session = sessionManager.loadSession(updatedGroup.getCourseID());
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-            session.getGroups().add(updatedGroup.getId());
-            try {
-                sendSession(session, session.getId(), true);
-            } catch (Exception ignored) {
-
-            }
-
-            // user is updated now so send ping to all connected clients to get the updated User
-            HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
-            CommandObject commandObject = new CommandObject();
-            System.out.println("SENDING GROUP PING MESSAGE!!!");
-            for (int ids : session.getParticipants()) {
-                commandObject.setCommand("GU:" + updatedGroup.getId());
-                commandObject.setWorkspaceFileBytes(null);
-                commandObject.setTaskBytes(null);
-                hashMap.get(ids).add(commandObject);
-            }
-
-        } else {
-            updatedGroup = groupManager.getGroupHashMap().get(groupid);
-            //updatedUser.setFirstname("New NAME LOL!!");
-        }
-        return updatedGroup;
+    public void updateUser(User user) throws RemoteException {
+        dbManager.updateUser(user);
+        userManager.getHashMap().remove(user.getUserId());
+        userManager.getHashMap().put(user.getUserId(), user);
     }
 
     @Override
-    public Session sendSession(Session session, int idsession, boolean update) throws RemoteException {
-        DBManager dbManager = server.dbManager;
-        Session updatedSession = session;
+    public void updateCourse(Course course) throws RemoteException {
+        dbManager.updateCourse(course);
+        courseManager.getHashMap().remove(course.getCourseId());
+        courseManager.getHashMap().put(course.getCourseId(), course);
+    }
 
-        // use update = true if you want to update the user data -> tells all other clients to update it too
-        // for this path the userid is ignored, it is only used to retrieve the user when update = false
-        if (update) {
+    @Override
+    public void updateGroup(Group group) throws RemoteException {
+        dbManager.updateGroup(group);
+        groupManager.getHashMap().remove(group.getGroupId());
+        groupManager.getHashMap().put(group.getGroupId(), group);
+    }
 
-            int id = dbManager.updateSessions(session);
-            sessionManager.cacheAllSessionData();
-            try {
-                updatedSession = sessionManager.loadSession(id);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-
-
-            // user is updated now so send ping to all connected clients to get the updated User
-            HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
-            CommandObject commandObject = new CommandObject();
-            System.out.println("SENDING SESSION PING MESSAGE!!!");
-            for (int ids : hashMap.keySet()) {
-                commandObject.setCommand("SU:" + updatedSession.getId());
-                commandObject.setWorkspaceFileBytes(null);
-                commandObject.setTaskBytes(null);
-                hashMap.get(ids).add(commandObject);
-            }
-
-        } else {
-            updatedSession = sessionManager.getSessionHashMap().get(idsession);
-            //updatedUser.setFirstname("New NAME LOL!!");
-        }
-        return updatedSession;
+    @Override
+    public void updateSession(Session session) throws RemoteException {
+        dbManager.updateSession(session);
+        sessionManager.getHashMap().remove(session.getSessionId());
+        sessionManager.getHashMap().put(session.getSessionId(), session);
     }
 
     @Override
@@ -214,12 +101,12 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
         HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
         CommandObject commandObject = new CommandObject();
-        System.out.println("SENDING JOIN REQUEST PING MESSAGE!!!");
 
-        for (Group group : groupManager.getGroupHashMap().values()) {
-            if (group.getParticipants().contains(id)) {
-                for (int ids : group.getParticipants()) {
+        for (Group group : (Group[]) groupManager.getHashMap().values().toArray()) {
+            if (group.getUserIds().contains(id)) {
+                for (int ids : group.getUserIds()) {
                     if (id != ids) {
+                        System.out.println("[" + id + "]: workspace update group ping.");
                         commandObject.setCommand("FU:");
                         commandObject.setWorkspaceFileBytes(bytes);
                         commandObject.setTaskBytes(null);
@@ -230,10 +117,11 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
             }
         }
 
-        for (Session session : sessionManager.getSessionHashMap().values()) {
-            if (session.getMaster().contains(id)) {
-                for (int ids : session.getParticipants()) {
+        for (Session session : (Session[]) sessionManager.getHashMap().values().toArray()) {
+            if (session.getMasterIds().contains(id)) {
+                for (int ids : session.getUserIds()) {
                     if (id != ids) {
+                        System.out.println("[" + id + "]: workspace update session ping.");
                         commandObject.setCommand("FU:");
                         commandObject.setWorkspaceFileBytes(bytes);
                         commandObject.setTaskBytes(null);
@@ -245,17 +133,17 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     }
 
     @Override
-    public int sendRequest(int originid, int teacherid) throws RemoteException {
+    public int sendRequest(int originId, int teacherId) throws RemoteException {
 
         HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
         CommandObject commandObject = new CommandObject();
-        if (userManager.getUserHashMap().containsKey(teacherid)) {
-            commandObject.setCommand("RE:" + originid);
+        if (userManager.getHashMap().containsKey(teacherId)) {
+            System.out.println("[" + originId + "]: user to teacher request ping.");
+            commandObject.setCommand("RE:" + originId);
             commandObject.setWorkspaceFileBytes(null);
             commandObject.setTaskBytes(null);
-            hashMap.get(teacherid).add(commandObject);
+            hashMap.get(teacherId).add(commandObject);
         }
-        System.out.println("SENDING SESSION REQUEST PING MESSAGE!!!");
         return 0;
     }
 
@@ -263,8 +151,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     public int sendAnswer(int originid, int answer, int teacherid) throws RemoteException {
         HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
         CommandObject commandObject = new CommandObject();
-        System.out.println("SENDING SESSION ANSWER PING MESSAGE!!!");
-        if (userManager.getUserHashMap().containsKey(originid)) {
+        if (userManager.getHashMap().containsKey(originid)) {
+            System.out.println("[" + teacherid + "]: teacher to user accept ping.");
             commandObject.setCommand("AN:" + originid + " " + answer + " " + teacherid);
             commandObject.setWorkspaceFileBytes(null);
             commandObject.setTaskBytes(null);
@@ -275,52 +163,24 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
     @Override
     public void deleteGroup(int groupId) {
-        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
-        CommandObject commandObject = new CommandObject();
-        System.out.println("SENDING DELETE GROUP PING MESSAGE!!!");
-        Group group = groupManager.getGroupHashMap().get(groupId);
-        Session session = sessionManager.getSessionHashMap().get(group.getCourseID());
-        for (User user : userManager.getUserHashMap().values()) {
-            if (session.getParticipants().contains(user.getId())) {
-                commandObject.setCommand("DG:" + groupId);
-                commandObject.setWorkspaceFileBytes(null);
-                commandObject.setTaskBytes(null);
-                hashMap.get(user.getId()).add(commandObject);
-            }
-        }
-        server.dbManager.deleteGroup(groupId);
+        dbManager.deleteGroup(groupId);
     }
 
     @Override
     public void deleteSession(int sessionId) {
-        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
-        CommandObject commandObject = new CommandObject();
-        System.out.println("SENDING DELETE SESSION PING MESSAGE!!!");
-        Session session = sessionManager.getSessionHashMap().get(sessionId);
-        for (Integer groupId : session.getGroups()) {
-            deleteGroup(groupId);
-        }
-        for (User user : userManager.getUserHashMap().values()) {
-            if (session.getParticipants().contains(user.getId())) {
-                commandObject.setCommand("DS:" + sessionId);
-                commandObject.setWorkspaceFileBytes(null);
-                commandObject.setTaskBytes(null);
-                hashMap.get(user.getId()).add(commandObject);
-            }
-        }
-        server.dbManager.deleteSession(sessionId);
+        dbManager.deleteSession(sessionId);
     }
 
     @Override
     public void sendTask(byte[] workspaceBytes, byte[] taskBytes, int id) {
         HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
         CommandObject commandObject = new CommandObject();
-        System.out.println("SENDING SEND TASK PING MESSAGE!!!");
         Session session = sessionManager.getSessionFromTeacherId(id);
-        for (int partId : session.getParticipants()) {
+        for (int partId : session.getUserIds()) {
             if (partId == id) {
                 continue;
             }
+            System.out.println("[" + id + "]: sending task ping.");
             commandObject.setCommand("ST:" + id);
             commandObject.setWorkspaceFileBytes(workspaceBytes);
             commandObject.setTaskBytes(taskBytes);
