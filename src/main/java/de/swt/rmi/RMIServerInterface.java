@@ -9,10 +9,11 @@ import de.swt.manager.CommandObject;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public interface RMIServerInterface extends Remote {
 
-    ArrayList<CommandObject> accessCommandQueue(int userid) throws RemoteException;
+    LinkedBlockingQueue<CommandObject> accessCommandQueue(int userid) throws RemoteException;
 
     void updateUser(User user) throws RemoteException;
 

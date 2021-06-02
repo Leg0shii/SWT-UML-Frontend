@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 @Getter
-public abstract class Manager {
+public abstract class Manager<Type> {
 
     private final AsyncMySQL mySQL;
-    private final HashMap<Integer, Object> hashMap;
+    private final HashMap<Integer, Type> hashMap;
     private final Server server;
 
     public Manager(Server server) {
@@ -22,7 +22,7 @@ public abstract class Manager {
         this.hashMap = new HashMap<>();
     }
 
-    public abstract Object load(int id) throws SQLException;
+    public abstract Type load(int id) throws SQLException;
 
     public abstract void cacheAllData() throws SQLException;
 
