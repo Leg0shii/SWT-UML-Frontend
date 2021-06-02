@@ -1,7 +1,6 @@
 package de.swt.logic.session;
 
 import de.swt.Server;
-import de.swt.logic.group.Group;
 import de.swt.manager.Manager;
 
 import java.sql.ResultSet;
@@ -42,5 +41,15 @@ public class SessionManager extends Manager {
         while (resultSet.next()) {
             load(resultSet.getInt("sessionId"));
         }
+    }
+
+    public Session getSessionFromTeacherId(int teacherId){
+        for (Object object : getHashMap().values()){
+            Session session = (Session) object;
+            if (session.getMasterIds().contains(teacherId)){
+                return session;
+            }
+        }
+        return null;
     }
 }
