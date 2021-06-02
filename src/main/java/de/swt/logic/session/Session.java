@@ -9,11 +9,11 @@ import java.util.ArrayList;
 @Getter
 @AllArgsConstructor
 public class Session implements Serializable {
-    int id;
-    ArrayList<Integer> participants;
-    ArrayList<Integer> master;
-    long remainingTime;
-    ArrayList<Integer> groups;
+    private int id;
+    private ArrayList<Integer> participants;
+    private ArrayList<Integer> master;
+    private long remainingTime;
+    private ArrayList<Integer> groups;
 
     public Session(){
         this.id = -1;

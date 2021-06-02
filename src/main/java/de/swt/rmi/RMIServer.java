@@ -70,13 +70,18 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
             // if user is offline remove from commandlist
             if (!user.isOnline()) hashMap.remove(userid);
 
-            dbManager.updateUser(user);
-            userManager.cacheAllUserData();
+            int id = dbManager.updateUser(user);
+            this.userManager.cacheAllUserData();
+            if (userid < 0) {
+                updatedUser = this.userManager.loadUser(id);
+            } else {
+                updatedUser = this.userManager.loadUser(userid);
+            }
 
             // user is updated now so send ping to all connected clients to get the updated User
             System.out.println("SENDING PING MESSAGE!!!");
             for (int ids : hashMap.keySet()) {
-                commandObject.setCommand("UU:" + user.getId());
+                commandObject.setCommand("UU:" + updatedUser.getId());
                 commandObject.setWorkspaceFileBytes(null);
                 commandObject.setTaskBytes(null);
                 hashMap.get(ids).add(commandObject);
@@ -100,14 +105,18 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
             int id = dbManager.updateCourse(course);
             courseManager.cacheAllCourseData();
-            updatedCourse = courseManager.loadCourse(id);
+            if (courseid < 0) {
+                updatedCourse = courseManager.loadCourse(id);
+            } else {
+                updatedCourse = courseManager.loadCourse(courseid);
+            }
 
             // user is updated now so send ping to all connected clients to get the updated User
             HashMap<Integer, ArrayList<CommandObject>> hashMap = server.commandManager.getCommandHashMap();
             CommandObject commandObject = new CommandObject();
             System.out.println("SENDING COURSE PING MESSAGE!!!");
             for (int ids : hashMap.keySet()) {
-                commandObject.setCommand("CU:" + course.getId());
+                commandObject.setCommand("CU:" + updatedCourse.getId());
                 commandObject.setWorkspaceFileBytes(null);
                 commandObject.setTaskBytes(null);
                 hashMap.get(ids).add(commandObject);
@@ -131,7 +140,11 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
             int id = dbManager.updateGroups(group);
             groupManager.cacheAllGroupData();
-            updatedGroup = groupManager.loadGroup(id);
+            if (groupid < 0) {
+                updatedGroup = groupManager.loadGroup(id);
+            } else {
+                updatedGroup = groupManager.loadGroup(groupid);
+            }
 
             Session session = new Session();
             try {
@@ -176,9 +189,12 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
             int id = dbManager.updateSessions(session);
             sessionManager.cacheAllSessionData();
             try {
-                updatedSession = sessionManager.loadSession(id);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                if (idsession < 0) {
+                    updatedSession = sessionManager.loadSession(id);
+                } else {
+                    updatedSession = sessionManager.loadSession(idsession);
+                }
+            } catch (Exception ignored){
             }
 
 

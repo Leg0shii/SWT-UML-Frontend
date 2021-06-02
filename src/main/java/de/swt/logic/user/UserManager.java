@@ -42,12 +42,14 @@ public class UserManager {
                     System.out.println("SOMETHING WENT WRONG WHILE LOADING USER!!!");
                     return null;
                 }
-            } catch (SQLException ignored) { }
+            } catch (SQLException ignored) {
+            }
         } else user = userHashMap.get(id);
         return user;
     }
 
     public void cacheAllUserData() {
+        userHashMap.clear();
         ResultSet resultSetID = mySQL.query("SELECT userid FROM users;");
         try {
             while (resultSetID.next()) {
@@ -61,10 +63,12 @@ public class UserManager {
     private ArrayList<Integer> loadCourses(int userid) throws SQLException {
         ArrayList<Integer> courseList = new ArrayList<>();
         ResultSet resultSetUser = mySQL.query("SELECT courseids FROM users WHERE userid = " + userid + ";");
-        if(resultSetUser.next()) {
+        if (resultSetUser.next()) {
             String[] courses = resultSetUser.getString("courseids").split(";");
-            for(String course : courses) {
-                courseList.add(Integer.parseInt(course));
+            for (String course : courses) {
+                if (!course.equals("")) {
+                    courseList.add(Integer.parseInt(course));
+                }
             }
         } else {
             System.out.println("ERROR IN USER MANAGER!!!");

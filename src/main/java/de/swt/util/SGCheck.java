@@ -10,6 +10,7 @@ import de.swt.logic.user.UserManager;
 import de.swt.manager.CommandManager;
 import de.swt.manager.CommandObject;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.TimerTask;
 
@@ -24,28 +25,43 @@ public class SGCheck extends TimerTask {
         CommandManager commandManager = Server.getInstance().commandManager;
         Server server = Server.getInstance();
 
+        ArrayList<Integer> sessionSavedUserId = new ArrayList<>();
+        ArrayList<Integer> groupSavedUserId = new ArrayList<>();
+
         for (Session session : sessionManager.getSessionHashMap().values()) {
             if (session.getRemainingTime() <= System.currentTimeMillis()) {
-                for (int userid : session.getParticipants()) {
-                    // update user object further ?
-                    if (userManager.getUserHashMap().get(userid).isOnline()) {
-                        commandManager.getCommandHashMap().get(userid).add(
-                                new CommandObject("LE:-1", null, null));
-                    }
-                }
+                // update user object further ?
+                sessionSavedUserId.addAll(session.getParticipants());
+                server.dbManager.deleteSession(session.getId());
+                System.out.println("DELETING SESSION " + session.getId() + " BECAUSE TIME");
+                sessionManager.cacheAllSessionData();
             }
         }
 
         for (Group group : groupManager.getGroupHashMap().values()) {
             if (group.getTimeTillTermination() <= System.currentTimeMillis()) {
-                for (int userid : group.getParticipants()) {
-                    // update user object further ?
-                    if (userManager.getUserHashMap().get(userid).isOnline()) {
-                        commandManager.getCommandHashMap().get(userid).add(
-                                new CommandObject("LE:" + group.getCourseID(), null, null));
-                    }
+                Session session = new Session();
+                try {
+                    session = sessionManager.loadSession(group.getCourseID());
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
                 }
+                // update user object further ?
+                groupSavedUserId.addAll(session.getParticipants());
+                server.dbManager.deleteGroup(group.getId());
+                System.out.println("DELETING GROUP " + group.getId() + " BECAUSE TIME");
+                groupManager.cacheAllGroupData();
             }
+        }
+
+        for (int id : sessionSavedUserId) {
+            commandManager.getCommandHashMap().get(id).add(
+                    new CommandObject("LE:-1", null, null));
+        }
+
+        for (int id : groupSavedUserId) {
+            commandManager.getCommandHashMap().get(id).add(
+                    new CommandObject("LE:0", null, null));
         }
     }
 

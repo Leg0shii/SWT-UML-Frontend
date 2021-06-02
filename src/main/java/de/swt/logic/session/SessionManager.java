@@ -31,7 +31,7 @@ public class SessionManager {
                 session.setId(Integer.parseInt(resultSet.getString("idsession")));
                 session.setParticipants(parseParticipants(resultSet.getString("participants")));
                 session.setMaster(parseParticipants(resultSet.getString("master")));
-                session.setRemainingTime(Integer.parseInt(resultSet.getString("remainingtime")));
+                session.setRemainingTime(Long.parseLong(resultSet.getString("remainingtime")));
                 session.setGroups(parseParticipants(resultSet.getString("groups")));
                 sessionHashMap.put(session.getId(), session);
             } else {

@@ -44,6 +44,7 @@ public class GroupManager {
     }
 
     public void cacheAllGroupData() {
+        groupHashMap.clear();
         ResultSet resultSet = server.mySQL.query("SELECT * FROM groups;");
         try {
             while (resultSet.next()) {

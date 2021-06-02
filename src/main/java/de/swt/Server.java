@@ -62,7 +62,7 @@ public class Server {
 
         // runs it ever minute
         Timer courseTimer = new Timer();
-        courseTimer.schedule(new SGCheck(), 1000, 60000);
+        courseTimer.schedule(new SGCheck(), 1000, 1000);
 
     }
 
