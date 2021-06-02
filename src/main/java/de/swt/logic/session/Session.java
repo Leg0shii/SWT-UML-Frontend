@@ -1,7 +1,9 @@
 package de.swt.logic.session;
 
-import de.swt.logic.user.User;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,18 +11,11 @@ import java.util.ArrayList;
 @Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Session implements Serializable {
-    private int id;
-    private ArrayList<Integer> participants;
-    private ArrayList<Integer> master;
+    private int sessionId;
+    private ArrayList<Integer> userIds;
     private long remainingTime;
-    private ArrayList<Integer> groups;
-
-    public Session(){
-        this.id = -1;
-        this.participants = new ArrayList<>();
-        this.master = new ArrayList<>();
-        this.remainingTime = 0;
-        this.groups = new ArrayList<>();
-    }
+    private ArrayList<Integer> groupIds;
+    private ArrayList<Integer> masterIds;
 }

@@ -1,82 +1,54 @@
 package de.swt.logic.session;
 
-import de.swt.database.AsyncMySQL;
-import de.swt.logic.course.Course;
+import de.swt.manager.Manager;
 import de.swt.util.Client;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 
-@Getter
-@Setter
-public class SessionManager {
-    private final AsyncMySQL mySQL;
-    private final HashMap<Integer, Session> sessionHashMap;
-    private final Client client;
-
+public class SessionManager extends Manager<Session> {
     public SessionManager(Client client) {
-
-        this.client = client;
-        this.mySQL = client.mySQL;
-        this.sessionHashMap = new HashMap<>();
+        super(client);
     }
 
-    public Session loadSession(int id) throws SQLException {
-        Session session;
-        if (!sessionHashMap.containsKey(id)) {
-            ResultSet resultSet = mySQL.query("SELECT * FROM sessions WHERE idsession = " + id + ";");
-            if (resultSet.next()) {
-                session = new Session();
-                session.setId(Integer.parseInt(resultSet.getString("idsession")));
-                session.setParticipants(parseParticipants(resultSet.getString("participants")));
-                session.setMaster(parseParticipants(resultSet.getString("master")));
-                session.setRemainingTime(Long.parseLong(resultSet.getString("remainingtime")));
-                session.setGroups(parseParticipants(resultSet.getString("groups")));
-                sessionHashMap.put(session.getId(), session);
-            } else {
-                System.out.println("SOMETHING WENT WRONG WHILE LOADING SESSION!!!");
-                return null;
-            }
-        } else session = sessionHashMap.get(id);
-        return session;
-    }
+    @Override
+    public Session load(int id) throws SQLException {
+        if (getHashMap().containsKey(id)) {
+            return getHashMap().get(id);
+        } else {
+            ResultSet resultSet = getMySQL().query("SELECT * FROM sessions WHERE sessionId = " + id + ");");
+            resultSet.next();
+            Session newSession = new Session();
+            newSession.setSessionId(id);
+            newSession.setRemainingTime(resultSet.getLong("remainingTime"));
+            resultSet = getMySQL().query("SELECT userId FROM userInSession WHERE sessionId = " + id + ");");
+            newSession.setUserIds(getIds(resultSet, "userId"));
+            resultSet = getMySQL().query("SELECT groupId FROM groupInSession WHERE sessionId = " + id + ");");
+            newSession.setGroupIds(getIds(resultSet, "groupId"));
+            resultSet = getMySQL().query("SELECT masterId FROM masterInSession WHERE sessionId = " + id + ");");
+            newSession.setMasterIds(getIds(resultSet, "masterId"));
 
-    public void cacheAllSessionData() {
-        this.sessionHashMap.clear();
-        ResultSet resultSet = mySQL.query("SELECT idsession FROM sessions;");
-        try {
-            while (resultSet.next()) {
-                loadSession(resultSet.getInt("idsession"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            getHashMap().put(id, newSession);
+
+            return newSession;
         }
     }
 
-    private ArrayList<Integer> parseParticipants(String parseString) {
-        ArrayList<Integer> list = new ArrayList<>();
-        String[] sUserList = parseString.split(";");
-        for (String sUser : sUserList) {
-            if (!sUser.equals("")) {
-                list.add(Integer.parseInt(sUser));
-            }
+    @Override
+    public void cacheAllData() throws SQLException {
+        getHashMap().clear();
+        ResultSet resultSet = getMySQL().query("SELECT sessionId FROM sessions;");
+        while (resultSet.next()) {
+            load(resultSet.getInt("sessionId"));
         }
-        return list;
     }
 
     public Session getSessionFromTeacherId(int teacherId){
-        for (Session session : getSessionHashMap().values()){
-            if (session == null) return null;
-            if (session.getMaster().contains(teacherId)){
+        for (Session session : getHashMap().values()){
+            if (session.getMasterIds().contains(teacherId)){
                 return session;
             }
         }
         return null;
     }
-
 }

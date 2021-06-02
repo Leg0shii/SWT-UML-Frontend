@@ -1,6 +1,5 @@
 package de.swt.logic.group;
 
-import de.swt.logic.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,11 +14,12 @@ import java.util.ArrayList;
 @NoArgsConstructor
 public class Group implements Serializable {
 
-    private int id;
-    private int courseID;
+    private int groupId;
+    private int sessionId;
     private long timeTillTermination;
     private int maxGroupSize;
-    private ArrayList<Integer> participants;
+    private ArrayList<Integer> userIds;
 
 }
+
 

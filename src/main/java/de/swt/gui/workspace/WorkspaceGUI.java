@@ -2,6 +2,7 @@ package de.swt.gui.workspace;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import de.swt.drawing.objects.DrawableObject;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.logic.group.Group;
@@ -12,8 +13,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class WorkspaceGUI extends GUI {
     private JPanel mainPanel;
@@ -247,11 +246,11 @@ public class WorkspaceGUI extends GUI {
         return selectedGroup;
     }
 
-    public Component[] getDrawnObjects() {
+    public DrawableObject[] getDrawnObjects() {
         return drawablePanel.getDrawnObjects();
     }
 
-    public Component[] getAnnotations() {
+    public DrawableObject[] getAnnotations() {
         return drawablePanel.getAnnotations();
     }
 
@@ -316,4 +315,6 @@ public class WorkspaceGUI extends GUI {
         return mainPanel;
     }
 
+    public int increaseObjectCounter() {
+    }
 }

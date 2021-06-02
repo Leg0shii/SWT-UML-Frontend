@@ -5,10 +5,12 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import de.swt.gui.GUIManager;
 import de.swt.gui.GUI;
+import de.swt.logic.user.User;
 import de.swt.util.Language;
 
 import javax.swing.*;
 import java.awt.*;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 
 public class LoginGUI extends GUI {
@@ -20,31 +22,32 @@ public class LoginGUI extends GUI {
     private JLabel passwordLabel;
     private JLabel usernameLabel;
     private JPanel subPanel;
+    private JLabel errorLabel;
 
     public LoginGUI(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.add(mainPanel);
         subPanel.setBorder(BorderFactory.createEtchedBorder());
-        switch (guiManager.language) {
-            case GERMAN -> setupGUI("Anmeldung", "Nutzername:", "Passwort:", "Schule:", "Anmelden");
-            case ENGLISH -> setupGUI("Login", "Username:", "Password:", "School:", "Login");
+        switch (guiManager.getLanguage()) {
+            case GERMAN -> setupGUI("Anmeldung", "Nutzername:", "Passwort:", "Anmelden");
+            case ENGLISH -> setupGUI("Login", "Username:", "Password:", "Login");
         }
-        setupActionListeners();
     }
 
-    private void setupGUI(String login, String username, String password, String school, String button) {
+    @Override
+    public void updateGUI() {
+        this.revalidate();
+    }
+
+    @Override
+    public void setupListeners() {
+        this.loginButton.addActionListener(e -> login());
+    }
+
+    private void setupGUI(String login, String username, String password, String button) {
         loginLabel.setText(login);
         usernameLabel.setText(username);
         passwordLabel.setText(password);
         loginButton.setText(button);
-    }
-
-    public void updateGUI() {
-    }
-
-    public void setupActionListeners() {
-        this.loginButton.addActionListener(e -> login());
     }
 
     public String getPassword() {
@@ -55,24 +58,35 @@ public class LoginGUI extends GUI {
         return usernameTextField.getText();
     }
 
-    // TODO: Implemented by other Group
     private void login() {
         int loginID;
         try {
             loginID = Integer.parseInt(getUsername());
         } catch (NumberFormatException numberFormatException) {
-            // TODO : Errorlabel if no number entered
+            switch (getGuiManager().getLanguage()) {
+                case GERMAN -> errorLabel.setText("Bitte gib richtige ID ein");
+                case ENGLISH -> errorLabel.setText("Please enter real ID");
+            }
             System.out.println("Please enter a real number as ID!");
             return;
         }
         String password = getPassword();
-        if (guiManager.getClient().userManager.userLogin(loginID, password)) {
-            guiManager.getClient().loggedIn = true;
-            guiManager.secondSetup();
-            guiManager.switchToClassRoomGUI();
+        User user = getGuiManager().getClient().getUserManager().login(loginID, password);
+        if (user != null) {
+            user.setActive(true);
+            try {
+                getGuiManager().getClient().getServer().updateUser(user);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            getGuiManager().secondSetup();
+            getGuiManager().switchToClassRoomGUI();
         } else {
+            switch (getGuiManager().getLanguage()){
+                case GERMAN -> errorLabel.setText("Anmelden Fehlgeschlagen!");
+                case ENGLISH -> errorLabel.setText("Login failed!");
+            }
             System.out.println("Login failed");
-            // TODO : Errorlabel if login fails
         }
     }
 

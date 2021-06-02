@@ -19,10 +19,10 @@ public class ClassroomGUI extends GUI {
     private JLabel grade11Label;
     private JLabel grade10Label;
     private JLabel grade12Label;
-    public JButton logoutButton;
-    public JButton privateWorkspaceButton;
+    private JButton logoutButton;
+    private JButton privateWorkspaceButton;
     private JButton supportButton;
-    public JButton createClassroomButton;
+    private JButton createClassroomButton;
     private JPanel gradePanel10;
     private JPanel gradePanel11;
     private JPanel gradePanel12;
@@ -35,25 +35,13 @@ public class ClassroomGUI extends GUI {
 
     public ClassroomGUI(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.add(mainPanel);
-        switch (guiManager.language) {
+        switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Klasse 11", "Klasse 10", "Klasse 12", "Abmelden", "Klassenraum erstellen", "Privater Arbeitsplatz");
             case ENGLISH -> setupGUI("Grade 11", "Grade 10", "Grade 12", "Logout", "Create Classroom", "Private Workspace");
         }
 
-        setupActionListeners();
-
-        this.gradePanel10.setLayout(new BoxLayout(gradePanel10, BoxLayout.Y_AXIS));
-        this.scrollPanel10.setViewportView(gradePanel10);
-        this.gradePanel11.setLayout(new BoxLayout(gradePanel11, BoxLayout.Y_AXIS));
-        this.scrollPanel11.setViewportView(gradePanel11);
-        this.gradePanel12.setLayout(new BoxLayout(gradePanel12, BoxLayout.Y_AXIS));
-        this.scrollPanel12.setViewportView(gradePanel12);
-
         this.gradePanels = new ArrayList<>();
-
-        this.createClassroomPanel = new CreateClassroomPanel(guiManager);
+        this.createClassroomPanel = new CreateClassroomPanel(getGuiManager());
     }
 
     private void setupGUI(String grade11, String grade10, String grade12, String logout, String createCR, String privateWS) {
@@ -64,22 +52,12 @@ public class ClassroomGUI extends GUI {
         this.supportButton.setText("Support");
         this.createClassroomButton.setText(createCR);
         this.privateWorkspaceButton.setText(privateWS);
-        initPopups(2);
-    }
-
-    public void updateGUI(ArrayList<User> students) {
-        removeAllGradePanels();
-        updateGradePanels();
-        for (GradePanel gradePanel : gradePanels) {
-            gradePanel.getEditClassroomPanel().updateGUI(students);
-            switch (gradePanel.grade) {
-                case 10 -> gradePanel10.add(gradePanel);
-                case 11 -> gradePanel11.add(gradePanel);
-                case 12 -> gradePanel12.add(gradePanel);
-            }
-        }
-        this.initForAccountType();
-        this.revalidate();
+        this.gradePanel10.setLayout(new GridLayout(0, 1));
+        this.scrollPanel10.setViewportView(gradePanel10);
+        this.gradePanel11.setLayout(new GridLayout(0, 1));
+        this.scrollPanel11.setViewportView(gradePanel11);
+        this.gradePanel12.setLayout(new GridLayout(0, 1));
+        this.scrollPanel12.setViewportView(gradePanel12);
     }
 
     public void updateGUI() {
@@ -97,70 +75,31 @@ public class ClassroomGUI extends GUI {
         this.revalidate();
     }
 
-    private void setupActionListeners() {
-        PopupFactory popupFactory = new PopupFactory();
-        this.supportButton.addActionListener(e -> {
-            incrementPopupCounter(0);
-            if (popupCounter.get(0) % 2 == 0) {
-                popups.get(0).hide();
-            } else {
-                JPanel supportPanel = new JPanel();
-                supportPanel.setBorder(BorderFactory.createEtchedBorder());
-                JLabel supportNumber = new JLabel("No Support!");
-                supportPanel.add(supportNumber);
-                Point point = new Point(this.supportButton.getX(), this.supportButton.getY() - 30);
-                SwingUtilities.convertPointToScreen(point, subPanel);
-                popups.set(0, popupFactory.getPopup(this, supportPanel, point.x, point.y));
-                popups.get(0).show();
-            }
-        });
-        this.createClassroomButton.addActionListener(e1 -> {
-            incrementPopupCounter(1);
-            if (popupCounter.get(1) % 2 == 0) {
-                popups.get(1).hide();
-            } else {
-                createClassroomPanel.cancelButton.addActionListener(e11 -> {
-                    incrementPopupCounter(1);
-                    popups.get(1).hide();
-                });
-                createClassroomPanel.doneButton.addActionListener(e12 -> {
-                    incrementPopupCounter(1);
-                    createClassroomPanel.doneFunction();
-                    popups.get(1).hide();
-                });
-                Point point = new Point(this.createClassroomButton.getX(), this.createClassroomButton.getY() - 200);
-                SwingUtilities.convertPointToScreen(point, subPanel);
-                popups.set(1, popupFactory.getPopup(this, createClassroomPanel, point.x, point.y));
-                popups.get(1).show();
-            }
-        });
+    @Override
+    public void setupListeners() {
+        JLabel supportLabel = new JLabel("No Support!");
+        JPopupMenu supportPopup = new JPopupMenu();
+        supportPopup.add(supportLabel);
+        supportButton.setComponentPopupMenu(supportPopup);
+        this.supportButton.addActionListener(e -> supportButton.getComponentPopupMenu().show(supportPopup, 0, 0));
+
+        JPopupMenu createClassroomPopup = new JPopupMenu();
+        createClassroomPopup.add(createClassroomPanel);
+        createClassroomButton.setComponentPopupMenu(createClassroomPopup);
+        createClassroomButton.addActionListener(e -> createClassroomButton.getComponentPopupMenu().show(createClassroomButton, 0, 0));
+
         this.logoutButton.addActionListener(e2 -> logout());
         this.privateWorkspaceButton.addActionListener(e3 -> privateWorkspaceFunction());
     }
 
     private void logout() {
-        // logs out user
-        guiManager.getClient().userManager.userLogout();
-        guiManager.switchToLoginGUI();
-    }
-
-    public void addGradePanel(GradePanel gradePanel) {
-        this.gradePanels.add(gradePanel);
-    }
-
-    public GradePanel getGradePanel(int id) {
-        for (GradePanel gradePanel : gradePanels) {
-            if (gradePanel.getCourse().getId() == id) {
-                return gradePanel;
-            }
-        }
-        return null;
+        getGuiManager().switchToLoginGUI();
     }
 
     public void updateGradePanels() {
         gradePanels.clear();
-        for (Course course : guiManager.getClient().courseManager.getCourseHashMap().values()) {
-            GradePanel gradePanel = new GradePanel(guiManager);
+        for (Course course : getGuiManager().getClient().getCourseManager().getHashMap().values()) {
+            GradePanel gradePanel = new GradePanel(getGuiManager());
             gradePanel.updateGUI(course);
             gradePanels.add(gradePanel);
         }
@@ -185,7 +124,7 @@ public class ClassroomGUI extends GUI {
     }
 
     public void initForAccountType() {
-        if (guiManager.accountType == AccountType.STUDENT) {
+        if (getGuiManager().getAccountType() == AccountType.STUDENT) {
             this.mainPanel.remove(createClassroomButton);
             removeEditButtonsFromGradePanels();
         }

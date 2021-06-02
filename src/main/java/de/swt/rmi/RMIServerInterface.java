@@ -2,36 +2,24 @@ package de.swt.rmi;
 
 import de.swt.logic.course.Course;
 import de.swt.logic.group.Group;
-import de.swt.logic.TestClass;
 import de.swt.logic.session.Session;
 import de.swt.logic.user.User;
 import de.swt.manager.CommandObject;
 
-import java.io.File;
 import java.rmi.*;
-import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public interface RMIServerInterface extends Remote {
 
-    TestClass testClass(TestClass testClass) throws RemoteException;
+    LinkedBlockingQueue<CommandObject> accessCommandQueue(int userid) throws RemoteException;
 
-    int ping(int val) throws RemoteException;
+    void updateUser(User user) throws RemoteException;
 
-    User sendUser(User user, int userid, boolean update) throws RemoteException;
+    void updateCourse(Course course) throws RemoteException;
 
-    Course sendCourse(Course course, int courseid, boolean update) throws RemoteException;
+    void updateGroup(Group group) throws RemoteException;
 
-    Group sendGroup(Group group, int groupid, boolean update) throws RemoteException;
-
-    Session sendSession(Session session, int idsession, boolean update) throws RemoteException;
-
-    ArrayList<CommandObject> accessCommandQueue(int userid) throws RemoteException;
-
-    void updateWorkspaceFile(byte[] bytes, int id) throws RemoteException;
-
-    int sendRequest(int originid, int teacherid) throws RemoteException;
-
-    int sendAnswer(int originid, int answer, int teacherid) throws RemoteException;
+    void updateSession(Session session) throws RemoteException;
 
     void deleteGroup(int groupId) throws RemoteException;
 
@@ -39,6 +27,10 @@ public interface RMIServerInterface extends Remote {
 
     void sendTask(byte[] workspaceBytes, byte[] taskBytes, int id) throws RemoteException;
 
-    long getRemainingTime(int type, int subjectid) throws RemoteException;
+    void updateWorkspaceFile(byte[] bytes, int id) throws RemoteException;
+
+    void sendRequest(int originId, int destinationId) throws RemoteException;
+
+    void sendAnswer(int originId, int destinationId, int answer) throws RemoteException;
 }
 

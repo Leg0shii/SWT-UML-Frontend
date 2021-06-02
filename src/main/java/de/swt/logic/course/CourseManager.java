@@ -1,70 +1,59 @@
 package de.swt.logic.course;
 
-import de.swt.database.AsyncMySQL;
+import de.swt.manager.Manager;
 import de.swt.util.Client;
-import lombok.Getter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
-@Getter
-public class CourseManager {
-
-    private final AsyncMySQL mySQL;
-    private final HashMap<Integer, Course> courseHashMap;
-    private final Client client;
+public class CourseManager extends Manager<Course> {
 
     public CourseManager(Client client) {
-
-        this.client = client;
-        this.mySQL = client.mySQL;
-        this.courseHashMap = new HashMap<>();
+        super(client);
     }
 
-    public Course loadCourse(int id) throws SQLException {
-        Course course;
-        if (!courseHashMap.containsKey(id)) {
-            ResultSet resultSet = mySQL.query("SELECT * FROM courses WHERE courseid = " + id + ";");
-            if (resultSet.next()) {
-                course = new Course();
-                course.setDates(getDateFromString(resultSet.getString("date")));
-                course.setGrade(resultSet.getInt("grade"));
-                course.setId(resultSet.getInt("courseid"));
-                course.setName(resultSet.getString("gradename"));
-                course.setTeacherID(resultSet.getInt("teacherid"));
-                courseHashMap.put(course.getId(), course);
-            } else {
-                System.out.println("SOMETHING WENT WRONG WHILE LOADING COURSE!!!");
-                return null;
-            }
-        } else course = courseHashMap.get(id);
-        return course;
-    }
+    @Override
+    public Course load(int id) throws SQLException {
+        if (getHashMap().containsKey(id)) {
+            return getHashMap().get(id);
+        } else {
+            ResultSet resultSet = getMySQL().query("SELECT * FROM courses WHERE courseId = " + id + ");");
+            resultSet.next();
+            Course newCourse = new Course();
+            newCourse.setCourseId(id);
+            newCourse.setGrade(resultSet.getInt("grade"));
+            newCourse.setGradeName(resultSet.getString("gradeName"));
+            newCourse.setTeacherId(resultSet.getInt("teacherId"));
+            resultSet = getMySQL().query("SELECT date FROM dateInCourse WHERE courseId = " + id + ";");
+            newCourse.setDates(getDates(resultSet));
+            resultSet = getMySQL().query("SELECT userId FROM userInCourse WHERE courseId = " + id + ";");
+            newCourse.setUserIds(getIds(resultSet, "userId"));
 
-    public void cacheAllCourseData() {
-        this.courseHashMap.clear();
-        ResultSet resultSet = mySQL.query("SELECT courseid FROM courses;");
-        try {
-            while (resultSet.next()) {
-                loadCourse(resultSet.getInt("courseid"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            getHashMap().put(id, newCourse);
+
+            return newCourse;
         }
     }
 
-    private ArrayList<Date> getDateFromString(String string) {
-        String[] stringDates = string.split(";");
-        ArrayList<Date> list = new ArrayList<>();
-        for (String singleDate : stringDates) {
-            if (!singleDate.equals("")) {
-                list.add(new Date(Long.parseLong(singleDate)));
-            }
+    @Override
+    public void cacheAllData() throws SQLException {
+        getHashMap().clear();
+        ResultSet resultSet = getMySQL().query("SELECT courseId FROM courses;");
+        while (resultSet.next()) {
+            load(resultSet.getInt("courseId"));
         }
-        return list;
     }
 
+    private ArrayList<Date> getDates(ResultSet resultSet) throws SQLException {
+        ArrayList<Date> dates = new ArrayList<>();
+        while (resultSet.next()) {
+            Date date = new Date(resultSet.getLong("date"));
+            dates.add(date);
+        }
+        return dates;
+    }
 }
+
+

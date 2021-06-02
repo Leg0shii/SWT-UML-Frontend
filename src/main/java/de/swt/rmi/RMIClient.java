@@ -10,14 +10,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class RMIClient {
-    //private int clientID;
     private final String registryName;
     private final String serverAddress;
     private final int serverRMIPort;
 
     public RMIClient() {
-        //Constructor
-        //this.clientID = this.generateClientID();
         this.registryName = "RMIServer"; //Name in Registry
         this.serverAddress = "185.181.10.193"; //Bennies Server
         this.serverRMIPort = 1099;
@@ -42,12 +39,6 @@ public class RMIClient {
     public RMIServerInterface initRMIClient() {
 
         System.setProperty("java.security.policy","file:./src/main/java/de/swt/policy.policy");
-
-        /*
-        if (System.getSecurityManager() == null) {
-            System.setSecurityManager(new SecurityManager());
-        }
-         */
 
         RMIServerInterface server;
 

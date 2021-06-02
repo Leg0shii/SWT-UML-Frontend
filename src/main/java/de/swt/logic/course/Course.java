@@ -1,7 +1,5 @@
 package de.swt.logic.course;
 
-import de.swt.logic.user.User;
-import de.swt.util.Client;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,15 +15,12 @@ import java.util.Date;
 @AllArgsConstructor
 public class Course implements Serializable {
 
-    private int id;
+    private int courseId;
     private int grade;
-    private String name;
+    private String gradeName;
     private ArrayList<Date> dates;
-    private int teacherID;
-
-    public User getTeacher() {
-        return Client.getInstance().userManager.getUserHashMap().get(teacherID);
-    }
+    private ArrayList<Integer> userIds;
+    private int teacherId;
 
 }
 

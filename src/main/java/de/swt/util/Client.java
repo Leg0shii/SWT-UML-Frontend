@@ -4,31 +4,41 @@ import de.swt.database.AsyncMySQL;
 import de.swt.database.DBManager;
 import de.swt.gui.GUIManager;
 import de.swt.logic.course.CourseManager;
+import de.swt.logic.group.Group;
 import de.swt.logic.group.GroupManager;
+import de.swt.logic.session.Session;
 import de.swt.logic.session.SessionManager;
+import de.swt.logic.user.User;
 import de.swt.logic.user.UserManager;
 import de.swt.rmi.RMIClient;
 import de.swt.rmi.RMIServerInterface;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.io.IOException;
+import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.Timer;
 
+@Setter
+@Getter
 public class Client {
 
-    public static Client instance;
-    public boolean loggedIn;
+    private static Client instance;
+    private boolean loggedIn;
 
-    public AsyncMySQL mySQL;
-    public int userid;
-    public DBManager dbManager;
+    private AsyncMySQL mySQL;
+    private int userId;
+    private DBManager dbManager;
 
-    public CourseManager courseManager;
-    public UserManager userManager;
-    public GroupManager groupManager;
-    public SessionManager sessionManager;
-    public RMIServerInterface server;
-    private ServerConn serverConn;
-    public GUIManager guiManager;
+    private CourseManager courseManager;
+    private UserManager userManager;
+    private GroupManager groupManager;
+    private SessionManager sessionManager;
+    private RMIServerInterface server;
+    private GUIManager guiManager;
+
+    private Session currentSession;
+    private Group currentGroup;
 
     public void onStart() {
 
@@ -37,49 +47,48 @@ public class Client {
         dbManager = new DBManager();
         mySQL = dbManager.connectToDB();
 
-        /* try {
-            serverConn = new ServerConn(instance, 50000);
-            serverConn.startServer();
-            System.out.println("TCP Server started, listening on port 50000");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        } */
-
         RMIClient rmiClient = new RMIClient();
         server = rmiClient.initRMIClient();
-
-        Timer commandGetter = new Timer();
-        commandGetter.schedule(new ReadCommandList(instance), 1000, 10);
 
         courseManager = new CourseManager(instance);
         userManager = new UserManager(instance);
         groupManager = new GroupManager(instance);
         sessionManager = new SessionManager(instance);
 
-        loadAllInformation();
+        new Thread(() -> {
+            Timer timer = new Timer();
+            timer.schedule(new Synchronizer(), 0, 1000);
+        }).start();
 
-        guiManager.loginGUI.loginButton.setEnabled(true);
-        guiManager.loginGUI.loginButton.setBackground(guiManager.loginGUI.loginButton.getBackground().brighter());
+        new Thread(() -> {
+            Timer timer = new Timer();
+            timer.schedule(new ReadCommandList(), 1000, 10);
+        }).start();
+
+        guiManager.getLoginGUI().loginButton.setEnabled(true);
+        guiManager.getLoginGUI().loginButton.setBackground(guiManager.getLoginGUI().loginButton.getBackground().brighter());
     }
 
     public void onDisable() {
         try {
-            serverConn.serverSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            User user = userManager.load(userId);
+            user.setActive(false);
+            server.updateUser(user);
+            if (currentSession != null) {
+                if (user.getAccountType().equals(AccountType.TEACHER)) {
+                    currentSession.getMasterIds().remove(userId);
+                } else {
+                    currentSession.getUserIds().remove(userId);
+                }
+                server.updateSession(currentSession);
+            }
+        } catch (SQLException | RemoteException exception) {
+            exception.printStackTrace();
         }
     }
 
     public static Client getInstance() {
         return instance;
-    }
-
-    public void loadAllInformation() {
-        courseManager.cacheAllCourseData();
-        userManager.cacheAllUserData();
-        sessionManager.cacheAllSessionData();
-        groupManager.cacheAllGroupData();
     }
 
 }
