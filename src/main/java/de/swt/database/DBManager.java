@@ -19,7 +19,7 @@ public class DBManager {
 
         try {
             // usually should be imported from config file but bruh nah
-            this.mySQL = new AsyncMySQL("5.196.174.213", 3306, "root", "qexGGHZfFzWyKYE", "serverpro_db");
+            this.mySQL = new AsyncMySQL("5.196.174.213", 3306, "root", "qexGGHZfFzWyKYE", "testdb");
             System.out.println("Successfully connected to database!");
         } catch (SQLException | ClassNotFoundException throwables) {
             throwables.printStackTrace();
@@ -34,68 +34,82 @@ public class DBManager {
         initUsers();
         initCourses();
         initGroups();
-        // create table for session
-        /* mySQL.update("CREATE TABLE IF NOT EXISTS sessions " +
-            "(sessionid INT AUTO_INCREMENT, master VARCHAR(25), participants VARCHAR(255), groups VARCHAR(255), remainingtime VARCHAR(45), " +
-            "PRIMARY KEY(idsession));");
-         */
+        initSessions();
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+                initLinks();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
 
         return mySQL;
     }
 
     private void initGroups() {
-
-        mySQL.update("CREATE TABLE IF NOT EXISTS useringroup " +
-            "(useringroupid INT AUTO_INCREMENT, userid INT NOT NULL, groupid INT NOT NULL, " +
-            "PRIMARY KEY(useringroupid));");
-
         // create table for groups
         mySQL.update("CREATE TABLE IF NOT EXISTS groups " +
-            "(groupid INT AUTO_INCREMENT, ttt INT DEFAULT 1, maxgs INT DEFAULT 10, useringroup INT NOT NULL, " +
-            "PRIMARY KEY(groupid), " +
-            "FOREIGN KEY (useringroupid) REFERENCES useringroup(useringroupid));");
+            "(groupId INT AUTO_INCREMENT, ttt INT DEFAULT 1, maxGs INT DEFAULT 10," +
+            "PRIMARY KEY(groupId));");
     }
 
     private void initCourses() {
-        /* mySQL.update("CREATE TABLE IF NOT EXISTS activeuserincourse " +
-            "(activeuserincourseid INT AUTO_INCREMENT, userid INT, courseid INT, " +
-            "PRIMARY KEY(activeuserincourseid));"); */
-
-        mySQL.update("CREATE TABLE IF NOT EXISTS userincourse " +
-            "(userincourseid INT AUTO_INCREMENT, userid INT NOT NULL, courseid INT NOT NULL, " +
-            "PRIMARY KEY(userincourseid));");
-
-        mySQL.update("CREATE TABLE IF NOT EXISTS dateincourse " +
-            "(dateincourseid INT AUTO_INCREMENT, courseid INT NOT NULL, date DATE NOT NULL, " +
-            "PRIMARY KEY(dateincourseid));");
-
-        mySQL.update("CREATE TABLE IF NOT EXISTS groupincourse " +
-            "(groupincourseid INT AUTO_INCREMENT, groupid INT NOT NULL, courseid INT NOT NULL, " +
-            "PRIMARY KEY(groupincourseid));");
-
-        mySQL.update("CREATE TABLE IF NOT EXISTS masterincourse " +
-            "(masterincourseid INT AUTO_INCREMENT, courseid INT NOT NULL, userid INT NOT NULL" +
-            "PRIMARY KEY(masterincourseid));");
-
         // create table for course
         mySQL.update("CREATE TABLE IF NOT EXISTS courses " +
-            "(courseid INT AUTO_INCREMENT, grade INT DEFAULT 10, gradename VARCHAR(1) DEFAULT 'a', userincourseid INT NOT NULL, " +
-            "dateincourseid INT NOT NULL, masterincourseid INT NOT NULL, groupincourseid INT NOT NULL, " +
-            "teacherid INT NOT NULL, remainingtime INT DEFAULT 1, " +
-            "PRIMARY KEY(courseid), " +
-            "FOREIGN KEY (groupincourseid) REFERENCES groupincourse(groupincourseid), " +
-            "FOREIGN KEY (userincourseid) REFERENCES userincourse(userincourseid), " +
-            "FOREIGN KEY (dateincourseid) REFERENCES dateincourse(dateincourseid)," +
-            "FOREIGN KEY (groupincourseid) REFERENCES masterincourse(groupincourseid)" +
-            ");");
+            "(courseId INT AUTO_INCREMENT, grade INT DEFAULT 10, gradeName VARCHAR(1) DEFAULT 'a'," +
+            "PRIMARY KEY(courseId));");
     }
 
     private void initUsers() {
         // create table for userdata
         mySQL.update("CREATE TABLE IF NOT EXISTS users " +
-            "(userid INT AUTO_INCREMENT, prename VARCHAR(255) DEFAULT 'test', surname VARCHAR(255) DEFAULT 'user', " +
-            "usertype VARCHAR(255) DEFAULT STUDENT, upassword VARCHAR(255) DEFAULT '123', active BOOL DEFAULT 0, " +
-            "PRIMARY KEY(userid));");
+            "(userId INT AUTO_INCREMENT, firstname VARCHAR(255) DEFAULT 'test', surname VARCHAR(255) DEFAULT 'user', " +
+            "userType VARCHAR(255) DEFAULT 'STUDENT', uPassword VARCHAR(255) DEFAULT '123', active BOOL DEFAULT 0, " +
+            "PRIMARY KEY(userId));");
+    }
+
+    private void initSessions(){
+        mySQL.update("CREATE TABLE IF NOT EXISTS sessions " +
+                "(sessionId INT AUTO_INCREMENT, remainingTime VARCHAR(45), " +
+                "PRIMARY KEY(sessionId));");
+    }
+
+    private void initLinks(){
+        mySQL.update("CREATE TABLE IF NOT EXISTS userInCourse " +
+                "(userId INT NOT NULL, courseId INT NOT NULL, " +
+                "PRIMARY KEY(userId, courseId)," +
+                "FOREIGN KEY(userId) REFERENCES users(userId)," +
+                "FOREIGN KEY(courseId) REFERENCES courses(courseId));");
+
+        mySQL.update("CREATE TABLE IF NOT EXISTS dateInCourse " +
+                "(courseId INT NOT NULL, date BIGINT NOT NULL, " +
+                "PRIMARY KEY(courseId, date)," +
+                "FOREIGN KEY(courseId) REFERENCES courses(courseId));");
+
+        mySQL.update("CREATE TABLE IF NOT EXISTS groupInSession " +
+                "(groupId INT NOT NULL, courseId INT NOT NULL, " +
+                "PRIMARY KEY(groupId, courseId)," +
+                "FOREIGN KEY(groupId) REFERENCES groups(groupId)," +
+                "FOREIGN KEY(courseId) REFERENCES courses(courseId));");
+
+        mySQL.update("CREATE TABLE IF NOT EXISTS masterInSession " +
+                "(courseId INT NOT NULL, userId INT NOT NULL," +
+                "PRIMARY KEY(courseId, userId)," +
+                "FOREIGN KEY(userId) REFERENCES users(userId)," +
+                "FOREIGN KEY(courseId) REFERENCES courses(courseId));");
+
+        mySQL.update("CREATE TABLE IF NOT EXISTS userInGroup " +
+                "(userId INT NOT NULL, groupId INT NOT NULL, " +
+                "PRIMARY KEY(userId, groupId)," +
+                "FOREIGN KEY(userId) REFERENCES users(userId)," +
+                "FOREIGN KEY(groupId) REFERENCES groups(groupId));");
+
+        mySQL.update("CREATE TABLE IF NOT EXISTS userInSession " +
+                "(userId INT NOT NULL, sessionId INT NOT NULL, " +
+                "PRIMARY KEY(userId, sessionId)," +
+                "FOREIGN KEY(userId) REFERENCES users(userId)," +
+                "FOREIGN KEY(sessionId) REFERENCES sessions(sessionId));");
     }
 
 
