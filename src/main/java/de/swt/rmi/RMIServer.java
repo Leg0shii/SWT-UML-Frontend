@@ -2,7 +2,6 @@ package de.swt.rmi;
 
 import de.swt.Server;
 import de.swt.database.DBManager;
-import de.swt.logic.TestClass;
 import de.swt.logic.course.Course;
 import de.swt.logic.course.CourseManager;
 import de.swt.logic.group.Group;
@@ -14,7 +13,6 @@ import de.swt.logic.user.UserManager;
 import de.swt.manager.CommandManager;
 import de.swt.manager.CommandObject;
 
-import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
