@@ -56,9 +56,9 @@ public class DBManager {
     }
 
     private void initCourses() {
-        mySQL.update("CREATE TABLE IF NOT EXISTS activeuserincourse " +
+        /* mySQL.update("CREATE TABLE IF NOT EXISTS activeuserincourse " +
             "(activeuserincourseid INT AUTO_INCREMENT, userid INT, courseid INT, " +
-            "PRIMARY KEY(activeuserincourseid));");
+            "PRIMARY KEY(activeuserincourseid));"); */
 
         mySQL.update("CREATE TABLE IF NOT EXISTS userincourse " +
             "(userincourseid INT AUTO_INCREMENT, userid INT, courseid INT, " +
@@ -80,7 +80,8 @@ public class DBManager {
             "FOREIGN KEY (groupincourseid) REFERENCES groupincourse(groupincourseid), " +
             "FOREIGN KEY (userincourseid) REFERENCES userincourse(userincourseid), " +
             "FOREIGN KEY (dateincourseid) REFERENCES dateincourse(dateincourseid)," +
-            "FOREIGN KEY (activeuserincourseid) REFERENCES activeuserincourse(activeuserincourseid));");
+            //"FOREIGN KEY (activeuserincourseid) REFERENCES activeuserincourse(activeuserincourseid)" +
+            ");");
     }
 
     private void initUsers() {
