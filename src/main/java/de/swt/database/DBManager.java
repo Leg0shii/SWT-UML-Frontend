@@ -72,6 +72,10 @@ public class DBManager {
             "(groupincourseid INT AUTO_INCREMENT, groupid INT, courseid INT, " +
             "PRIMARY KEY(groupincourseid));");
 
+        mySQL.update("CREATE TABLE IF NOT EXISTS masterincourse " +
+            "(masterincourseid INT AUTO_INCREMENT, courseid INT, userid INT" +
+            "PRIMARY KEY(masterincourseid));");
+
         // create table for course
         mySQL.update("CREATE TABLE IF NOT EXISTS courses " +
             "(courseid INT AUTO_INCREMENT, grade INT, gradename VARCHAR(1), userincourseid INT, dateincourseid INT, " +
@@ -80,7 +84,7 @@ public class DBManager {
             "FOREIGN KEY (groupincourseid) REFERENCES groupincourse(groupincourseid), " +
             "FOREIGN KEY (userincourseid) REFERENCES userincourse(userincourseid), " +
             "FOREIGN KEY (dateincourseid) REFERENCES dateincourse(dateincourseid)," +
-            //"FOREIGN KEY (activeuserincourseid) REFERENCES activeuserincourse(activeuserincourseid)" +
+            "FOREIGN KEY (groupincourseid) REFERENCES masterincourse(groupincourseid)" +
             ");");
     }
 
