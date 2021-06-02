@@ -51,7 +51,7 @@ public class AsyncMySQL {
      * @param statement sql update as a String object
      */
     public void update(String statement) {
-        executor.execute(() -> sql.queryUpdate(statement));
+        sql.queryUpdate(statement);
     }
 
     /**
