@@ -93,7 +93,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
     @Override
     public ArrayList<CommandObject> accessCommandQueue(int userid) throws RemoteException {
-        HashMap<Integer, ArrayList<CommandObject>> arrayListHashMap = server.getUserCommandMananger().getUserCommandQueue();
+        HashMap<Integer, ArrayList<CommandObject>> arrayListHashMap = userCommandMananger.getUserCommandQueue();
         ArrayList<CommandObject> commandList = arrayListHashMap.get(userid);
 
         // reset command list
@@ -105,7 +105,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     @Override
     public void updateWorkspaceFile(byte[] bytes, int id) throws RemoteException {
 
-        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.getUserCommandMananger().getUserCommandQueue();
+        HashMap<Integer, ArrayList<CommandObject>> hashMap = userCommandMananger.getUserCommandQueue();
         CommandObject commandObject = new CommandObject();
 
         for (Group group : (Group[]) groupManager.getHashMap().values().toArray()) {
@@ -141,7 +141,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     @Override
     public int sendRequest(int originId, int teacherId) throws RemoteException {
 
-        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.getUserCommandMananger().getUserCommandQueue();
+        HashMap<Integer, ArrayList<CommandObject>> hashMap = userCommandMananger.getUserCommandQueue();
         CommandObject commandObject = new CommandObject();
         if (userManager.getHashMap().containsKey(teacherId)) {
             System.out.println("[" + originId + "]: user to teacher request ping.");
@@ -155,7 +155,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
     @Override
     public int sendAnswer(int originid, int answer, int teacherid) throws RemoteException {
-        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.getUserCommandMananger().getUserCommandQueue();
+        HashMap<Integer, ArrayList<CommandObject>> hashMap = userCommandMananger.getUserCommandQueue();
         CommandObject commandObject = new CommandObject();
         if (userManager.getHashMap().containsKey(originid)) {
             System.out.println("[" + teacherid + "]: teacher to user accept ping.");
@@ -179,7 +179,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
     @Override
     public void sendTask(byte[] workspaceBytes, byte[] taskBytes, int id) {
-        HashMap<Integer, ArrayList<CommandObject>> hashMap = server.getUserCommandMananger().getUserCommandQueue();
+        HashMap<Integer, ArrayList<CommandObject>> hashMap = userCommandMananger.getUserCommandQueue();
         CommandObject commandObject = new CommandObject();
         Session session = sessionManager.getSessionFromTeacherId(id);
         for (int partId : session.getUserIds()) {
