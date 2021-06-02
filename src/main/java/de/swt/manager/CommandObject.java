@@ -13,7 +13,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class CommandObject implements Serializable {
 
+    private int originId;
     private String command;
+    private Object updatedObject;
     private byte[] workspaceFileBytes;
     private byte[] taskBytes;
 

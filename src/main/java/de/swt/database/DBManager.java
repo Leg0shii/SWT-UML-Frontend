@@ -35,7 +35,14 @@ public class DBManager {
         initCourses();
         initGroups();
         initSessions();
-        initLinks();
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+                initLinks();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
 
         return mySQL;
     }
@@ -50,7 +57,7 @@ public class DBManager {
     private void initCourses() {
         // create table for course
         mySQL.update("CREATE TABLE IF NOT EXISTS courses " +
-            "(courseId INT AUTO_INCREMENT, grade INT DEFAULT 10, gradeName VARCHAR(1) DEFAULT 'a', teacherId INT DEFAULT -1" +
+            "(courseId INT AUTO_INCREMENT, grade INT DEFAULT 10, gradeName VARCHAR(1) DEFAULT 'a', teacherId INT DEFAULT -1," +
             "PRIMARY KEY(courseId));");
     }
 
@@ -84,13 +91,13 @@ public class DBManager {
                 "(groupId INT NOT NULL, sessionId INT NOT NULL, " +
                 "PRIMARY KEY(groupId, sessionId)," +
                 "FOREIGN KEY(groupId) REFERENCES groups(groupId)," +
-                "FOREIGN KEY(sessionId) REFERENCES session(sessionId));");
+                "FOREIGN KEY(sessionId) REFERENCES sessions(sessionId));");
 
         mySQL.update("CREATE TABLE IF NOT EXISTS masterInSession " +
                 "(sessionId INT NOT NULL, userId INT NOT NULL," +
                 "PRIMARY KEY(sessionId, userId)," +
                 "FOREIGN KEY(userId) REFERENCES users(userId)," +
-                "FOREIGN KEY(sessionId) REFERENCES session(sessionId));");
+                "FOREIGN KEY(sessionId) REFERENCES sessions(sessionId));");
 
         mySQL.update("CREATE TABLE IF NOT EXISTS userInGroup " +
                 "(userId INT NOT NULL, groupId INT NOT NULL, " +
