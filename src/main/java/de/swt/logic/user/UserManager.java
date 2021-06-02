@@ -1,7 +1,6 @@
 package de.swt.logic.user;
 
 import de.swt.Server;
-import de.swt.logic.session.Session;
 import de.swt.manager.Manager;
 import de.swt.util.AccountType;
 

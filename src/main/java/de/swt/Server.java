@@ -6,25 +6,31 @@ import de.swt.logic.course.CourseManager;
 import de.swt.logic.group.GroupManager;
 import de.swt.logic.session.SessionManager;
 import de.swt.logic.user.UserManager;
-import de.swt.manager.CommandManager;
+import de.swt.manager.ServerCommandManager;
+import de.swt.manager.UserCommandMananger;
+import de.swt.manager.CommandObject;
 import de.swt.rmi.InitRMIServer;
 import de.swt.util.SGCheck;
-import de.swt.util.ServerConn;
+import de.swt.util.Synchronizer;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.Timer;
 
+@Getter
+@Setter
 public class Server {
 
-    public static Server server;
-    public ServerConn serverConn;
-    public DBManager dbManager;
-    public AsyncMySQL mySQL;
-    public CommandManager commandManager;
-    public CourseManager courseManager;
-    public UserManager userManager;
-    public GroupManager groupManager;
-    public SessionManager sessionManager;
+    private static Server server;
+    private DBManager dbManager;
+    private AsyncMySQL mySQL;
+    private UserCommandMananger userCommandMananger;
+    private ServerCommandManager serverCommandManager;
+    private CourseManager courseManager;
+    private UserManager userManager;
+    private GroupManager groupManager;
+    private SessionManager sessionManager;
 
     public static Server getInstance() {
         return server;
@@ -34,16 +40,9 @@ public class Server {
 
         server = this;
 
-        commandManager = new CommandManager();
+        userCommandMananger = new UserCommandMananger();
+        serverCommandManager = new ServerCommandManager();
 
-        // starts server listening for incoming tcp packets
-        /* try {
-            serverConn = new ServerConn(commandManager, 50001);
-            serverConn.startServer();
-            System.out.println("TCP Server started, listening on port 50001");
-        } catch (IOException e) { e.printStackTrace(); } */
-
-        // connects to database and loads in tables
         dbManager = new DBManager();
         mySQL = dbManager.initTables();
 
@@ -55,14 +54,15 @@ public class Server {
         InitRMIServer initRMIServer = new InitRMIServer();
         initRMIServer.initRMIServer();
 
-        courseManager.cacheAllCourseData();
-        userManager.cacheAllUserData();
-        groupManager.cacheAllGroupData();
-        sessionManager.cacheAllSessionData();
+        new Thread(() -> {
+            Timer timer = new Timer();
+            timer.schedule(new Synchronizer(), 0, 1000);
+        }).start();
 
-        // runs it ever minute
-        Timer courseTimer = new Timer();
-        courseTimer.schedule(new SGCheck(), 1000, 60000);
+        new Thread(()->{
+            Timer courseTimer = new Timer();
+            courseTimer.schedule(new SGCheck(), 1000, 1000);
+        }).start();
 
     }
 

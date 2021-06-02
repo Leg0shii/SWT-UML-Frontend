@@ -18,7 +18,7 @@ public abstract class Manager {
 
     public Manager(Server server) {
         this.server = server;
-        this.mySQL = server.mySQL;
+        this.mySQL = server.getMySQL();
         this.hashMap = new HashMap<>();
     }
 
