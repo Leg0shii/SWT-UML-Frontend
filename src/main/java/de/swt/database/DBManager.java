@@ -158,7 +158,7 @@ public class DBManager {
         return courseId;
     }
 
-    public int updateGroups(Group group) {
+    public int updateGroup(Group group) {
 
         int groupId = group.getGroupId();
         long timeTillTermination = group.getTimeTillTermination();
@@ -190,7 +190,7 @@ public class DBManager {
         mySQL.update("DELETE FROM userInSession WHERE sessionId = " + sessionId + ";");
     }
 
-    public int updateSessions(Session session) {
+    public int updateSession(Session session) {
         int sessionId = session.getSessionId();
         long remainingTime = session.getRemainingTime();
 
