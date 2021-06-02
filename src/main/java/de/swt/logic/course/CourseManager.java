@@ -24,14 +24,16 @@ public class CourseManager extends Manager {
             newCourse.setCourseId(id);
             newCourse.setGrade(resultSet.getInt("grade"));
             newCourse.setGradeName(resultSet.getString("gradeName"));
-            resultSet = getMySQL().query("SELECT * FROM dateInCourse WHERE courseId = " + id + ";");
+            newCourse.setTeacherId(resultSet.getInt("teacherId"));
+            resultSet = getMySQL().query("SELECT date FROM dateInCourse WHERE courseId = " + id + ";");
             newCourse.setDates(getDates(resultSet));
-            resultSet = getMySQL().query("SELECT * FROM ");
-            newCourse.setTeacherId();
+            resultSet = getMySQL().query("SELECT userId FROM userInCourse WHERE courseId = " + id + ";");
+            newCourse.setUserIds(getIds(resultSet, "userId"));
 
             getHashMap().put(id, newCourse);
+
+            return newCourse;
         }
-        return null;
     }
 
     @Override
@@ -45,7 +47,7 @@ public class CourseManager extends Manager {
 
     private ArrayList<Date> getDates(ResultSet resultSet) throws SQLException {
         ArrayList<Date> dates = new ArrayList<>();
-        while (resultSet.next()){
+        while (resultSet.next()) {
             Date date = new Date(resultSet.getLong("date"));
             dates.add(date);
         }
