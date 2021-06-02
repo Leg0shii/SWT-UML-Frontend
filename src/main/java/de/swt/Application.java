@@ -11,27 +11,24 @@ import javax.swing.*;
 import java.util.ArrayList;
 
 public class Application {
-    AccountType accountType;
     Language language;
     Client client;
     GUIManager guiManager;
 
-    public Application(AccountType accountType, Language language){
+    public Application(Language language){
         try {
             UIManager.setLookAndFeel(new FlatSolarizedLightIJTheme());
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-        this.accountType = accountType;
         this.language = language;
-        guiManager = new GUIManager(language, accountType);
+        guiManager = new GUIManager(language);
         guiManager.setupGUIS();
         onStart();
         this.client = new Client();
-        client.onStart();
         client.guiManager = guiManager;
+        client.onStart();
         guiManager.updateGUIManager(client);
-        guiManager.updateGUIS(new ArrayList<>(guiManager.getClient().userManager.getUserHashMap().values()));
     }
 
     private void onStart(){

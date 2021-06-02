@@ -45,7 +45,6 @@ public class NextDate {
             for (String sDate : dates) {
                 Date date = new SimpleDateFormat("u, H:m").parse(sDate);
                 dateList.add(date);
-                System.out.println(date);
             }
         } catch (ParseException e){
             System.out.println("Please enter date using format u, H:m where H = Hour m = Minute u = Number of Weekday (1 = Monday,..)");

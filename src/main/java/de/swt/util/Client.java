@@ -58,6 +58,9 @@ public class Client {
         sessionManager = new SessionManager(instance);
 
         loadAllInformation();
+
+        guiManager.loginGUI.loginButton.setEnabled(true);
+        guiManager.loginGUI.loginButton.setBackground(guiManager.loginGUI.loginButton.getBackground().brighter());
     }
 
     public void onDisable() {

@@ -17,7 +17,6 @@ public class SelectGroupPanel extends GUI {
     private JComboBox<Integer> selectGroupComboBox;
     public JButton startTaskButton;
     private JLabel selectGroupLabel;
-    private List<Group> groups;
 
     public SelectGroupPanel(GUIManager guiManager) {
         super(guiManager);
@@ -37,10 +36,9 @@ public class SelectGroupPanel extends GUI {
         this.startTaskButton.setText(beginTask);
     }
 
-    public void updateGUI(List<Group> groups) {
-        this.groups = groups;
+    public void updateGUI() {
         this.selectGroupComboBox.removeAllItems();
-        for (Group group : groups) {
+        for (Group group : guiManager.getClient().groupManager.getGroups()) {
             this.selectGroupComboBox.addItem(group.getId());
         }
     }
@@ -64,7 +62,7 @@ public class SelectGroupPanel extends GUI {
 
     public Group getSelectedGroup() {
         String selectedNumber = String.valueOf(this.selectGroupComboBox.getSelectedItem());
-        for (Group group : groups) {
+        for (Group group : guiManager.getClient().groupManager.getGroups()) {
             if (group.getId() == Integer.parseInt(selectedNumber)) {
                 return group;
             }

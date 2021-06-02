@@ -15,6 +15,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,6 @@ public class ObjectListPanel extends GUI {
     private String groups;
     private String group;
     private boolean showGroups;
-    private final JButton addStudentButton;
     private List<Group> groupsList;
     private List<User> users;
 
@@ -37,25 +37,23 @@ public class ObjectListPanel extends GUI {
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         this.objectScrollPanel.setViewportView(objectList);
-        this.addStudentButton = new JButton();
         this.objectList.setLayout(new GridLayout(0, 1));
         this.groupsList = new ArrayList<>();
         this.users = new ArrayList<>();
 
         switch (guiManager.language) {
-            case GERMAN -> setupGUI("Teilnehmer", "Gruppen", "Gruppe", "Schüler hinzufügen");
-            case ENGLISH -> setupGUI("Participants", "Groups", "Group", "Add Student");
+            case GERMAN -> setupGUI("Teilnehmer", "Gruppen", "Gruppe");
+            case ENGLISH -> setupGUI("Participants", "Groups", "Group");
         }
 
         setupListeners();
     }
 
-    private void setupGUI(String participants, String groups, String group, String addStudents) {
+    private void setupGUI(String participants, String groups, String group) {
         this.participants = participants;
         this.groups = groups;
         this.group = group;
         this.showGroups = false;
-        this.addStudentButton.setText(addStudents);
         initPopups(2);
     }
 
@@ -69,11 +67,9 @@ public class ObjectListPanel extends GUI {
         if (showGroups) {
             this.headerLabel.setText(this.groups);
             this.switchButton.setText(this.participants);
-            this.objectList.remove(this.addStudentButton);
         } else {
             this.headerLabel.setText(participants);
             this.switchButton.setText(this.groups);
-            this.objectList.add(this.addStudentButton);
         }
         initForAccountType();
         this.revalidate();
@@ -87,11 +83,9 @@ public class ObjectListPanel extends GUI {
         if (showGroups) {
             this.headerLabel.setText(this.groups);
             this.switchButton.setText(this.participants);
-            this.objectList.remove(this.addStudentButton);
         } else {
             this.headerLabel.setText(participants);
             this.switchButton.setText(this.groups);
-            this.objectList.add(this.addStudentButton);
         }
         initForAccountType();
         this.revalidate();
@@ -128,27 +122,10 @@ public class ObjectListPanel extends GUI {
                     }
                 }
         );
-        this.addStudentButton.addActionListener(e2 -> {
-            if (popupCounter.get(0) % 2 == 0) {
-                AddUserPanel addUserPanel = new AddUserPanel(guiManager);
-                addUserPanel.addButton.addActionListener(e21 -> {
-                    addUserFunction(addUserPanel.getStudentID());
-                });
-                Point point = new Point(addStudentButton.getX() + addStudentButton.getWidth(), addStudentButton.getY());
-                SwingUtilities.convertPointToScreen(point, objectList);
-                popups.get(0).hide();
-                popups.set(0, factory.getPopup(this, addUserPanel, point.x, point.y));
-                popups.get(0).show();
-            } else {
-                popups.get(0).hide();
-            }
-            incrementPopupCounter(0);
-        });
     }
 
     public void initForAccountType() {
         if (guiManager.accountType == AccountType.STUDENT) {
-            this.objectList.remove(addStudentButton);
             this.mainPanel.remove(switchButton);
         }
     }
@@ -247,20 +224,14 @@ public class ObjectListPanel extends GUI {
     }
 
     private void watchGroup(Group group) {
-        guiManager.currentGroup = group;
-        group.getParticipants().add(guiManager.getClient().userid);
         try {
-            guiManager.getClient().server.sendGroup(group, group.getId(), true);
-        } catch (RemoteException e) {
-            e.printStackTrace();
+            guiManager.currentGroup = guiManager.getClient().groupManager.loadGroup(group.getId());
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
-    }
-
-    private void addUserFunction(int id) {
-        Session session = guiManager.currentSession;
-        session.getParticipants().add(id);
+        guiManager.currentGroup.getParticipants().add(guiManager.getClient().userid);
         try {
-            guiManager.getClient().server.sendSession(session, session.getId(), true);
+            guiManager.getClient().server.sendGroup(guiManager.currentGroup, guiManager.currentGroup.getId(), true);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

@@ -75,7 +75,7 @@ public class WorkspaceGUI extends GUI {
                     users.add(guiManager.getClient().userManager.getUserHashMap().get(id));
                 }
             }
-            this.drawablePanel.updateGUI(guiManager.currentGroup.getTimeTillTermination());
+            this.drawablePanel.updateGUI();
             this.objectListPanel.updateGUI(guiManager.getRelevantGroups(), users);
             this.initForAccountType();
             this.initForWorkspaceState();
@@ -85,7 +85,7 @@ public class WorkspaceGUI extends GUI {
                     users.add(guiManager.getClient().userManager.getUserHashMap().get(id));
                 }
             }
-            this.drawablePanel.updateGUI(guiManager.currentSession.getRemainingTime());
+            this.drawablePanel.updateGUI();
             this.objectListPanel.updateGUI(guiManager.getRelevantGroups(), users);
             this.initForAccountType();
             this.initForWorkspaceState();
@@ -208,9 +208,8 @@ public class WorkspaceGUI extends GUI {
     }
 
     public void sendTaskProposition() {
-        ArrayList<Group> groups = guiManager.getClient().groupManager.getGroups();
         SelectGroupPanel selectGroupPanel = new SelectGroupPanel(guiManager);
-        selectGroupPanel.updateGUI(groups);
+        selectGroupPanel.updateGUI();
         Point point = new Point(midPanel.getX() + midPanel.getWidth() / 2, midPanel.getY() + midPanel.getHeight() / 4);
         SwingUtilities.convertPointToScreen(point, this);
         popups.get(2).hide();
@@ -220,12 +219,16 @@ public class WorkspaceGUI extends GUI {
             guiManager.currentGroup = selectGroupPanel.getSelectedGroup();
             guiManager.currentGroup.getParticipants().add(guiManager.getClient().userid);
             try {
-                guiManager.getClient().server.sendGroup(guiManager.currentGroup,guiManager.currentGroup.getId(),true);
+                guiManager.getClient().server.sendGroup(guiManager.currentGroup, guiManager.currentGroup.getId(), true);
             } catch (RemoteException remoteException) {
                 remoteException.printStackTrace();
             }
             popups.get(2).hide();
         });
+    }
+
+    public void setTimeTilLTermination(int minutes) {
+        drawablePanel.setTimeTillTermination(minutes);
     }
 
     public void setTask(String task) {
@@ -312,4 +315,5 @@ public class WorkspaceGUI extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

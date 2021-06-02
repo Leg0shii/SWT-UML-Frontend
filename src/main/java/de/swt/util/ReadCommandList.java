@@ -59,6 +59,7 @@ public class ReadCommandList extends TimerTask {
                     e.printStackTrace();
                     return;
                 }
+                client.userManager.cacheAllUserData();
                 client.guiManager.updateGUIS();
                 break;
             case "CU":
@@ -79,6 +80,7 @@ public class ReadCommandList extends TimerTask {
                     e.printStackTrace();
                     return;
                 }
+                client.courseManager.cacheAllCourseData();
                 client.guiManager.updateGUIS();
                 break;
             case "GU":
@@ -98,6 +100,7 @@ public class ReadCommandList extends TimerTask {
                     e.printStackTrace();
                     return;
                 }
+                client.groupManager.cacheAllGroupData();
                 client.guiManager.updateGUIS();
                 System.out.println("Updated incoming groupChange. Updated following groupID: " + groupID);
                 break;
@@ -117,6 +120,7 @@ public class ReadCommandList extends TimerTask {
                     e.printStackTrace();
                     return;
                 }
+                client.sessionManager.cacheAllSessionData();
                 client.guiManager.updateGUIS();
                 System.out.println("Updated incoming sessionChange. Updated following sessionID: " + sessionID);
                 break;
@@ -136,7 +140,7 @@ public class ReadCommandList extends TimerTask {
                     originId = Integer.parseInt(args[0]);
                     User user = client.userManager.loadUser(originId);
                     client.guiManager.workspaceGUI.sendRequest(user);
-                    System.out.println("Received incoming Join Request from "+originId);
+                    System.out.println("Received incoming Join Request from " + originId);
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
@@ -148,7 +152,7 @@ public class ReadCommandList extends TimerTask {
                 try {
                     answer = Integer.parseInt(args[1]);
                     teacherId = Integer.parseInt(args[2]);
-                    System.out.println("Received incoming Join Answer from "+teacherId);
+                    System.out.println("Received incoming Join Answer from " + teacherId);
                     if (answer == 1) {
                         Session session = client.sessionManager.getSessionFromTeacherId(teacherId);
                         session.getParticipants().add(client.userid);
@@ -177,19 +181,21 @@ public class ReadCommandList extends TimerTask {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.out.println("Received incoming Delete Group, Deleted "+groupId);
+                System.out.println("Received incoming Delete Group, Deleted " + groupId);
+                client.groupManager.cacheAllGroupData();
                 client.guiManager.updateGUIS();
                 break;
             case "DS":
                 int sessionId;
                 try {
                     sessionId = Integer.parseInt(args[0]);
-                    System.out.println("Received incoming Delete Session, Deleted "+sessionId);
+                    System.out.println("Received incoming Delete Session, Deleted " + sessionId);
                     client.guiManager.currentSession = null;
                     client.sessionManager.getSessionHashMap().remove(sessionId);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                client.sessionManager.cacheAllSessionData();
                 client.guiManager.updateGUIS();
                 break;
             case "ST":
@@ -198,26 +204,37 @@ public class ReadCommandList extends TimerTask {
                 byte[] taskBytes = command.getTaskBytes();
                 try {
                     teacherId2 = Integer.parseInt(args[0]);
-                    while (client.guiManager.workspaceGUI.removeLastDrawnObject()){}
-                    while (client.guiManager.workspaceGUI.removeLastAnnotations()){}
+                    while (client.guiManager.workspaceGUI.removeLastDrawnObject()) {
+                    }
+                    while (client.guiManager.workspaceGUI.removeLastAnnotations()) {
+                    }
                     client.guiManager.syncWorkspace(workspaceBytes);
                     client.guiManager.workspaceGUI.sendTaskProposition();
                     client.guiManager.workspaceGUI.setTask(Arrays.toString(taskBytes));
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
-                System.out.println("Received incoming Send Task from Teacher: "+teacherId2);
+                System.out.println("Received incoming Send Task from Teacher: " + teacherId2);
                 break;
             // Leave Session or Group because its over
             // Argument is -1 for Session termination
             // Argument is courseid for Group termination to return back to Session
             case "LE":
                 int val = Integer.parseInt(args[0]);
-                if(val == -1) {
-                    // open classroom overview / close session
+                if (val == -1) {
+                    client.guiManager.currentSession = null;
+                    client.sessionManager.cacheAllSessionData();
+                    client.guiManager.updateGUIS();
+                    client.guiManager.switchToClassRoomGUI();
+                    System.out.println("Deleted CurrentSession because of Time");
                 } else {
-                    // return user back to page
+                    client.guiManager.currentGroup = null;
+                    client.groupManager.cacheAllGroupData();
+                    client.guiManager.updateGUIS();
+                    client.guiManager.switchToWorkspaceGUI();
+                    System.out.println("Deleted CurrentGroup because of Time");
                 }
+                break;
             default:
         }
     }

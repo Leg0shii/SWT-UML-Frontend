@@ -67,19 +67,24 @@ public class CreateClassroomPanel extends GUI {
 
         Course newCourse = new Course();
 
-        newCourse.setGrade(gradeComboBox.getSelectedIndex() + 10);
-        newCourse.setTeacherID(Integer.parseInt(getTeacher()));
-        newCourse.setDates(NextDate.getDateFromString(getDate()));
-        newCourse.setName(getGradeName());
+        try {
+            newCourse.setGrade(gradeComboBox.getSelectedIndex() + 10);
+            newCourse.setTeacherID(Integer.parseInt(getTeacher()));
+            newCourse.setDates(NextDate.getDateFromString(getDate()));
+            newCourse.setName(getGradeName());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Please fill out all Forms");
+        }
 
         try {
-            guiManager.getClient().server.sendCourse(newCourse, 0, true);
+            guiManager.getClient().server.sendCourse(newCourse, -1, true);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
 
         guiManager.getClient().courseManager.cacheAllCourseData();
-        guiManager.classroomGUI.updateGradePanels();
+        guiManager.updateGUIS();
     }
 
     {
@@ -141,4 +146,5 @@ public class CreateClassroomPanel extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

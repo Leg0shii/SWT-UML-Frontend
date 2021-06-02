@@ -68,11 +68,13 @@ public class UserManager {
     private ArrayList<Integer> loadCourses(int userid) throws SQLException {
         ArrayList<Integer> courseList = new ArrayList<>();
         ResultSet resultSetUser = mySQL.query("SELECT courseids FROM users WHERE userid = " + userid + ";");
-        if(resultSetUser.next()) {
+        if (resultSetUser.next()) {
             if (resultSetUser.getString("courseids") != null) {
                 String[] courses = resultSetUser.getString("courseids").split(";");
                 for (String course : courses) {
-                    courseList.add(Integer.parseInt(course));
+                    if (!course.equals("")) {
+                        courseList.add(Integer.parseInt(course));
+                    }
                 }
             }
         } else {
@@ -88,13 +90,13 @@ public class UserManager {
 
         try {
             if (resultSet.next()) {
-                if(resultSet.getString("upassword").equals(password)) {
+                if (resultSet.getString("upassword").equals(password)) {
                     User user = userHashMap.get(userid);
                     user.setOnline(true);
                     try {
                         // userid doesnt matter if update = true
-                        client.server.sendUser(user, 0, true);
-                        client.userid = userid;
+                        client.server.sendUser(user, user.getId(), true);
+                        client.userid = user.getId();
                         System.out.println("LOGIN SUCC...");
                     } catch (RemoteException e) {
                         e.printStackTrace();
@@ -114,7 +116,7 @@ public class UserManager {
         return false;
     }
 
-    private String hashLogin(int userid, String password){
+    private String hashLogin(int userid, String password) {
         MessageDigest hasher = null;
         try {
             hasher = MessageDigest.getInstance("SHA-256");
@@ -133,7 +135,7 @@ public class UserManager {
         user.setInGroup(false);
 
         try {
-            client.server.sendUser(user, 0, true);
+            client.server.sendUser(user, user.getId(), true);
             System.out.println("LOGUT SUCC...");
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -174,14 +176,14 @@ public class UserManager {
         }
     }
 
-    public void setSingleCourse(User user, int courseId){
+    public void setSingleCourse(User user, int courseId) {
         if (!user.getCourse().contains(courseId)) {
             ArrayList<Integer> courses = user.getCourse();
             courses.add(courseId);
         }
     }
 
-    public void removeSingleCourse(User user, int courseId){
+    public void removeSingleCourse(User user, int courseId) {
         if (user.getCourse().contains(courseId)) {
             ArrayList<Integer> courses = user.getCourse();
             courses.remove((Object) courseId);

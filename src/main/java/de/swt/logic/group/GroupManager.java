@@ -40,7 +40,7 @@ public class GroupManager {
                 group = new Group();
                 group.setId(id);
                 group.setCourseID(Integer.parseInt(resultSet.getString("courseid")));
-                group.setTimeTillTermination(resultSet.getInt("ttt"));
+                group.setTimeTillTermination(resultSet.getLong("ttt"));
                 group.setMaxGroupSize(Integer.parseInt(resultSet.getString("maxGS")));
                 group.setParticipants(parseParticipants(resultSet.getString("participants")));
                 groupHashMap.put(id, group);

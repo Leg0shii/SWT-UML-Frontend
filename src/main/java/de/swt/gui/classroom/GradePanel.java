@@ -118,7 +118,8 @@ public class GradePanel extends GUI {
                     popups.get(0).show();
                 });
                 this.enterButton.addActionListener(e2 -> this.enterFunction());
-            } case STUDENT -> {
+            }
+            case STUDENT -> {
                 this.enterButton.addActionListener(e3 -> this.enterFunction());
             }
         }
@@ -158,6 +159,8 @@ public class GradePanel extends GUI {
 
     private String getNextSessionDate() {
         SimpleDateFormat format = new SimpleDateFormat("E, H:m");
+        String minDate = "";
+        int minVal = Integer.MAX_VALUE;
         for (Date date : course.getDates()) {
             String sDate = format.format(date);
             Date now = new Date();
@@ -168,14 +171,14 @@ public class GradePanel extends GUI {
                 e.printStackTrace();
             }
             int returnVal = now.compareTo(sessionDate);
-            if (returnVal > 0) {
-                return sDate;
+            if (returnVal > 0 && returnVal < minVal) {
+                minDate = sDate;
+                minVal = returnVal;
             }
         }
-        return "ERROR";
+        return minDate;
     }
 
-    // TODO: Other Group implements this
     private void enterFunction() {
         try {
             if (guiManager.accountType.equals(AccountType.TEACHER) || guiManager.getClient().userManager.loadUser(guiManager.getClient().userid).getCourse().contains(course.getId())) {
@@ -184,7 +187,7 @@ public class GradePanel extends GUI {
                     if (guiManager.accountType.equals(AccountType.TEACHER)) {
                         Session newSession = new Session();
                         newSession.getMaster().add(guiManager.getClient().userid);
-                        newSession.setRemainingTime(System.currentTimeMillis() + (120*60000L));
+                        newSession.setRemainingTime(System.currentTimeMillis() + (120 * 60000));
                         newSession.getParticipants().add(guiManager.getClient().userid);
                         newSession = guiManager.getClient().server.sendSession(newSession, -1, true);
                         guiManager.switchToWorkspaceGUI();

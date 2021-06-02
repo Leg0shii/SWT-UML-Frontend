@@ -80,6 +80,7 @@ public class EditClassroomPanel extends GUI {
 
         try {
             guiManager.getClient().server.sendUser(user, -1, true);
+            guiManager.getClient().userManager.cacheAllUserData();
         } catch (RemoteException e) {
             e.printStackTrace();
         }

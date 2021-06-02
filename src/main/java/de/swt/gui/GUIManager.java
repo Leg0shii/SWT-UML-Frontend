@@ -24,6 +24,7 @@ import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.*;
 import java.util.List;
+import java.util.Timer;
 
 public class GUIManager extends JFrame {
     public Language language;
@@ -43,7 +44,7 @@ public class GUIManager extends JFrame {
     public Session currentSession;
     public Group currentGroup;
 
-    public GUIManager(Language language, AccountType accountType) {
+    public GUIManager(Language language) {
         super("E-Learning Software");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(800, 450);
@@ -51,7 +52,6 @@ public class GUIManager extends JFrame {
         this.setResizable(true);
         this.setVisible(true);
         this.language = language;
-        this.accountType = accountType;
         this.childrenGUI = new ArrayList<>();
         this.drawableObjectCounter = 0;
 
@@ -60,16 +60,13 @@ public class GUIManager extends JFrame {
 
     public void updateGUIManager(Client client) {
         this.client = client;
-        this.currentSession = new Session();
     }
 
     public void setupGUIS() {
         this.loginGUI = new LoginGUI(this);
         this.childrenGUI.add(loginGUI);
-        this.classroomGUI = new ClassroomGUI(this);
-        this.childrenGUI.add(classroomGUI);
-        this.workspaceGUI = new WorkspaceGUI(this);
-        this.childrenGUI.add(workspaceGUI);
+        loginGUI.loginButton.setEnabled(false);
+        loginGUI.loginButton.setBackground(loginGUI.loginButton.getBackground().darker());
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 try {
@@ -84,6 +81,16 @@ public class GUIManager extends JFrame {
         });
     }
 
+    public void secondSetup() {
+        this.accountType = client.userManager.getUserHashMap().get(client.userid).getAccountType();
+        this.classroomGUI = new ClassroomGUI(this);
+        this.childrenGUI.add(classroomGUI);
+        this.workspaceGUI = new WorkspaceGUI(this);
+        this.childrenGUI.add(workspaceGUI);
+        timeUpdater();
+        updateGUIS(new ArrayList<>(getClient().userManager.getUserHashMap().values()));
+    }
+
     public void updateGUIS(ArrayList<User> students) {
         this.classroomGUI.updateGUI(students);
         this.loginGUI.updateGUI();
@@ -91,9 +98,12 @@ public class GUIManager extends JFrame {
     }
 
     public void updateGUIS() {
-        this.classroomGUI.updateGUI();
-        this.loginGUI.updateGUI();
-        this.workspaceGUI.updateGUI();
+        try {
+            this.classroomGUI.updateGUI();
+            this.loginGUI.updateGUI();
+            this.workspaceGUI.updateGUI();
+        } catch (Exception ignored) {
+        }
     }
 
     public void switchToLoginGUI() {
@@ -171,7 +181,7 @@ public class GUIManager extends JFrame {
         }
     }
 
-    public void addObjectsWithoutRemoval(Component[] components){
+    public void addObjectsWithoutRemoval(Component[] components) {
         for (Component component : components) {
             addToDrawPanel((JComponent) component);
         }
@@ -221,7 +231,7 @@ public class GUIManager extends JFrame {
     public void syncWorkspace(byte[] input) {
         try {
             File file = new File("input.ser");
-            FileUtils.writeByteArrayToFile(file,input);
+            FileUtils.writeByteArrayToFile(file, input);
             FileInputStream fileInputStream = new FileInputStream(file);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             Component[][] list = (Component[][]) objectInputStream.readObject();
@@ -237,7 +247,7 @@ public class GUIManager extends JFrame {
         }
     }
 
-    public void syncSingleObject(Component component){
+    public void syncSingleObject(Component component) {
         try {
             File file = new File("output.ser");
             FileOutputStream fileOutputStream = new FileOutputStream(file);
@@ -252,7 +262,7 @@ public class GUIManager extends JFrame {
             objectOutputStream.close();
             byte[] outByteArray = FileUtils.readFileToByteArray(file);
             client.server.updateWorkspaceFile(outByteArray, client.userid);
-        } catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
     }
@@ -271,13 +281,13 @@ public class GUIManager extends JFrame {
         this.revalidate();
     }
 
-    public ArrayList<Group> getRelevantGroups(){
+    public ArrayList<Group> getRelevantGroups() {
         ArrayList<Group> groups = new ArrayList<>();
-        for (Group group : client.groupManager.getGroupHashMap().values()){
-            if (group == null){
+        for (Group group : client.groupManager.getGroupHashMap().values()) {
+            if (group == null) {
                 continue;
             }
-            if (group.getCourseID() == currentSession.getId()){
+            if (group.getCourseID() == currentSession.getId()) {
                 groups.add(group);
             }
         }
@@ -286,25 +296,28 @@ public class GUIManager extends JFrame {
 
     public void timeUpdater() {
 
-        new Thread(new TimerTask() {
+        new Thread(() -> {
+            TimerTask task = new TimerTask() {
 
-            @Override
-            public void run() {
+                @Override
+                public void run() {
 
-                long time = 0;
-                if(currentSession != null) {
-                    time = currentSession.getRemainingTime();
-                    if(currentGroup != null) {
-                        time = currentGroup.getTimeTillTermination();
+                    long time;
+                    if (currentSession != null) {
+                        time = currentSession.getRemainingTime();
+                        if (currentGroup != null) {
+                            time = currentGroup.getTimeTillTermination();
+                        }
+                        int minutes = (int) ((time - System.currentTimeMillis()) / 60000) + 1;
+                        workspaceGUI.setTimeTilLTermination(minutes);
                     }
+
                 }
 
-                int minutes = (int) time/60000;
-                // update minutes here
+            };
 
-            }
+            Timer timer = new Timer();
+            timer.schedule(task, 0, 1000);
         }).start();
-
     }
-
 }

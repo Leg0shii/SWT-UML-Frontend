@@ -82,11 +82,17 @@ public class CreateGroupPanel extends GUI {
         for (int i = 0; i < getNumberText(); i++) {
             Group group = new Group();
             group.setCourseID(guiManager.currentSession.getId());
-            group.setTimeTillTermination(System.currentTimeMillis() + (getDurationText()*60000L));
+            group.setTimeTillTermination(System.currentTimeMillis() + (getDurationText() * 60000L));
             group.setMaxGroupSize(getSizeText());
             group.setParticipants(new ArrayList<>());
             try {
-                guiManager.getClient().server.sendGroup(group, -1, true);
+                Group group1 = guiManager.getClient().server.sendGroup(group, -1, true);
+                if (group1 == null) {
+                    i--;
+                } else {
+                    guiManager.getClient().groupManager.cacheAllGroupData();
+                    guiManager.updateGUIS();
+                }
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

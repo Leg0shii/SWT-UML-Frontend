@@ -7,7 +7,6 @@ import de.swt.drawing.objects.DrawableObject;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.util.AccountType;
-import de.swt.util.Language;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -49,14 +48,10 @@ public class DrawablePanel extends GUI {
         initPopups(2);
     }
 
-    public void updateGUI(int remainingTime) {
-        String[] split = this.remainingLabel.getText().split(" ");
-        this.remainingLabel.setText(split[0] + " " + split[1] + " " + remainingTime + " " + split[3]);
-        initForAccountType();
-    }
-
     public void updateGUI() {
         initForAccountType();
+        revalidate();
+        repaint();
     }
 
     private void setupListeners() {
@@ -227,6 +222,11 @@ public class DrawablePanel extends GUI {
         if (!drawableObjects.isEmpty() && drawableObjects.get(0).getMouseListeners().length == 0) {
             addInteraction();
         }
+    }
+
+    public void setTimeTillTermination(int minutes) {
+        String[] split = this.remainingLabel.getText().split(" ");
+        this.remainingLabel.setText(split[0] + " " + split[1] + " " + minutes + " " + split[3]);
     }
 
     {

@@ -60,7 +60,9 @@ public class CourseManager {
         String[] stringDates = string.split(";");
         ArrayList<Date> list = new ArrayList<>();
         for (String singleDate : stringDates) {
-            list.add(new Date(Long.parseLong(singleDate)));
+            if (!singleDate.equals("")) {
+                list.add(new Date(Long.parseLong(singleDate)));
+            }
         }
         return list;
     }

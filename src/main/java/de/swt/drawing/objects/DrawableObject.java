@@ -80,7 +80,6 @@ public abstract class DrawableObject extends Draggable {
                 if (wantsToChange) {
                     guiManager.syncSingleObject(thisObject);
                 }
-                System.out.println(Arrays.toString(getID()));
             }
         });
         addMouseListener(new MouseAdapter() {

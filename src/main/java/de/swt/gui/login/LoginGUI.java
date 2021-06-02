@@ -68,11 +68,7 @@ public class LoginGUI extends GUI {
         String password = getPassword();
         if (guiManager.getClient().userManager.userLogin(loginID, password)) {
             guiManager.getClient().loggedIn = true;
-            try {
-                guiManager.accountType = guiManager.getClient().userManager.loadUser(guiManager.getClient().userid).getAccountType();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+            guiManager.secondSetup();
             guiManager.switchToClassRoomGUI();
         } else {
             System.out.println("Login failed");
