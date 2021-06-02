@@ -57,7 +57,7 @@ public class DBManager {
     private void initCourses() {
         // create table for course
         mySQL.update("CREATE TABLE IF NOT EXISTS courses " +
-            "(courseId INT AUTO_INCREMENT, grade INT DEFAULT 10, gradeName VARCHAR(1) DEFAULT 'a'," +
+            "(courseId INT AUTO_INCREMENT, grade INT DEFAULT 10, gradeName VARCHAR(1) DEFAULT 'a', teacherId INT DEFAULT -1" +
             "PRIMARY KEY(courseId));");
     }
 
@@ -88,10 +88,10 @@ public class DBManager {
                 "FOREIGN KEY(courseId) REFERENCES courses(courseId));");
 
         mySQL.update("CREATE TABLE IF NOT EXISTS groupInSession " +
-                "(groupId INT NOT NULL, courseId INT NOT NULL, " +
-                "PRIMARY KEY(groupId, courseId)," +
+                "(groupId INT NOT NULL, sessionId INT NOT NULL, " +
+                "PRIMARY KEY(groupId, sessionId)," +
                 "FOREIGN KEY(groupId) REFERENCES groups(groupId)," +
-                "FOREIGN KEY(courseId) REFERENCES courses(courseId));");
+                "FOREIGN KEY(sessionId) REFERENCES session(sessionId));");
 
         mySQL.update("CREATE TABLE IF NOT EXISTS masterInSession " +
                 "(courseId INT NOT NULL, userId INT NOT NULL," +
