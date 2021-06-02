@@ -107,11 +107,11 @@ public class DBManager {
 
     public int updateUser(User user) {
 
-        int userId = user.getId();
+        int userId = user.getUserId();
         AccountType accountType = user.getAccountType();
         String firstname = user.getFirstname();
         String surname = user.getSurname();
-        boolean online = user.isOnline();
+        boolean online = user.isActive();
 
         ResultSet rs = mySQL.query("SELECT userId FROM users WHERE userId = " + userId);
         try {
@@ -160,10 +160,10 @@ public class DBManager {
 
     public int updateGroups(Group group) {
 
-        int groupId = group.getId();
+        int groupId = group.getGroupId();
         long timeTillTermination = group.getTimeTillTermination();
         int maxGroupSize = group.getMaxGroupSize();
-        ArrayList<Integer> pariticpants = group.getParticipants();
+        ArrayList<Integer> pariticpants = group.getUserIds();
 
         ResultSet rs = mySQL.query("SELECT groupId FROM groups WHERE groupId = " + groupId);
         try {
@@ -191,12 +191,12 @@ public class DBManager {
     }
 
     public int updateSessions(Session session) {
-        int sessionId = session.getId();
+        int sessionId = session.getSessionId();
         long remainingTime = session.getRemainingTime();
 
-        ArrayList<Integer> participants = session.getParticipants();
-        ArrayList<Integer> masters = session.getMaster();
-        ArrayList<Integer> groups = session.getGroups();
+        ArrayList<Integer> participants = session.getUserIds();
+        ArrayList<Integer> masters = session.getMasterIds();
+        ArrayList<Integer> groups = session.getGroupIds();
 
         ResultSet rs = mySQL.query("SELECT sessionId FROM sessions WHERE sessionId = " + sessionId);
         try {

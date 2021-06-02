@@ -26,6 +26,8 @@ public class SessionManager extends Manager {
             newSession.setUserIds(getIds(resultSet, "userId"));
             resultSet = getMySQL().query("SELECT groupId FROM groupInSession WHERE sessionId = " + id + ");");
             newSession.setGroupIds(getIds(resultSet, "groupId"));
+            resultSet = getMySQL().query("SELECT masterId FROM masterInSession WHERE sessionId = " + id + ");");
+            newSession.setMasterIds(getIds(resultSet, "masterId"));
 
             getHashMap().put(id, newSession);
 
