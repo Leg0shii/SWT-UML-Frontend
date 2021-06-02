@@ -8,14 +8,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class CourseManager extends Manager {
+public class CourseManager extends Manager<Course> {
 
     public CourseManager(Server server) {
         super(server);
     }
 
     @Override
-    public Object load(int id) throws SQLException {
+    public Course load(int id) throws SQLException {
         if (getHashMap().containsKey(id)) {
             return getHashMap().get(id);
         } else {

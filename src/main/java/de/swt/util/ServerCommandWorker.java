@@ -74,25 +74,29 @@ public class ServerCommandWorker extends TimerTask {
             }
             case "SU" -> {
                 Session session = (Session) updatedObject;
-                dbManager.updateSession(session);
+                if (session.getMasterIds().size() > 0) {
+                    dbManager.updateSession(session);
+                } else {
+                    CommandObject serverCommand = new CommandObject();
+                    serverCommand.setCommand("DS:" + session.getSessionId());
+                    serverCommandQueue.add(serverCommand);
+                }
             }
             case "GU" -> {
                 Group group = (Group) updatedObject;
                 dbManager.updateGroup(group);
             }
             case "FU" -> {
-                HashMap<Integer, ArrayList<CommandObject>> userCommandQueue = userCommandMananger.getUserCommandQueue();
+                HashMap<Integer, LinkedBlockingQueue<CommandObject>> userCommandQueue = userCommandMananger.getUserCommandQueue();
                 CommandObject commandObject = new CommandObject();
 
-                for (Object object : groupManager.getHashMap().values()) {
-                    Group group = (Group) object;
+                for (Group group : groupManager.getHashMap().values()) {
                     if (group.getUserIds().contains(originId)) {
                         for (int ids : group.getUserIds()) {
                             if (originId != ids) {
                                 System.out.println("[" + originId + "]: workspace update group ping.");
                                 commandObject.setCommand("FU:");
                                 commandObject.setWorkspaceFileBytes(workspaceBytes);
-                                commandObject.setTaskBytes(null);
                                 userCommandQueue.get(ids).add(commandObject);
                             }
                         }
@@ -100,8 +104,7 @@ public class ServerCommandWorker extends TimerTask {
                     }
                 }
 
-                for (Object object : sessionManager.getHashMap().values()) {
-                    Session session = (Session) object;
+                for (Session session : sessionManager.getHashMap().values()) {
                     if (session.getMasterIds().contains(originId)) {
                         for (int ids : session.getUserIds()) {
                             if (originId != ids) {
@@ -117,7 +120,7 @@ public class ServerCommandWorker extends TimerTask {
             case "RE" -> {
                 int teacherId = Integer.parseInt(args[0]);
 
-                HashMap<Integer, ArrayList<CommandObject>> userCommandQueue = userCommandMananger.getUserCommandQueue();
+                HashMap<Integer, LinkedBlockingQueue<CommandObject>> userCommandQueue = userCommandMananger.getUserCommandQueue();
                 CommandObject userCommand = new CommandObject();
                 if (userManager.getHashMap().containsKey(teacherId)) {
                     System.out.println("[" + originId + ", " + teacherId + "]: user to teacher request ping.");
@@ -129,7 +132,7 @@ public class ServerCommandWorker extends TimerTask {
                 int destinationId = Integer.parseInt(args[0]);
                 int answer = Integer.parseInt(args[1]);
 
-                HashMap<Integer, ArrayList<CommandObject>> userCommandQueue = userCommandMananger.getUserCommandQueue();
+                HashMap<Integer, LinkedBlockingQueue<CommandObject>> userCommandQueue = userCommandMananger.getUserCommandQueue();
                 CommandObject userCommand = new CommandObject();
                 if (userManager.getHashMap().containsKey(destinationId)) {
                     System.out.println("[" + originId + ", " + destinationId + "]: teacher to user accept ping.");
@@ -148,7 +151,7 @@ public class ServerCommandWorker extends TimerTask {
                 dbManager.deleteSession(sessionId);
             }
             case "ST" -> {
-                HashMap<Integer, ArrayList<CommandObject>> userCommandQueue = userCommandMananger.getUserCommandQueue();
+                HashMap<Integer, LinkedBlockingQueue<CommandObject>> userCommandQueue = userCommandMananger.getUserCommandQueue();
                 CommandObject userCommand = new CommandObject();
                 Session session = sessionManager.getSessionFromTeacherId(originId);
                 for (int userId : session.getUserIds()) {

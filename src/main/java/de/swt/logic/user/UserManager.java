@@ -7,13 +7,13 @@ import de.swt.util.AccountType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserManager extends Manager {
+public class UserManager extends Manager<User> {
     public UserManager(Server server) {
         super(server);
     }
 
     @Override
-    public Object load(int id) throws SQLException {
+    public User load(int id) throws SQLException {
         if (getHashMap().containsKey(id)) {
             return getHashMap().get(id);
         } else {

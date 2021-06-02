@@ -9,10 +9,6 @@ public class InitRMIServer {
     public void initRMIServer() {
         System.setProperty("java.security.policy","file:./test.policy");
 
-        if (System.getSecurityManager() == null) {
-            System.setSecurityManager(new SecurityManager());
-        }
-
         try {
             RMIServer server = new RMIServer();
             LocateRegistry.createRegistry(server.port);

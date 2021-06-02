@@ -6,13 +6,13 @@ import de.swt.manager.Manager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class GroupManager extends Manager {
+public class GroupManager extends Manager<Group> {
     public GroupManager(Server server) {
         super(server);
     }
 
     @Override
-    public Object load(int id) throws SQLException {
+    public Group load(int id) throws SQLException {
         if (getHashMap().containsKey(id)) {
             return getHashMap().get(id);
         } else {

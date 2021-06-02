@@ -18,6 +18,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class RMIServer extends UnicastRemoteObject implements RMIServerInterface {
 
@@ -32,13 +33,13 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     }
 
     @Override
-    public ArrayList<CommandObject> accessCommandQueue(int userid) throws RemoteException {
-        HashMap<Integer, ArrayList<CommandObject>> userCommandQueue = userCommandMananger.getUserCommandQueue();
-        ArrayList<CommandObject> userCommands = userCommandQueue.get(userid);
+    public LinkedBlockingQueue<CommandObject> accessCommandQueue(int userid) throws RemoteException {
+        HashMap<Integer, LinkedBlockingQueue<CommandObject>> userCommandQueue = userCommandMananger.getUserCommandQueue();
+        LinkedBlockingQueue<CommandObject> userCommands = userCommandQueue.get(userid);
 
         // reset command list
         userCommandQueue.remove(userid);
-        userCommandQueue.put(userid, new ArrayList<>());
+        userCommandQueue.put(userid, new LinkedBlockingQueue<>());
         return userCommands;
     }
 

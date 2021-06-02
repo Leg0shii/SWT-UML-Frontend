@@ -22,15 +22,13 @@ public class SGCheck extends TimerTask {
         GroupManager groupManager = Server.getInstance().getGroupManager();
         DBManager dbManager = Server.getInstance().getDbManager();
 
-        for (Object object : sessionManager.getHashMap().values()) {
-            Session session = (Session) object;
+        for (Session session : sessionManager.getHashMap().values()) {
             if (session.getRemainingTime() <= System.currentTimeMillis()) {
                 dbManager.deleteSession(session.getSessionId());
             }
         }
 
-        for (Object object : groupManager.getHashMap().values()) {
-            Group group = (Group) object;
+        for (Group group : groupManager.getHashMap().values()) {
             if (group.getTimeTillTermination() <= System.currentTimeMillis()) {
                 dbManager.deleteGroup(group.getGroupId());
             }

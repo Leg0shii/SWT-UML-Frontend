@@ -6,13 +6,13 @@ import de.swt.manager.Manager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class SessionManager extends Manager {
+public class SessionManager extends Manager<Session> {
     public SessionManager(Server server) {
         super(server);
     }
 
     @Override
-    public Object load(int id) throws SQLException {
+    public Session load(int id) throws SQLException {
         if (getHashMap().containsKey(id)) {
             return getHashMap().get(id);
         } else {
