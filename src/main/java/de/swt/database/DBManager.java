@@ -94,10 +94,10 @@ public class DBManager {
                 "FOREIGN KEY(sessionId) REFERENCES session(sessionId));");
 
         mySQL.update("CREATE TABLE IF NOT EXISTS masterInSession " +
-                "(courseId INT NOT NULL, userId INT NOT NULL," +
-                "PRIMARY KEY(courseId, userId)," +
+                "(sessionId INT NOT NULL, userId INT NOT NULL," +
+                "PRIMARY KEY(sessionId, userId)," +
                 "FOREIGN KEY(userId) REFERENCES users(userId)," +
-                "FOREIGN KEY(courseId) REFERENCES courses(courseId));");
+                "FOREIGN KEY(sessionId) REFERENCES session(sessionId));");
 
         mySQL.update("CREATE TABLE IF NOT EXISTS userInGroup " +
                 "(userId INT NOT NULL, groupId INT NOT NULL, " +

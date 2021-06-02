@@ -19,6 +19,7 @@ public class Course implements Serializable {
     private int grade;
     private String gradeName;
     private ArrayList<Date> dates;
+    private ArrayList<Integer> userIds;
     private int teacherId;
 
 }
