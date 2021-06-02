@@ -11,6 +11,7 @@ import de.swt.manager.UserCommandMananger;
 import de.swt.manager.CommandObject;
 import de.swt.rmi.InitRMIServer;
 import de.swt.util.SGCheck;
+import de.swt.util.ServerCommandWorker;
 import de.swt.util.Synchronizer;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,13 +56,18 @@ public class Server {
         initRMIServer.initRMIServer();
 
         new Thread(() -> {
-            Timer timer = new Timer();
-            timer.schedule(new Synchronizer(), 0, 1000);
+            Timer syncTimer = new Timer();
+            syncTimer.schedule(new Synchronizer(), 0, 1000);
         }).start();
 
         new Thread(()->{
-            Timer courseTimer = new Timer();
-            courseTimer.schedule(new SGCheck(), 1000, 1000);
+            Timer timeCheckTimer = new Timer();
+            timeCheckTimer.schedule(new SGCheck(), 1000, 1000);
+        }).start();
+
+        new Thread(() -> {
+            Timer commandTimer = new Timer();
+            commandTimer.schedule(new ServerCommandWorker(serverCommandManager.getServerCommandQueue()), 0, 10);
         }).start();
 
     }
