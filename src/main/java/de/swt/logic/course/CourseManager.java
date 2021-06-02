@@ -20,6 +20,7 @@ public class CourseManager extends Manager {
             return getHashMap().get(id);
         } else {
             ResultSet resultSet = getMySQL().query("SELECT * FROM courses WHERE courseId = " + id + ");");
+            resultSet.next();
             Course newCourse = new Course();
             newCourse.setCourseId(id);
             newCourse.setGrade(resultSet.getInt("grade"));
