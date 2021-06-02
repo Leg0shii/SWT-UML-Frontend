@@ -35,14 +35,6 @@ public class DBManager {
         initCourses();
         initGroups();
         initSessions();
-        /* new Thread(() -> {
-            try {
-                Thread.sleep(1000);
-                initLinks();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start(); */
         initLinks();
 
         return mySQL;
