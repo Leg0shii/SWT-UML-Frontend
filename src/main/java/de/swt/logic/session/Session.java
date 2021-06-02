@@ -8,18 +8,10 @@ import java.util.ArrayList;
 @Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Session implements Serializable {
-    int id;
-    ArrayList<Integer> participants;
-    ArrayList<Integer> master;
-    long remainingTime;
-    ArrayList<Integer> groups;
-
-    public Session(){
-        this.id = -1;
-        this.participants = new ArrayList<>();
-        this.master = new ArrayList<>();
-        this.remainingTime = 0;
-        this.groups = new ArrayList<>();
-    }
+    private int sessionId;
+    private ArrayList<Integer> userIds;
+    private long remainingTime;
+    private ArrayList<Integer> groupIds;
 }

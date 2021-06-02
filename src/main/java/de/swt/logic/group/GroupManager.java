@@ -1,70 +1,45 @@
 package de.swt.logic.group;
 
 import de.swt.Server;
-import lombok.Getter;
+import de.swt.manager.Manager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
-@Getter
-public class GroupManager {
-
-    private Server server;
-    private HashMap<Integer, Group> groupHashMap;
-
+public class GroupManager extends Manager {
     public GroupManager(Server server) {
-
-        this.groupHashMap = new HashMap<>();
-        this.server = server;
+        super(server);
     }
 
-    public Group loadGroup(int id) {
-        Group group = null;
-        if (!groupHashMap.containsKey(id)) {
-            ResultSet resultSet = server.mySQL.query("SELECT * FROM groups WHERE groupid = " + id + ";");
-            try {
-                if (resultSet.next()) {
-                    group = new Group();
-                    group.setId(resultSet.getInt("groupid"));
-                    group.setMaxGroupSize(resultSet.getInt("maxGS"));
-                    group.setCourseID(resultSet.getInt("courseid"));
-                    group.setParticipants(getParticipantsFromString("participants"));
-                    group.setTimeTillTermination(resultSet.getLong("ttt"));
-                    groupHashMap.put(id, group);
-                } else {
-                    System.out.println("SOMETHING WENT WRONG WHILE LOADING GROUP!!!");
-                    return null;
-                }
-            } catch (SQLException ignored) {
-            }
-        } else group = groupHashMap.get(id);
-        return group;
-    }
+    @Override
+    public Object load(int id) throws SQLException {
+        if (getHashMap().containsKey(id)) {
+            return getHashMap().get(id);
+        } else {
+            ResultSet resultSet = getMySQL().query("SELECT * FROM groups WHERE groupId = " + id + ");");
+            resultSet.next();
+            Group newGroup = new Group();
+            newGroup.setGroupId(id);
+            newGroup.setMaxGroupSize(resultSet.getInt("maxGroupSize"));
+            newGroup.setTimeTillTermination(resultSet.getLong("timeTillTermination"));
+            resultSet = getMySQL().query("SELECT userId FROM userInGroup WHERE groupId = " + id + ");");
+            newGroup.setUserIds(getIds(resultSet, "userId"));
+            resultSet = getMySQL().query("SELECT sessionId FROM groupInSession WHERE groupId = " + id + ");");
+            resultSet.next();
+            newGroup.setSessionId(resultSet.getInt("sessionId"));
 
-    public void cacheAllGroupData() {
-        ResultSet resultSet = server.mySQL.query("SELECT * FROM groups;");
-        try {
-            while (resultSet.next()) {
-                loadGroup(resultSet.getInt("groupid"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            getHashMap().put(id, newGroup);
+
+            return newGroup;
         }
     }
 
-    private ArrayList<Integer> getParticipantsFromString(String string) {
-        String[] stringDates = string.split(";");
-        ArrayList<Integer> list = new ArrayList<>();
-        for (String singleDate : stringDates) {
-            try {
-                list.add(Integer.parseInt(singleDate));
-            } catch (Exception ignored) {
-            }
-
+    @Override
+    public void cacheAllData() throws SQLException {
+        getHashMap().clear();
+        ResultSet resultSet = getMySQL().query("SELECT groupId FROM groups;");
+        while (resultSet.next()) {
+            load(resultSet.getInt("groupId"));
         }
-        return list;
     }
-
 }
