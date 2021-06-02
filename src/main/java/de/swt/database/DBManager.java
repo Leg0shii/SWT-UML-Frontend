@@ -35,14 +35,15 @@ public class DBManager {
         initCourses();
         initGroups();
         initSessions();
-        new Thread(() -> {
+        /* new Thread(() -> {
             try {
                 Thread.sleep(1000);
                 initLinks();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }).start();
+        }).start(); */
+        initLinks();
 
         return mySQL;
     }
@@ -50,7 +51,7 @@ public class DBManager {
     private void initGroups() {
         // create table for groups
         mySQL.update("CREATE TABLE IF NOT EXISTS groups " +
-            "(groupId INT AUTO_INCREMENT, ttt INT DEFAULT 1, maxGs INT DEFAULT 10," +
+            "(groupId INT AUTO_INCREMENT, timeTillTermination BIGINT DEFAULT 1, maxGroupSize INT DEFAULT 10," +
             "PRIMARY KEY(groupId));");
     }
 
@@ -71,7 +72,7 @@ public class DBManager {
 
     private void initSessions(){
         mySQL.update("CREATE TABLE IF NOT EXISTS sessions " +
-                "(sessionId INT AUTO_INCREMENT, remainingTime VARCHAR(45), " +
+                "(sessionId INT AUTO_INCREMENT, remainingTime BIGINT, " +
                 "PRIMARY KEY(sessionId));");
     }
 
@@ -112,151 +113,127 @@ public class DBManager {
                 "FOREIGN KEY(sessionId) REFERENCES sessions(sessionId));");
     }
 
-
     public int updateUser(User user) {
 
-        int id = user.getId();
+        int userId = user.getId();
         AccountType accountType = user.getAccountType();
         String firstname = user.getFirstname();
         String surname = user.getSurname();
-        String course = courseToString(user.getCourse());
-        int online = user.isOnline() ? 1 : 0;
-        int isgroup = user.isInGroup() ? 1 : 0;
-        int iscourse = user.isInCourse() ? 1 : 0;
+        boolean online = user.isOnline();
 
-        ResultSet rs = mySQL.query("SELECT userid FROM users WHERE userid = " + id);
+        ResultSet rs = mySQL.query("SELECT userId FROM users WHERE userId = " + userId);
         try {
             if (rs.next()) {
-                mySQL.update("UPDATE users SET usertype = '" + accountType.toString() +
-                        "',prename='" + firstname + "',surname='" + surname + "',courseids='" + course +
-                        "',isonline=" + online + ",iscourse=" + iscourse + ",isgroup=" + isgroup + " WHERE userid = " + id + ";");
+                mySQL.update("UPDATE users " +
+                    "SET userType = '" + accountType.toString() + "', firstname = '" + firstname + "'," +
+                    "surname = '" + surname + ", active = " + online + " WHERE userId = " + userId + ";");
             } else {
-                mySQL.update("INSERT INTO users (usertype, prename, surname, courseids, isonline, iscourse, isgroup) VALUES " +
-                        "(" + accountType.toString() + ", '" + firstname + "','" + surname + "'," + course +
-                        ", " + online + ", " + isgroup + ", " + iscourse + ")");
-                ResultSet rs1 = mySQL.query("SELECT LAST_INSERT_ID()");
-                if (rs1.next()){
-                    id = rs1.getInt("last_insert_id()");
-                }
+                mySQL.update("INSERT INTO users (userType, firstname, surname, active) " +
+                    "VALUES ('" + accountType.toString() + "', '" + firstname + "','" + surname + "'," + online + ");");
+                userId = addID();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return id;
+        return userId;
     }
 
     public int updateCourse(Course course) {
 
-        int id = course.getId();
+        int courseId = course.getCourseId();
         int grade = course.getGrade();
-        String name = course.getName();
-        String dates = datesToString(course.getDates());
-        User teacher = course.getTeacher();
+        String name = course.getGradeName();
+        int teacherId = course.getTeacherId();
 
-        ResultSet rs = mySQL.query("SELECT courseid FROM courses WHERE courseid = " + id);
+        ArrayList<Integer> participants = course.getUserIds();
+        ArrayList<Date> dates = course.getDates();
+
+        ResultSet rs = mySQL.query("SELECT courseId FROM courses WHERE courseId = " + courseId);
         try {
             if (rs.next()) {
-                mySQL.update("UPDATE courses SET grade = " + grade + ",gradename='" + name + "',date='" + dates
-                        + "',teacherid=" + teacher.getId() + " WHERE courseid = " + id + ";");
+                mySQL.update("UPDATE courses SET grade = " + grade + ", gradeName = '" + name + "', teacherId = " + teacherId + " WHERE courseId = " + courseId + ";");
+                for(int userId : participants) mySQL.update("UPDATE userInCourse SET userId = " + userId + " WHERE courseId = " + courseId + ";");
+                for(Date date : dates) mySQL.update("UPDATE dateInCourse SET date = " + date.getTime() + " WHERE courseId = " + courseId + ";");
             } else {
-                mySQL.update("INSERT INTO courses (grade, gradename, date, teacherid) VALUES " +
-                        "(" + grade + ", '" + name + "','" + dates + "'," + teacher.getId() + ")");
-                ResultSet rs1 = mySQL.query("SELECT LAST_INSERT_ID()");
-                if (rs1.next()){
-                    id = rs1.getInt("last_insert_id()");
-                }
+                mySQL.update("INSERT INTO courses (grade, gradeName) VALUES (" + grade + ", '" + name + "')");
+                courseId = addID();
+                for(int userId : participants) mySQL.update("INSERT INTO userInCourse (userId, courseId) VALUES (" + userId + ", " + courseId + ");");
+                for(Date date : dates) mySQL.update("INSERT INTO dateInCourse (date, courseId) VALUES (" + date + ", " + courseId + ");");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return id;
+        return courseId;
     }
 
     public int updateGroups(Group group) {
 
-        int groupid = group.getId();
-        int courseid = group.getCourseID();
+        int groupId = group.getId();
         long timeTillTermination = group.getTimeTillTermination();
         int maxGroupSize = group.getMaxGroupSize();
-        String participants = participantsToString(group.getParticipants());
+        ArrayList<Integer> pariticpants = group.getParticipants();
 
-        ResultSet rs = mySQL.query("SELECT groupid FROM groups WHERE groupid = " + groupid);
+        ResultSet rs = mySQL.query("SELECT groupId FROM groups WHERE groupId = " + groupId);
         try {
             if (rs.next()) {
-                mySQL.update("UPDATE groups SET courseid = " + courseid + ",ttt=" + timeTillTermination
-                        + ",maxGS=" + maxGroupSize + ",participants='" + participants + "' WHERE groupid = " + groupid + ";");
+                mySQL.update("UPDATE groups SET timeTillTermination = " + timeTillTermination + ", maxGroupSize = " + maxGroupSize + " WHERE groupId = " + groupId + ";");
+                for(int userId : pariticpants) mySQL.update("UPDATE userInGroup SET userid = " + userId + " WHERE groupId = " + groupId + ";");
             } else {
-                mySQL.update("INSERT INTO groups (courseid, ttt, maxGS, participants) VALUES " +
-                        "(" + courseid + ", " + timeTillTermination + ", " + maxGroupSize + ", '" + participants + "');");
-                ResultSet rs1 = mySQL.query("SELECT LAST_INSERT_ID()");
-                if (rs1.next()){
-                    groupid = rs1.getInt("last_insert_id()");
-                }
+                mySQL.update("INSERT INTO groups (timeTillTermination, maxGroupSize) VALUES (" + timeTillTermination + ", " + maxGroupSize + ");");
+                for(int userId : pariticpants) mySQL.update("INSERT INTO userInGroup (userId, groupId) VALUES (" + userId + ", " + groupId + ");");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return groupid;
+        return groupId;
     }
 
-    public void deleteGroup(int groupid) {
-        mySQL.update("DELETE FROM groups WHERE groupid = " + groupid + ";");
+    public void deleteGroup(int groupId) {
+        mySQL.update("DELETE FROM groups WHERE groupId = " + groupId + ";");
+        mySQL.update("DELETE FROM userInGroups WHERE groupId = " + groupId + ";");
     }
 
-    public void deleteSession(int sessionid) {
-        mySQL.update("DELETE FROM sessions WHERE idsession = " + sessionid + ";");
+    public void deleteSession(int sessionId) {
+        mySQL.update("DELETE FROM sessions WHERE sessionId = " + sessionId + ";");
+        mySQL.update("DELETE FROM userInSession WHERE sessionId = " + sessionId + ";");
     }
 
     public int updateSessions(Session session) {
-        int sessionid = session.getId();
-        String participants = participantsToString(session.getParticipants());
-        String master = participantsToString(session.getMaster());
-        String groups = participantsToString(session.getGroups());
-        long remainingtime = session.getRemainingTime();
+        int sessionId = session.getId();
+        long remainingTime = session.getRemainingTime();
 
-        ResultSet rs = mySQL.query("SELECT idsession FROM sessions WHERE idsession = " + sessionid);
+        ArrayList<Integer> participants = session.getParticipants();
+        ArrayList<Integer> masters = session.getMaster();
+        ArrayList<Integer> groups = session.getGroups();
+
+        ResultSet rs = mySQL.query("SELECT sessionId FROM sessions WHERE sessionId = " + sessionId);
         try {
             if (rs.next()) {
-                mySQL.update("UPDATE sessions SET idsession = \"" + sessionid + "\",participants=\"" + participants + "\",master=\"" + master
-                        + "\",groups=\"" + groups + "\",remainingtime=\"" + remainingtime + "\";");
+                // insert session into db
+                mySQL.update("UPDATE sessions SET sessionId = " + sessionId + ", remainingTime = " + remainingTime + ";");
+                for(int participant : participants) mySQL.update("UPDATE userInSession SET userId = " + participant + " WHERE sessionId = " + sessionId + ";");
+                for(int master : masters) mySQL.update("UPDATE masterInSession SET userId = " + master + " WHERE sessionId = " + sessionId + ";");
+                for(int group : groups) mySQL.update("UPDATE groupInSession SET groupId = " + group + " WHERE sessionId = " + sessionId + ";");
             } else {
-                mySQL.update("INSERT INTO sessions (participants, master, groups, remainingtime) VALUES " +
-                        "('" + participants + "', '" + master + "', '" + groups + "', '" + remainingtime + "');");
-                ResultSet rs1 = mySQL.query("SELECT LAST_INSERT_ID()");
-                if (rs1.next()){
-                    sessionid = rs1.getInt("last_insert_id()");
-                }
+                mySQL.update("INSERT INTO sessions (remainingTime) VALUES " + remainingTime + ");");
+                sessionId = addID();
+                for(int participant : participants) mySQL.update("INSERT INTO userInSession (sessionId, userId) VALUES (" + sessionId + ", " + participant + ")");
+                for(int master : masters) mySQL.update("INSERT INTO masterInSession (sessionId, userId) VALUES (" + sessionId + ", " + master + ")");
+                for(int group : groups) mySQL.update("INSERT INTO groupInSession (sessionId, groupId) VALUES (" + sessionId + ", " + group + ")");
             }
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return sessionid;
+        return sessionId;
     }
 
-    private String participantsToString(ArrayList<Integer> part) {
-        String participants = "";
-        for (int p : part) {
-            participants = p + ";" + participants;
-        }
-        return participants;
-    }
+    private int addID() throws SQLException {
 
-    private String datesToString(ArrayList<Date> dates) {
-        StringBuilder stringOfDates = new StringBuilder();
-        for (Date date : dates) {
-            stringOfDates.insert(0, date.getTime() + ";");
-        }
-        return stringOfDates.toString();
-    }
-
-    // TODO :
-    private String courseToString(ArrayList<Integer> courses) {
-        StringBuilder courseString = new StringBuilder();
-        for (int course : courses) {
-            courseString.insert(0, course + ";");
-        }
-        return courseString.toString();
+        ResultSet rs1 = mySQL.query("SELECT LAST_INSERT_ID()");
+        if (rs1.next()) return rs1.getInt("last_insert_id()");
+        System.out.println("ERROR in Server: DBManager addID() returned -1");
+        return -1;
     }
 
 }
