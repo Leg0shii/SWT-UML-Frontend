@@ -200,6 +200,12 @@ public class DBManager {
         mySQL.update("DELETE FROM userInSession WHERE sessionId = " + sessionId + ";");
     }
 
+    public void deleteCourse(int courseId){
+        mySQL.update("DELETE FROM courses WHERE courseId = " + courseId + ";");
+        mySQL.update("DELETE FROM userInCourse WHERE courseId = " + courseId + ";");
+        mySQL.update("DELETE FROM dateInCourse WHERE courseId = " + courseId + ";");
+    }
+
     public int updateSession(Session session) {
         int sessionId = session.getSessionId();
         long remainingTime = session.getRemainingTime();

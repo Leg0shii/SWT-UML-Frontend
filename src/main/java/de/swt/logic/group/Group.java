@@ -10,8 +10,6 @@ import java.util.ArrayList;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class Group implements Serializable {
 
     private int groupId;
@@ -20,6 +18,13 @@ public class Group implements Serializable {
     private int maxGroupSize;
     private ArrayList<Integer> userIds;
 
+    public Group(){
+        groupId = -1;
+        sessionId = -1;
+        timeTillTermination = -1;
+        maxGroupSize = -1;
+        userIds = new ArrayList<>();
+    }
 }
 
 

@@ -11,8 +11,6 @@ import java.util.ArrayList;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class User implements Serializable {
 
     private int userId;
@@ -20,6 +18,14 @@ public class User implements Serializable {
     private String firstname;
     private String surname;
     private boolean active;
+
+    public User(){
+        userId = -1;
+        accountType = null;
+        firstname = "";
+        surname = "";
+        active = false;
+    }
 
     public String getFullName() {
         return (firstname + " " + surname);

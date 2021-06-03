@@ -11,8 +11,6 @@ import java.util.Date;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Course implements Serializable {
 
     private int courseId;
@@ -21,6 +19,15 @@ public class Course implements Serializable {
     private ArrayList<Date> dates;
     private ArrayList<Integer> userIds;
     private int teacherId;
+
+    public Course(){
+        courseId = -1;
+        grade = -1;
+        gradeName = "";
+        dates = new ArrayList<>();
+        userIds = new ArrayList<>();
+        teacherId = -1;
+    }
 
 }
 

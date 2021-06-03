@@ -150,6 +150,11 @@ public class ServerCommandWorker extends TimerTask {
 
                 dbManager.deleteSession(sessionId);
             }
+            case "DC" -> {
+                int courseId = Integer.parseInt(args[0]);
+
+                dbManager.deleteCourse(courseId);
+            }
             case "ST" -> {
                 HashMap<Integer, LinkedBlockingQueue<CommandObject>> userCommandQueue = userCommandMananger.getUserCommandQueue();
                 CommandObject userCommand = new CommandObject();
