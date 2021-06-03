@@ -17,7 +17,7 @@ public class UserManager extends Manager<User> {
         if (getHashMap().containsKey(id)) {
             return getHashMap().get(id);
         } else {
-            ResultSet resultSet = getMySQL().query("SELECT * FROM users WHERE userId = " + id + ");");
+            ResultSet resultSet = getMySQL().query("SELECT * FROM users WHERE userId = " + id + ";");
             resultSet.next();
             User newUser = new User();
             newUser.setUserId(id);

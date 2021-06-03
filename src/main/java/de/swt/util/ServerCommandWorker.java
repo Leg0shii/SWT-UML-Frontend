@@ -15,6 +15,7 @@ import de.swt.manager.UserCommandMananger;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TimerTask;
@@ -47,7 +48,10 @@ public class ServerCommandWorker extends TimerTask {
 
     @Override
     public void run() {
-        for (CommandObject command : serverCommandQueue) evaluateCommand(command);
+        while (serverCommandQueue.peek() != null){
+            System.out.println(serverCommandQueue);
+            evaluateCommand(serverCommandQueue.poll());
+        }
     }
 
     private void evaluateCommand(CommandObject command) {
@@ -84,7 +88,14 @@ public class ServerCommandWorker extends TimerTask {
             }
             case "GU" -> {
                 Group group = (Group) updatedObject;
-                dbManager.updateGroup(group);
+                int groupId = dbManager.updateGroup(group);
+                try {
+                    Session session = server.getSessionManager().load(group.getSessionId());
+                    session.getGroupIds().add(groupId);
+                    dbManager.updateSession(session);
+                } catch (SQLException exception) {
+                    exception.printStackTrace();
+                }
             }
             case "FU" -> {
                 HashMap<Integer, LinkedBlockingQueue<CommandObject>> userCommandQueue = userCommandMananger.getUserCommandQueue();

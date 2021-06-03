@@ -35,6 +35,7 @@ public class DBManager {
         initCourses();
         initGroups();
         initSessions();
+        resetServer();
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
@@ -110,6 +111,16 @@ public class DBManager {
                 "PRIMARY KEY(userId, sessionId)," +
                 "FOREIGN KEY(userId) REFERENCES users(userId)," +
                 "FOREIGN KEY(sessionId) REFERENCES sessions(sessionId));");
+
+    }
+
+    private void resetServer() {
+        mySQL.update("DELETE FROM userInSession;");
+        mySQL.update("DELETE FROM userInGroup;");
+        mySQL.update("DELETE FROM masterInSession;");
+        mySQL.update("DELETE FROM groupInSession;");
+        mySQL.update("DELETE FROM sessions;");
+        mySQL.update("DELETE FROM groups;");
     }
 
     public int updateUser(User user) {
@@ -125,7 +136,7 @@ public class DBManager {
             if (rs.next()) {
                 mySQL.update("UPDATE users " +
                         "SET userType = '" + accountType.toString() + "', firstname = '" + firstname + "'," +
-                        "surname = '" + surname + ", active = " + online + " WHERE userId = " + userId + ";");
+                        "surname = '" + surname + "', active = " + online + " WHERE userId = " + userId + ";");
             } else {
                 mySQL.update("INSERT INTO users (userType, firstname, surname, active) " +
                         "VALUES ('" + accountType.toString() + "', '" + firstname + "','" + surname + "'," + online + ");");
@@ -147,20 +158,22 @@ public class DBManager {
         ArrayList<Integer> participants = course.getUserIds();
         ArrayList<Date> dates = course.getDates();
 
-        ResultSet rs = mySQL.query("SELECT courseId FROM courses WHERE courseId = " + courseId);
+        ResultSet rs = mySQL.query("SELECT courseId FROM courses WHERE courseId = " + courseId + ";");
         try {
             if (rs.next()) {
                 mySQL.update("UPDATE courses SET grade = " + grade + ", gradeName = '" + name + "', teacherId = " + teacherId + " WHERE courseId = " + courseId + ";");
                 mySQL.update("DELETE FROM userInCourse WHERE courseId = " + courseId + ";");
                 mySQL.update("DELETE FROM dateInCourse WHERE courseId = " + courseId + ";");
             } else {
-                mySQL.update("INSERT INTO courses (grade, gradeName) VALUES (" + grade + ", '" + name + "')");
+                mySQL.update("INSERT INTO courses (grade, gradeName, teacherId) VALUES (" + grade + ", '" + name + "'," + teacherId + ");");
                 courseId = addID();
             }
             for (int userId : participants)
                 mySQL.update("INSERT INTO userInCourse (userId, courseId) VALUES (" + userId + ", " + courseId + ");");
-            for (Date date : dates)
-                mySQL.update("INSERT INTO dateInCourse (date, courseId) VALUES (" + date + ", " + courseId + ");");
+            for (Date date : dates) {
+                long lDate = date.getTime();
+                mySQL.update("INSERT INTO dateInCourse (date, courseId) VALUES (" + lDate + ", " + courseId + ");");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -174,13 +187,14 @@ public class DBManager {
         int maxGroupSize = group.getMaxGroupSize();
         ArrayList<Integer> participants = group.getUserIds();
 
-        ResultSet rs = mySQL.query("SELECT groupId FROM groups WHERE groupId = " + groupId);
+        ResultSet rs = mySQL.query("SELECT groupId FROM groups WHERE groupId = " + groupId + ";");
         try {
             if (rs.next()) {
                 mySQL.update("UPDATE groups SET timeTillTermination = " + timeTillTermination + ", maxGroupSize = " + maxGroupSize + " WHERE groupId = " + groupId + ";");
                 mySQL.update("DELETE FROM userInGroup WHERE groupId = " + groupId + ";");
             } else {
                 mySQL.update("INSERT INTO groups (timeTillTermination, maxGroupSize) VALUES (" + timeTillTermination + ", " + maxGroupSize + ");");
+                groupId = addID();
             }
             for (int userId : participants)
                 mySQL.update("INSERT INTO userInGroup (userId, groupId) VALUES (" + userId + ", " + groupId + ");");
@@ -200,7 +214,7 @@ public class DBManager {
         mySQL.update("DELETE FROM userInSession WHERE sessionId = " + sessionId + ";");
     }
 
-    public void deleteCourse(int courseId){
+    public void deleteCourse(int courseId) {
         mySQL.update("DELETE FROM courses WHERE courseId = " + courseId + ";");
         mySQL.update("DELETE FROM userInCourse WHERE courseId = " + courseId + ";");
         mySQL.update("DELETE FROM dateInCourse WHERE courseId = " + courseId + ";");
@@ -214,24 +228,24 @@ public class DBManager {
         ArrayList<Integer> masters = session.getMasterIds();
         ArrayList<Integer> groups = session.getGroupIds();
 
-        ResultSet rs = mySQL.query("SELECT sessionId FROM sessions WHERE sessionId = " + sessionId);
+        ResultSet rs = mySQL.query("SELECT sessionId FROM sessions WHERE sessionId = " + sessionId + ";");
         try {
             if (rs.next()) {
                 // insert session into db
-                mySQL.update("UPDATE sessions SET sessionId = " + sessionId + ", remainingTime = " + remainingTime + ";");
+                mySQL.update("UPDATE sessions SET remainingTime = " + remainingTime + " WHERE sessionId = " + sessionId + ";");
                 mySQL.update("DELETE FROM userInSession WHERE sessionId = " + sessionId + ";");
                 mySQL.update("DELETE FROM masterInSession WHERE sessionId = " + sessionId + ";");
                 mySQL.update("DELETE FROM groupInSession WHERE sessionId = " + sessionId + ";");
             } else {
-                mySQL.update("INSERT INTO sessions (remainingTime) VALUES " + remainingTime + ");");
+                mySQL.update("INSERT INTO sessions (remainingTime) VALUES (" + remainingTime + ");");
                 sessionId = addID();
             }
             for (int participant : participants)
-                mySQL.update("INSERT INTO userInSession (sessionId, userId) VALUES (" + sessionId + ", " + participant + ")");
+                mySQL.update("INSERT INTO userInSession (sessionId, userId) VALUES (" + sessionId + ", " + participant + ");");
             for (int master : masters)
-                mySQL.update("INSERT INTO masterInSession (sessionId, userId) VALUES (" + sessionId + ", " + master + ")");
+                mySQL.update("INSERT INTO masterInSession (sessionId, userId) VALUES (" + sessionId + ", " + master + ");");
             for (int group : groups)
-                mySQL.update("INSERT INTO groupInSession (sessionId, groupId) VALUES (" + sessionId + ", " + group + ")");
+                mySQL.update("INSERT INTO groupInSession (sessionId, groupId) VALUES (" + sessionId + ", " + group + ");");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -239,7 +253,7 @@ public class DBManager {
     }
 
     private int addID() throws SQLException {
-        ResultSet rs1 = mySQL.query("SELECT LAST_INSERT_ID()");
+        ResultSet rs1 = mySQL.query("SELECT LAST_INSERT_ID();");
         if (rs1.next()) return rs1.getInt("last_insert_id()");
         System.out.println("ERROR in Server: DBManager addID() returned -1");
         return -1;

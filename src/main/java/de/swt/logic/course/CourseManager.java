@@ -19,7 +19,7 @@ public class CourseManager extends Manager<Course> {
         if (getHashMap().containsKey(id)) {
             return getHashMap().get(id);
         } else {
-            ResultSet resultSet = getMySQL().query("SELECT * FROM courses WHERE courseId = " + id + ");");
+            ResultSet resultSet = getMySQL().query("SELECT * FROM courses WHERE courseId = " + id + ";");
             resultSet.next();
             Course newCourse = new Course();
             newCourse.setCourseId(id);
