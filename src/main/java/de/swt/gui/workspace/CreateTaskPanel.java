@@ -5,7 +5,6 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
-import de.swt.util.Language;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -24,54 +23,43 @@ public class CreateTaskPanel extends GUI {
     private JLabel headerLabel;
     private JLabel pictureLabel;
     private JLabel selectedFileLabel;
-    public JButton cancelButton;
-    public JButton createButton;
-    public JScrollPane taskScrollPanel;
+    private JButton createButton;
+    private JScrollPane taskScrollPanel;
     private File selectedFile;
 
     public CreateTaskPanel(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.add(mainPanel);
         this.filePanel.setLayout(new BoxLayout(filePanel, BoxLayout.X_AXIS));
         this.taskScrollPanel.setViewportView(taskTextArea);
 
-        switch (guiManager.language) {
-            case GERMAN -> setupGUI("Aufgabenstellung", "Bild", "Erstellen", "Abbrechen");
-            case ENGLISH -> setupGUI("Task", "Picture", "Create", "Cancel");
+        switch (guiManager.getLanguage()) {
+            case GERMAN -> setupGUI("Aufgabenstellung", "Bild", "Erstellen");
+            case ENGLISH -> setupGUI("Task", "Picture", "Create");
         }
 
         setupListeners();
-
-        this.selectedFile = null;
     }
 
-    private void setupGUI(String header, String picture, String create, String cancel) {
+    private void setupGUI(String header, String picture, String create) {
         this.headerLabel.setText(header);
         this.pictureLabel.setText(picture);
         this.createButton.setText(create);
-        this.cancelButton.setText(cancel);
         this.selectFileButton.setText("Browse...");
         this.selectedFileLabel.setText(" ");
-
     }
 
     public void updateGUI() {
-
+        revalidate();
     }
 
-    // TODO: Cancel Button Listener in PopUp superclass
-    private void setupListeners() {
+    public void setupListeners() {
         this.selectFileButton.addActionListener(e -> fileChooserFunction());
-    }
-
-    private void initForAccountType() {
-
+        this.createButton.addActionListener(e -> createFunction());
     }
 
     private void fileChooserFunction() {
         JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("PDF, PNG, JPG & GIF", "pdf", "png", "jpg", "gif");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Serializable", "ser");
         fileChooser.setFileFilter(filter);
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             this.selectedFile = fileChooser.getSelectedFile();
@@ -96,9 +84,10 @@ public class CreateTaskPanel extends GUI {
         try {
             byte[] workspaceBytes = FileUtils.readFileToByteArray(getSelectedFile());
             byte[] taskBytes = task.getBytes(StandardCharsets.UTF_8);
-            guiManager.getClient().server.sendTask(workspaceBytes, taskBytes, guiManager.getClient().userid);
+            getGuiManager().getClient().getServer().sendTask(workspaceBytes, taskBytes, getGuiManager().getClient().getUserId());
+            createButton.setBackground(UIManager.getColor("JButton"));
         } catch (IOException e) {
-            e.printStackTrace();
+            createButton.setBackground(Color.RED);
         }
     }
 
@@ -136,14 +125,9 @@ public class CreateTaskPanel extends GUI {
         selectFileButton = new JButton();
         selectFileButton.setText("Button");
         filePanel.add(selectFileButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, 1, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        cancelButton = new JButton();
-        cancelButton.setText("Button");
-        mainPanel.add(cancelButton, new GridConstraints(3, 4, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         createButton = new JButton();
         createButton.setText("Button");
-        mainPanel.add(createButton, new GridConstraints(3, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer1 = new Spacer();
-        mainPanel.add(spacer1, new GridConstraints(3, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        mainPanel.add(createButton, new GridConstraints(3, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         taskScrollPanel = new JScrollPane();
         mainPanel.add(taskScrollPanel, new GridConstraints(1, 0, 1, 7, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         taskTextArea = new JTextArea();

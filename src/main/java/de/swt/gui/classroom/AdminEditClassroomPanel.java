@@ -10,17 +10,18 @@ import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 @Setter
 public class AdminEditClassroomPanel extends GUI {
     private JPanel mainPanel;
     private JTextField gradeTextField;
-    public JButton resetButton;
-    public JButton migrateButton;
-    public JButton deleteButton;
-    public JButton cancelButton;
+    private JButton resetButton;
+    private JButton migrateButton;
+    private JButton deleteButton;
     private JLabel gradeLabel;
+    private JLabel errorLabel;
     private Course course;
 
     public AdminEditClassroomPanel(GUIManager guiManager) {
@@ -28,18 +29,29 @@ public class AdminEditClassroomPanel extends GUI {
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         this.setBorder(BorderFactory.createEtchedBorder());
-        switch (guiManager.language) {
-            case GERMAN -> setupGUI("neue Klassenstufe", "Zurücksetzen", "Migrieren", "Löschen", "Abbrechen");
-            case ENGLISH -> setupGUI("New grade", "Reset", "Migrate", "Delete", "Cancel");
+        switch (guiManager.getLanguage()) {
+            case GERMAN -> setupGUI("neue Klassenstufe", "Zurücksetzen", "Migrieren", "Löschen");
+            case ENGLISH -> setupGUI("New grade", "Reset", "Migrate", "Delete");
         }
     }
 
-    private void setupGUI(String grade, String reset, String migrate, String delete, String cancel) {
+    @Override
+    public void updateGUI() {
+
+    }
+
+    @Override
+    public void setupListeners() {
+        migrateButton.addActionListener(e -> migrateFunction());
+        deleteButton.addActionListener(e -> deleteFunction());
+        resetButton.addActionListener(e -> resetFunction());
+    }
+
+    private void setupGUI(String grade, String reset, String migrate, String delete) {
         this.gradeLabel.setText(grade);
         this.resetButton.setText(reset);
         this.migrateButton.setText(migrate);
         this.deleteButton.setText(delete);
-        this.cancelButton.setText(cancel);
     }
 
     public String getGrade() {
@@ -47,76 +59,55 @@ public class AdminEditClassroomPanel extends GUI {
     }
 
     public void migrateFunction() {
-        int grade = 0;
+        int grade;
         try {
             grade = Integer.parseInt(getGrade());
-        } catch (Exception e) {
-            System.out.println("Error, Please enter a number!");
+            course.setGrade(grade);
+            getGuiManager().getClient().getServer().updateCourse(course);
+            errorLabel.setText("");
+            migrateButton.setBackground(UIManager.getColor("JButton"));
+        } catch (RemoteException e) {
+            switch (getGuiManager().getLanguage()) {
+                case GERMAN -> errorLabel.setText("Update fehlgeschlagen");
+                case ENGLISH -> errorLabel.setText("Update failed");
+            }
+            migrateButton.setBackground(Color.RED);
+        } catch (NumberFormatException e) {
+            switch (getGuiManager().getLanguage()) {
+                case GERMAN -> errorLabel.setText("Richtige Klassenstufe eingeben!");
+                case ENGLISH -> errorLabel.setText("Enter correct grade!");
+            }
+            migrateButton.setBackground(Color.RED);
         }
-        try {
-            guiManager.getClient().mySQL.update("UPDATE courses SET grade = " + grade + " WHERE courseid = " + course.getId() + ";");
-        } catch (Exception e) {
-            System.out.println("Error while updating database");
-        }
-        try {
-            guiManager.getClient().courseManager.cacheAllCourseData();
-        } catch (Exception e) {
-            System.out.println("Error while updating local Hashmap");
-        }
-        ArrayList<User> list = new ArrayList<>(guiManager.getClient().userManager.getUserHashMap().values());
-        guiManager.classroomGUI.updateGUI(list);
     }
 
     public void resetFunction() {
-        for (User students : guiManager.getClient().userManager.getUserHashMap().values()) {
-            if (students.getCourse().contains(course.getId())) {
-                try {
-                    StringBuilder courses = new StringBuilder();
-                    ArrayList<Integer> courseids = students.getCourse();
-                    courseids.remove(students.getCourse().indexOf(course.getId()));
-                    if (!courseids.isEmpty()) {
-                        courses.append("\"");
-                        courses.append(courseids.get(0));
-                        if (courseids.size() > 1) {
-                            for (int course : courseids.subList(1, courseids.size() - 1)) {
-                                courses.append("\\;").append(course);
-                            }
-                        }
-                        courses.append("\"");
-                    } else {
-                        courses.append("NULL");
-                    }
-                    guiManager.getClient().mySQL.update("UPDATE users SET courseids = " + courses + " WHERE userid=" + students.getId() + ";");
-                } catch (Exception e) {
-                    System.out.println("Error while updating database");
-                }
-            }
-        }
+        course.getUserIds().clear();
         try {
-            guiManager.getClient().userManager.cacheAllUserData();
-            guiManager.getClient().courseManager.cacheAllCourseData();
-        } catch (Exception e) {
-            System.out.println("Error while caching new data");
+            getGuiManager().getClient().getServer().updateCourse(course);
+            errorLabel.setText("");
+            resetButton.setBackground(UIManager.getColor("JButton"));
+        } catch (RemoteException e) {
+            switch (getGuiManager().getLanguage()) {
+                case GERMAN -> errorLabel.setText("Update fehlgeschlagen");
+                case ENGLISH -> errorLabel.setText("Update failed");
+            }
+            resetButton.setBackground(Color.RED);
         }
-        ArrayList<User> list = new ArrayList<>(guiManager.getClient().userManager.getUserHashMap().values());
-        guiManager.classroomGUI.updateGUI(list);
     }
 
     public void deleteFunction() {
         try {
-            resetFunction();
-            guiManager.getClient().mySQL.update("DELETE FROM courses WHERE courseid = " + course.getId() + ";");
-        } catch (Exception e) {
-            System.out.println("Error while updating database");
+            getGuiManager().getClient().getServer().deleteCourse(course.getCourseId());
+            errorLabel.setText("");
+            deleteButton.setBackground(UIManager.getColor("JButton"));
+        } catch (RemoteException e) {
+            switch (getGuiManager().getLanguage()) {
+                case GERMAN -> errorLabel.setText("Update fehlgeschlagen");
+                case ENGLISH -> errorLabel.setText("Update failed");
+            }
+            deleteButton.setBackground(Color.RED);
         }
-        try {
-            guiManager.getClient().userManager.cacheAllUserData();
-            guiManager.getClient().courseManager.cacheAllCourseData();
-        } catch (Exception e) {
-            System.out.println("Error while caching new data");
-        }
-        ArrayList<User> list = new ArrayList<>(guiManager.getClient().userManager.getUserHashMap().values());
-        guiManager.classroomGUI.updateGUI(list);
     }
 
     {
@@ -152,9 +143,10 @@ public class AdminEditClassroomPanel extends GUI {
         deleteButton = new JButton();
         deleteButton.setText("Button");
         mainPanel.add(deleteButton, new GridConstraints(1, 1, 1, 7, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        cancelButton = new JButton();
-        cancelButton.setText("Button");
-        mainPanel.add(cancelButton, new GridConstraints(2, 1, 1, 7, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        errorLabel = new JLabel();
+        errorLabel.setHorizontalAlignment(0);
+        errorLabel.setText("");
+        mainPanel.add(errorLabel, new GridConstraints(2, 1, 1, 7, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         gradeLabel.setLabelFor(gradeTextField);
     }
 
@@ -165,3 +157,5 @@ public class AdminEditClassroomPanel extends GUI {
         return mainPanel;
     }
 }
+
+

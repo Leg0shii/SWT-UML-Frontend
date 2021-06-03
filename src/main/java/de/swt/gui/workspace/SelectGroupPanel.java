@@ -20,10 +20,8 @@ public class SelectGroupPanel extends GUI {
 
     public SelectGroupPanel(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.add(mainPanel);
 
-        switch (guiManager.language) {
+        switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Wähle deine Gruppe", "Aufgabe beginnen");
             case ENGLISH -> setupGUI("Select your Group", "Start Task");
         }

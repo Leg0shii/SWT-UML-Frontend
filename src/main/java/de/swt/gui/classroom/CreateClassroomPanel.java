@@ -21,70 +21,84 @@ public class CreateClassroomPanel extends GUI {
     private JTextField gradeNameTextField;
     private JTextField teacherTextField;
     private JTextField dateTextField;
-    public JButton doneButton;
-    public JButton cancelButton;
+    private JButton doneButton;
     private JLabel gradeLabel;
     private JLabel gradeNameLabel;
     private JLabel teacherLabel;
     private JLabel dateLabel;
+    private JLabel errorLabel;
 
     public CreateClassroomPanel(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.add(mainPanel);
-        this.setBorder(BorderFactory.createEtchedBorder());
-        switch (guiManager.language) {
-            case GERMAN -> this.setupGUI("Klassenstufe", "Klassenname", "Lehrer", "Termin", "Fertig", "Abbrechen");
-            case ENGLISH -> this.setupGUI("Grade", "Grade name", "Teacher", "Date", "Done", "Cancel");
+        switch (guiManager.getLanguage()) {
+            case GERMAN -> this.setupGUI("Klassenstufe", "Klassenname", "Lehrer", "Termin", "Fertig");
+            case ENGLISH -> this.setupGUI("Grade", "Grade name", "Teacher", "Date", "Done");
         }
     }
 
-    private void setupGUI(String grade, String gradeName, String teacher, String date, String done, String cancel) {
+    @Override
+    public void updateGUI() {
+
+    }
+
+    @Override
+    public void setupListeners() {
+        doneButton.addActionListener(e -> doneFunction());
+    }
+
+    private void setupGUI(String grade, String gradeName, String teacher, String date, String done) {
         this.gradeLabel.setText(grade);
         this.gradeNameLabel.setText(gradeName);
         this.teacherLabel.setText(teacher);
         this.dateLabel.setText(date);
         this.doneButton.setText(done);
-        this.cancelButton.setText(cancel);
         this.gradeComboBox.addItem("10");
         this.gradeComboBox.addItem("11");
         this.gradeComboBox.addItem("12");
     }
 
-    public String getGradeName() {
+    private String getGradeName() {
         return gradeNameTextField.getText();
     }
 
-    public String getTeacher() {
+    private String getTeacher() {
         return teacherTextField.getText();
     }
 
-    public String getDate() {
+    private String getDate() {
         return dateTextField.getText();
     }
 
-    public void doneFunction() {
+    private void doneFunction() {
 
         Course newCourse = new Course();
 
         try {
             newCourse.setGrade(gradeComboBox.getSelectedIndex() + 10);
-            newCourse.setTeacherID(Integer.parseInt(getTeacher()));
+            newCourse.setTeacherId(Integer.parseInt(getTeacher()));
             newCourse.setDates(NextDate.getDateFromString(getDate()));
-            newCourse.setName(getGradeName());
+            newCourse.setGradeName(getGradeName());
+            errorLabel.setText("");
+            doneButton.setBackground(UIManager.getColor("JButton"));
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Please fill out all Forms");
+            switch (getGuiManager().getLanguage()) {
+                case GERMAN -> errorLabel.setText("Bitte alles korrekt ausfüllen!");
+                case ENGLISH -> errorLabel.setText("Please fill out everything!");
+            }
+            doneButton.setBackground(Color.RED);
         }
 
         try {
-            guiManager.getClient().server.sendCourse(newCourse, -1, true);
+            getGuiManager().getClient().getServer().updateCourse(newCourse);
+            doneButton.setBackground(UIManager.getColor("JButton"));
         } catch (RemoteException e) {
             e.printStackTrace();
+            switch (getGuiManager().getLanguage()) {
+                case GERMAN -> errorLabel.setText("Update fehlgeschlagen");
+                case ENGLISH -> errorLabel.setText("Update failed");
+            }
+            doneButton.setBackground(Color.RED);
         }
-
-        guiManager.getClient().courseManager.cacheAllCourseData();
-        guiManager.updateGUIS();
     }
 
     {
@@ -103,7 +117,7 @@ public class CreateClassroomPanel extends GUI {
      */
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayoutManager(5, 3, new Insets(5, 5, 5, 5), -1, -1));
+        mainPanel.setLayout(new GridLayoutManager(6, 3, new Insets(5, 5, 5, 5), -1, -1));
         gradeComboBox = new JComboBox();
         mainPanel.add(gradeComboBox, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         gradeLabel = new JLabel();
@@ -130,10 +144,10 @@ public class CreateClassroomPanel extends GUI {
         mainPanel.add(dateLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         doneButton = new JButton();
         doneButton.setText("Button");
-        mainPanel.add(doneButton, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        cancelButton = new JButton();
-        cancelButton.setText("Button");
-        mainPanel.add(cancelButton, new GridConstraints(4, 2, 1, 1, GridConstraints.ANCHOR_SOUTHEAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainPanel.add(doneButton, new GridConstraints(4, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        errorLabel = new JLabel();
+        errorLabel.setText("");
+        mainPanel.add(errorLabel, new GridConstraints(5, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         gradeLabel.setLabelFor(gradeComboBox);
         gradeNameLabel.setLabelFor(gradeNameTextField);
         teacherLabel.setLabelFor(teacherTextField);

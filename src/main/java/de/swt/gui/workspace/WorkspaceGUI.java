@@ -258,7 +258,7 @@ public class WorkspaceGUI extends GUI {
         return drawablePanel.removeLastAnnotations();
     }
 
-    public void removeAllIndexedObjects(Component[] objects) {
+    public void removeAllIndexedObjects(DrawableObject[] objects) {
         drawablePanel.removeAllIndexedObjects(objects);
     }
 

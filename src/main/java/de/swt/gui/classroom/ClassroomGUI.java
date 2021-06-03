@@ -64,13 +64,14 @@ public class ClassroomGUI extends GUI {
         removeAllGradePanels();
         updateGradePanels();
         for (GradePanel gradePanel : gradePanels) {
-            gradePanel.getEditClassroomPanel().updateGUI();
-            switch (gradePanel.grade) {
+            switch (gradePanel.getCourse().getGrade()) {
                 case 10 -> gradePanel10.add(gradePanel);
                 case 11 -> gradePanel11.add(gradePanel);
                 case 12 -> gradePanel12.add(gradePanel);
             }
+            gradePanel.updateGUI();
         }
+        createClassroomPanel.updateGUI();
         this.initForAccountType();
         this.revalidate();
     }
@@ -83,10 +84,7 @@ public class ClassroomGUI extends GUI {
         supportButton.setComponentPopupMenu(supportPopup);
         this.supportButton.addActionListener(e -> supportButton.getComponentPopupMenu().show(supportPopup, 0, 0));
 
-        JPopupMenu createClassroomPopup = new JPopupMenu();
-        createClassroomPopup.add(createClassroomPanel);
-        createClassroomButton.setComponentPopupMenu(createClassroomPopup);
-        createClassroomButton.addActionListener(e -> createClassroomButton.getComponentPopupMenu().show(createClassroomButton, 0, 0));
+        setupStandardPopup(createClassroomButton, createClassroomPanel);
 
         this.logoutButton.addActionListener(e2 -> logout());
         this.privateWorkspaceButton.addActionListener(e3 -> privateWorkspaceFunction());
@@ -100,7 +98,7 @@ public class ClassroomGUI extends GUI {
         gradePanels.clear();
         for (Course course : getGuiManager().getClient().getCourseManager().getHashMap().values()) {
             GradePanel gradePanel = new GradePanel(getGuiManager());
-            gradePanel.updateGUI(course);
+            gradePanel.setCourse(course);
             gradePanels.add(gradePanel);
         }
     }
@@ -132,31 +130,18 @@ public class ClassroomGUI extends GUI {
 
     private void removeEditButtonsFromGradePanels() {
         for (Component component : gradePanel10.getComponents()) {
-            ((GradePanel) component).getMainPanel().remove(((GradePanel) component).editButton);
+            ((GradePanel) component).getMainPanel().remove(((GradePanel) component).getEditButton());
         }
         for (Component component : gradePanel11.getComponents()) {
-            ((GradePanel) component).getMainPanel().remove(((GradePanel) component).editButton);
+            ((GradePanel) component).getMainPanel().remove(((GradePanel) component).getEditButton());
         }
         for (Component component : gradePanel12.getComponents()) {
-            ((GradePanel) component).getMainPanel().remove(((GradePanel) component).editButton);
+            ((GradePanel) component).getMainPanel().remove(((GradePanel) component).getEditButton());
         }
     }
 
-    public String getCreateClassroomGradeName() {
-        return createClassroomPanel.getGradeName();
-    }
-
-    public String getCreateClassroomTeacher() {
-        return createClassroomPanel.getTeacher();
-    }
-
-    public String getCreateClassroomDate() {
-        return createClassroomPanel.getDate();
-    }
-
-    // TODO: Implemented by other Group
     private void privateWorkspaceFunction() {
-        guiManager.switchToWorkspaceGUI();
+        getGuiManager().switchToWorkspaceGUI();
     }
 
     {

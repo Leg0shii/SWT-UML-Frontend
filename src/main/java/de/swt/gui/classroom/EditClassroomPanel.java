@@ -6,19 +6,18 @@ import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.logic.course.Course;
 import de.swt.logic.user.User;
-import de.swt.logic.user.UserManager;
 import lombok.Setter;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 @Setter
 public class EditClassroomPanel extends GUI {
-    public JButton doneButton;
-    public JButton cancelButton;
+    private JButton doneButton;
     private JPanel mainPanel;
     private JTextField studentTextField;
     private JComboBox<String> studentComboBox;
@@ -28,32 +27,38 @@ public class EditClassroomPanel extends GUI {
 
     public EditClassroomPanel(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.add(mainPanel);
-        switch (guiManager.language) {
-            case GERMAN -> this.setupGUI("<html>Schüler <br> hinzufügen</html>", "<html>Schüler <br> entfernen</html>", "Übernehmen", "Abbrechen");
-            case ENGLISH -> this.setupGUI("Add student", "Remove student", "Commit", "Cancel");
+        switch (guiManager.getLanguage()) {
+            case GERMAN -> this.setupGUI("<html>Schüler <br> hinzufügen</html>", "<html>Schüler <br> entfernen</html>", "Übernehmen");
+            case ENGLISH -> this.setupGUI("Add student", "Remove student", "Commit");
         }
     }
 
-    private void setupGUI(String student, String students, String done, String cancel) {
+    private void setupGUI(String student, String students, String done) {
         this.studentTextFieldLabel.setText(student);
         this.studentComboBoxLabel.setText(students);
         this.doneButton.setText(done);
-        this.cancelButton.setText(cancel);
-    }
-
-    public void updateGUI(ArrayList<User> students) {
-        this.studentComboBox.removeAllItems();
-        this.studentComboBox.addItem("");
-        for (User student : students) {
-            if (student.getCourse().contains(course.getId())) {
-                this.studentComboBox.addItem(student.getId() + "");
-            }
-        }
     }
 
     public void updateGUI() {
+        ArrayList<Integer> studentIds = course.getUserIds();
+        ArrayList<User> students = new ArrayList<>();
+        for (int id : studentIds) {
+            try {
+                students.add(getGuiManager().getClient().getUserManager().load(id));
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+        }
+        this.studentComboBox.removeAllItems();
+        this.studentComboBox.addItem("");
+        for (User student : students) {
+            this.studentComboBox.addItem(student.getUserId() + " " + student.getSurname());
+        }
+    }
+
+    @Override
+    public void setupListeners() {
+        doneButton.addActionListener(e -> doneFunction());
     }
 
     public String getStudentToAdd() {
@@ -65,28 +70,22 @@ public class EditClassroomPanel extends GUI {
     }
 
     public void doneFunction() {
-
-        UserManager userManager = guiManager.getClient().userManager;
-        User user = null;
+        int userId;
 
         if (!getStudentToAdd().equals("")) {
-            user = userManager.getUserHashMap().get(Integer.parseInt(getStudentToAdd()));
-            userManager.setSingleCourse(user, course.getId());
+            userId = Integer.parseInt(getStudentToAdd());
+            course.getUserIds().add(userId);
         }
         if (!getStudentToRemove().equals("")) {
-            user = userManager.getUserHashMap().get(Integer.parseInt(getStudentToRemove()));
-            userManager.removeSingleCourse(user, course.getId());
+            userId = Integer.parseInt(getStudentToRemove());
+            course.getUserIds().remove(userId);
         }
 
         try {
-            guiManager.getClient().server.sendUser(user, -1, true);
-            guiManager.getClient().userManager.cacheAllUserData();
+            getGuiManager().getClient().getServer().updateCourse(course);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
-        ArrayList<User> list = new ArrayList<>(guiManager.getClient().userManager.getUserHashMap().values());
-        guiManager.classroomGUI.updateGUI(list);
     }
 
 
@@ -111,9 +110,6 @@ public class EditClassroomPanel extends GUI {
         studentTextFieldLabel = new JLabel();
         studentTextFieldLabel.setText("Label");
         mainPanel.add(studentTextFieldLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        cancelButton = new JButton();
-        cancelButton.setText("Button");
-        mainPanel.add(cancelButton, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_VERTICAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         studentTextField = new JTextField();
         mainPanel.add(studentTextField, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         studentComboBox = new JComboBox();
@@ -123,7 +119,7 @@ public class EditClassroomPanel extends GUI {
         mainPanel.add(studentComboBoxLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         doneButton = new JButton();
         doneButton.setText("Button");
-        mainPanel.add(doneButton, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_VERTICAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainPanel.add(doneButton, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         studentTextFieldLabel.setLabelFor(studentTextField);
         studentComboBoxLabel.setLabelFor(studentComboBox);
     }
@@ -134,4 +130,5 @@ public class EditClassroomPanel extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

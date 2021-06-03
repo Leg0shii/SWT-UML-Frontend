@@ -5,12 +5,14 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.logic.user.User;
+import lombok.Setter;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.rmi.RemoteException;
 
+@Setter
 public class RequestPanel extends GUI {
     private JPanel mainPanel;
     public JButton acceptButton;
@@ -20,15 +22,19 @@ public class RequestPanel extends GUI {
 
     public RequestPanel(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.add(mainPanel);
 
-        switch (guiManager.language) {
+        switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI(" möchte beitreten", "Akzeptieren", "Verweigern");
             case ENGLISH -> setupGUI(" wants to join", "Accept", "Deny");
         }
 
         setupListeners();
+    }
+
+    @Override
+    public void updateGUI() {
+        String[] split = requestLabel.getText().split(" ");
+        this.requestLabel.setText(user.getFullName() + " " + split[1] + " " + split[2]);
     }
 
     private void setupGUI(String request, String accept, String deny) {
@@ -37,33 +43,27 @@ public class RequestPanel extends GUI {
         this.denyButton.setText(deny);
     }
 
-    public void updateGUI(User user) {
-        this.user = user;
-        String[] split = requestLabel.getText().split(" ");
-        this.requestLabel.setText(user.getFullName() + " " + split[1] + " " + split[2]);
-    }
-
-    private void setupListeners() {
-
-    }
-
-    private void initForAccountType() {
-
+    @Override
+    public void setupListeners() {
+        acceptButton.addActionListener(e -> acceptFunction());
+        denyButton.addActionListener(e -> denyFunction());
     }
 
     public void acceptFunction() {
         try {
-            guiManager.getClient().server.sendAnswer(user.getId(), 1, guiManager.getClient().userid);
+            getGuiManager().getClient().getServer().sendAnswer(getGuiManager().getClient().getUserId(), user.getUserId(), 1);
+            acceptButton.setBackground(UIManager.getColor("JButton"));
         } catch (RemoteException e) {
-            e.printStackTrace();
+            acceptButton.setBackground(Color.RED);
         }
     }
 
     public void denyFunction() {
         try {
-            guiManager.getClient().server.sendAnswer(user.getId(), 0, guiManager.getClient().userid);
+            getGuiManager().getClient().getServer().sendAnswer(getGuiManager().getClient().getUserId(), user.getUserId(), 0);
+            denyButton.setBackground(UIManager.getColor("JButton"));
         } catch (RemoteException e) {
-            e.printStackTrace();
+            denyButton.setBackground(Color.RED);
         }
     }
 

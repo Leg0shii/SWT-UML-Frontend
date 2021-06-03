@@ -6,7 +6,6 @@ import com.intellij.uiDesigner.core.Spacer;
 import de.swt.drawing.objects.DrawableObject;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
-import de.swt.util.AccountType;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -21,22 +20,22 @@ public class DrawablePanel extends GUI {
     public JPanel drawPanel;
     private JLabel remainingLabel;
     private JButton showTaskButton;
-    private String task;
-    private final Stack<JComponent> drawableObjects;
+    private final Stack<DrawableObject> drawableObjects;
+    private final ShowTaskPanel showTaskPanel;
 
     public DrawablePanel(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.add(mainPanel);
         this.drawPanel.setLayout(null);
         this.drawableObjects = new Stack<>();
 
-        switch (guiManager.language) {
+        switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Aufgabe erstellen", "Verbleibende Zeit:  Minuten", "Aufgabe anzeigen");
             case ENGLISH -> setupGUI("Create Task", "Remaining Time:  Minutes", "Show Task");
         }
 
         setupListeners();
+        initForAccountType();
+        showTaskPanel = new ShowTaskPanel(getGuiManager());
 
         this.drawPanel.setBackground(Color.WHITE);
     }
@@ -45,100 +44,66 @@ public class DrawablePanel extends GUI {
         this.taskButton.setText(task);
         this.remainingLabel.setText(remaining);
         this.showTaskButton.setText(showTask);
-        initPopups(2);
     }
 
     public void updateGUI() {
-        initForAccountType();
+        showTaskPanel.updateGUI();
         revalidate();
-        repaint();
     }
 
-    private void setupListeners() {
-        this.taskButton.addActionListener(e1 -> {
-            if (popupCounter.get(0) % 2 == 0) {
-                CreateTaskPanel createTaskPanel = new CreateTaskPanel(guiManager);
-                createTaskPanel.taskScrollPanel.setPreferredSize(new Dimension(this.getWidth() / 4, this.getHeight() / 4));
-                createTaskPanel.cancelButton.addActionListener(e11 -> {
-                    popups.get(0).hide();
-                    incrementPopupCounter(0);
-                });
-                createTaskPanel.createButton.addActionListener(e12 -> {
-                    createTaskPanel.createFunction();
-                    popups.get(0).hide();
-                    incrementPopupCounter(0);
-                });
-                Point point = new Point(taskButton.getX() - this.getWidth() / 4, taskButton.getY() + taskButton.getHeight());
-                SwingUtilities.convertPointToScreen(point, this);
-                popups.set(0, factory.getPopup(guiManager, createTaskPanel, point.x, point.y));
-                popups.get(0).show();
-            } else {
-                popups.get(0).hide();
-            }
-            incrementPopupCounter(0);
-        });
-        this.showTaskButton.addActionListener(e2 -> {
-            PopupFactory popupFactory = new PopupFactory();
-            if (popupCounter.get(1) % 2 == 0) {
-                ShowTaskPanel showTaskPanel = new ShowTaskPanel(guiManager);
-                showTaskPanel.updateGUI(task);
-                Point point = new Point(showTaskButton.getX() - this.getWidth() / 4, showTaskButton.getY() + showTaskButton.getHeight());
-                SwingUtilities.convertPointToScreen(point, this);
-                popups.set(1, popupFactory.getPopup(guiManager, showTaskPanel, point.x, point.y));
-                popups.get(1).show();
-            } else {
-                popups.get(1).hide();
-            }
-            incrementPopupCounter(1);
-        });
+    public void setupListeners() {
+        switch (getGuiManager().getAccountType()) {
+            case STUDENT -> setupStandardPopup(showTaskButton, showTaskPanel);
+            case TEACHER -> setupStandardPopup(taskButton, new CreateTaskPanel(getGuiManager()));
+        }
     }
 
     private void initForAccountType() {
-        if (guiManager.accountType == AccountType.STUDENT) {
-            this.mainPanel.remove(taskButton);
-        } else {
-            this.mainPanel.remove(showTaskButton);
+        switch (getGuiManager().getAccountType()) {
+            case STUDENT -> mainPanel.remove(taskButton);
+            case TEACHER -> mainPanel.remove(showTaskButton);
+            case ADMIN -> {
+                mainPanel.remove(showTaskButton);
+                mainPanel.remove(taskButton);
+            }
         }
     }
 
     public void setTask(String task) {
-        this.task = task;
+        showTaskPanel.setTask(task);
     }
 
-    public void addToDrawPanel(JComponent component) {
-        DrawableObject object = (DrawableObject) component;
+    public void addToDrawPanel(DrawableObject object) {
         if (object == null) {
             return;
         }
-        object.init(guiManager);
+        object.init(getGuiManager());
         drawPanel.add(object);
         drawableObjects.add(object);
         drawPanel.repaint();
     }
 
     public void removeInteraction() {
-        for (JComponent object : drawableObjects) {
-            DrawableObject object1 = (DrawableObject) object;
-            object1.removeInteraction();
+        for (DrawableObject object : drawableObjects) {
+            object.removeInteraction();
         }
     }
 
     public void addInteraction() {
-        for (JComponent object : drawableObjects) {
-            DrawableObject object1 = (DrawableObject) object;
-            object1.init(guiManager);
+        for (DrawableObject object : drawableObjects) {
+            object.init(getGuiManager());
         }
     }
 
     public boolean removeLastDrawnObject() {
         if (!drawableObjects.isEmpty()) {
-            DrawableObject object = (DrawableObject) drawableObjects.pop();
+            DrawableObject object = drawableObjects.pop();
             if (!object.getClass().getSimpleName().matches("Thumb.*")) {
-                object.closeAllPopups();
                 drawPanel.remove(object);
                 drawPanel.repaint();
                 return true;
             } else {
+                removeLastDrawnObject();
                 drawableObjects.push(object);
                 return false;
             }
@@ -146,46 +111,37 @@ public class DrawablePanel extends GUI {
         return false;
     }
 
-    public void closeAllPopups() {
-        for (Popup popup : popups) {
-            popupCounter.set(popups.indexOf(popup), 0);
-            popup.hide();
-        }
+    public DrawableObject[] getDrawnObjects() {
+        ArrayList<DrawableObject> objects = new ArrayList<>();
         for (Component component : drawPanel.getComponents()) {
             DrawableObject object = (DrawableObject) component;
-            object.closeAllPopups();
-        }
-    }
-
-    public Component[] getDrawnObjects() {
-        ArrayList<Component> components = new ArrayList<>();
-        for (Component component : drawPanel.getComponents()) {
-            if (!component.getClass().getSimpleName().matches("Thumb.*")) {
-                components.add(component);
+            if (!object.getClass().getSimpleName().matches("Thumb.*")) {
+                objects.add(object);
             }
         }
-        return components.toArray(new Component[0]);
+        return (DrawableObject[]) objects.toArray();
     }
 
-    public Component[] getAnnotations() {
-        ArrayList<Component> components = new ArrayList<>();
+    public DrawableObject[] getAnnotations() {
+        ArrayList<DrawableObject> objects = new ArrayList<>();
         for (Component component : drawPanel.getComponents()) {
-            if (component.getClass().getSimpleName().matches("Thumb.*")) {
-                components.add(component);
+            DrawableObject object = (DrawableObject) component;
+            if (object.getClass().getSimpleName().matches("Thumb.*")) {
+                objects.add(object);
             }
         }
-        return components.toArray(new Component[0]);
+        return (DrawableObject[]) objects.toArray();
     }
 
     public boolean removeLastAnnotations() {
         if (!drawableObjects.isEmpty()) {
-            DrawableObject object = (DrawableObject) drawableObjects.pop();
+            DrawableObject object = drawableObjects.pop();
             if (object.getClass().getSimpleName().matches("Thumb.*")) {
-                object.closeAllPopups();
                 drawPanel.remove(object);
                 drawPanel.repaint();
                 return true;
             } else {
+                removeLastAnnotations();
                 drawableObjects.push(object);
                 return false;
             }
@@ -193,24 +149,21 @@ public class DrawablePanel extends GUI {
         return false;
     }
 
-    public void removeAllIndexedObjects(Component[] objects) {
-        ArrayList<DrawableObject> componentsToRemove = new ArrayList<>();
-        for (Component component : objects) {
-            DrawableObject object = (DrawableObject) component;
+    public void removeAllIndexedObjects(DrawableObject[] objects) {
+        ArrayList<DrawableObject> objectsToRemove = new ArrayList<>();
+        for (DrawableObject object : objects) {
             if (object == null) {
                 return;
             }
-            for (JComponent stackComponent : drawableObjects) {
-                DrawableObject stackObject = (DrawableObject) stackComponent;
+            for (DrawableObject stackObject : drawableObjects) {
                 if (Arrays.equals(object.getID(), stackObject.getID())) {
-                    componentsToRemove.add(stackObject);
+                    objectsToRemove.add(stackObject);
                 }
             }
         }
-        for (DrawableObject object1 : componentsToRemove) {
-            object1.closeAllPopups();
-            drawPanel.remove(object1);
-            drawableObjects.remove(object1);
+        for (DrawableObject object : objectsToRemove) {
+            drawPanel.remove(object);
+            drawableObjects.remove(object);
         }
     }
 

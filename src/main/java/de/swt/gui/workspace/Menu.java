@@ -18,7 +18,7 @@ public class Menu extends JMenuBar {
 
     public Menu(GUIManager guiManager) {
         this.guiManager = guiManager;
-        switch (guiManager.language) {
+        switch (guiManager.getLanguage()) {
             case GERMAN -> setupMenu("Datei", "Datei speichern", "Datei laden", "Zur Klassenraumübersicht", "Ausloggen");
             case ENGLISH -> setupMenu("File", "Save file", "Load file", "To Classrooms", "Log off");
         }
@@ -43,7 +43,7 @@ public class Menu extends JMenuBar {
     private void setupListeners() {
         saveFile.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
-            int returnVal = fileChooser.showSaveDialog(guiManager.workspaceGUI);
+            int returnVal = fileChooser.showSaveDialog(guiManager);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 if (!file.getName().endsWith(".ser")) {
@@ -57,7 +57,7 @@ public class Menu extends JMenuBar {
             JFileChooser fileChooser = new JFileChooser();
             FileNameExtensionFilter filter = new FileNameExtensionFilter("Serialized Object (*.ser)", "ser");
             fileChooser.setFileFilter(filter);
-            int returnVal = fileChooser.showOpenDialog(guiManager.workspaceGUI);
+            int returnVal = fileChooser.showOpenDialog(guiManager);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 guiManager.loadWorkspace(file);

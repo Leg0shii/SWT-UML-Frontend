@@ -4,23 +4,28 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
+import de.swt.logic.group.Group;
 import de.swt.util.Language;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.rmi.RemoteException;
 
+@Getter
+@Setter
 public class GroupButtonPanel extends GUI {
     private JPanel mainPanel;
-    public JButton watchButton;
-    public JButton terminateButton;
+    private JButton watchButton;
+    private JButton terminateButton;
+    private Group group;
 
     public GroupButtonPanel(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.add(mainPanel);
 
-        switch (guiManager.language) {
+        switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Terminieren", "Zuschauen");
             case ENGLISH -> setupGUI("Terminate", "Watch");
         }
@@ -33,16 +38,62 @@ public class GroupButtonPanel extends GUI {
         this.watchButton.setText(watch);
     }
 
+    @Override
     public void updateGUI() {
-
+        if (getGuiManager().getClient().getCurrentGroup() != null){
+            switch (getGuiManager().getLanguage()) {
+                case GERMAN -> setupGUI("Terminieren", "Verlassen");
+                case ENGLISH -> setupGUI("Terminate", "Leave");
+            }
+        } else {
+            switch (getGuiManager().getLanguage()) {
+                case GERMAN -> setupGUI("Terminieren", "Zuschauen");
+                case ENGLISH -> setupGUI("Terminate", "Watch");
+            }
+        }
+        setupListeners();
     }
 
-    private void setupListeners() {
-
+    @Override
+    public void setupListeners() {
+        watchButton.removeAll();
+        terminateButton.removeAll();
+        if (getGuiManager().getClient().getCurrentGroup() != null){
+            terminateButton.addActionListener(e -> terminateFunction());
+            watchButton.addActionListener(e -> watchFunction());
+        } else {
+            terminateButton.addActionListener(e -> terminateFunction());
+            watchButton.addActionListener(e -> leaveFunction());
+        }
     }
 
-    private void initForAccountType() {
+    private void leaveFunction() {
+        group.getUserIds().remove(getGuiManager().getClient().getUserId());
+        try {
+            getGuiManager().getClient().getServer().updateGroup(group);
+            watchButton.setBackground(UIManager.getColor("JButton"));
+        } catch (RemoteException e) {
+            watchButton.setBackground(Color.RED);
+        }
+    }
 
+    private void terminateFunction() {
+        try {
+            getGuiManager().getClient().getServer().deleteGroup(group.getGroupId());
+            terminateButton.setBackground(UIManager.getColor("JButton"));
+        } catch (RemoteException e) {
+            terminateButton.setBackground(Color.RED);
+        }
+    }
+
+    private void watchFunction(){
+        group.getUserIds().add(getGuiManager().getClient().getUserId());
+        try {
+            getGuiManager().getClient().getServer().updateGroup(group);
+            watchButton.setBackground(UIManager.getColor("JButton"));
+        } catch (RemoteException e) {
+            watchButton.setBackground(Color.RED);
+        }
     }
 
     {

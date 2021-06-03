@@ -34,14 +34,12 @@ public class ObjectListPanel extends GUI {
 
     public ObjectListPanel(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.add(mainPanel);
         this.objectScrollPanel.setViewportView(objectList);
         this.objectList.setLayout(new GridLayout(0, 1));
         this.groupsList = new ArrayList<>();
         this.users = new ArrayList<>();
 
-        switch (guiManager.language) {
+        switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Teilnehmer", "Gruppen", "Gruppe");
             case ENGLISH -> setupGUI("Participants", "Groups", "Group");
         }
@@ -54,186 +52,88 @@ public class ObjectListPanel extends GUI {
         this.groups = groups;
         this.group = group;
         this.showGroups = false;
-        initPopups(2);
-    }
-
-    public void updateGUI(List<Group> groups, List<User> users) {
-        this.groupsList = groups;
-        this.users = users;
-        if (groupsList.isEmpty()) {
-            showGroups = false;
-        }
-        setupObjectButtons(groups, users);
-        if (showGroups) {
-            this.headerLabel.setText(this.groups);
-            this.switchButton.setText(this.participants);
-        } else {
-            this.headerLabel.setText(participants);
-            this.switchButton.setText(this.groups);
-        }
         initForAccountType();
-        this.revalidate();
     }
 
+    @Override
     public void updateGUI() {
+        groupsList.clear();
+        users.clear();
+        groupsList = getGuiManager().getRelevantGroups();
+        ArrayList<Integer> userIds = getGuiManager().getClient().getCurrentSession().getUserIds();
+        for (int id : userIds) {
+            try {
+                users.add(getGuiManager().getClient().getUserManager().load(id));
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+        }
         if (groupsList.isEmpty()) {
             showGroups = false;
         }
-        setupObjectButtons(groupsList, users);
+        setupObjectButtons();
         if (showGroups) {
             this.headerLabel.setText(this.groups);
             this.switchButton.setText(this.participants);
         } else {
-            this.headerLabel.setText(participants);
+            this.headerLabel.setText(this.participants);
             this.switchButton.setText(this.groups);
         }
-        initForAccountType();
-        this.revalidate();
+        revalidate();
     }
 
-    private void setupListeners() {
+    @Override
+    public void setupListeners() {
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.add(new CreateGroupPanel(getGuiManager()));
+        switchButton.setComponentPopupMenu(popupMenu);
         this.switchButton.addActionListener(e1 -> {
-                    if (!groupsList.isEmpty()) {
-                        closeAllPopups();
-                        this.showGroups = !this.showGroups;
-                        this.updateGUI(this.groupsList, this.users);
-                    } else {
-
-                        if (popupCounter.get(1) % 2 == 0) {
-                            PopupFactory factory1 = new PopupFactory();
-                            CreateGroupPanel createGroupPanel = new CreateGroupPanel(guiManager);
-                            createGroupPanel.cancelButton.addActionListener(e -> {
-                                popups.get(1).hide();
-                                incrementPopupCounter(1);
-                            });
-                            createGroupPanel.createButton.addActionListener(e -> {
-                                popups.get(1).hide();
-                                incrementPopupCounter(1);
-                            });
-                            Point point = new Point(switchButton.getX() + switchButton.getWidth(), switchButton.getY());
-                            SwingUtilities.convertPointToScreen(point, guiManager);
-                            popups.get(1).hide();
-                            popups.set(1, factory1.getPopup(guiManager, createGroupPanel.mainPanel, point.x, point.y));
-                            popups.get(1).show();
-                        } else {
-                            popups.get(1).hide();
-                        }
-                        incrementPopupCounter(1);
-                    }
+                if (!groupsList.isEmpty()) {
+                    showGroups = !showGroups;
+                    updateGUI();
+                } else {
+                    switchButton.getComponentPopupMenu().show(switchButton,0,0);
                 }
+            }
         );
     }
 
     public void initForAccountType() {
-        if (guiManager.accountType == AccountType.STUDENT) {
+        if (getGuiManager().getAccountType().equals(AccountType.STUDENT)) {
             this.mainPanel.remove(switchButton);
         }
     }
 
-    private void setupObjectButtons(List<Group> groups, List<User> users) {
+    private void setupObjectButtons() {
         this.objectList.removeAll();
-        popups.subList(2, popups.size()).clear();
-        popupCounter.subList(2, popupCounter.size()).clear();
-        int counter = 2;
         if (showGroups) {
-            for (Group group : groups) {
+            for (Group group : groupsList) {
                 JButton objectButton = new JButton();
-                objectButton.setText(this.group + " " + group.getId());
-                setupListenerForObjectButton(objectButton, group, counter);
-                counter += 1;
+                objectButton.setText(this.group + " " + group.getGroupId());
+                setupListenerForObjectButton(objectButton, group);
                 this.objectList.add(objectButton);
             }
         } else {
             for (User user : users) {
                 JButton objectButton = new JButton();
                 objectButton.setText(user.getFullName());
-                if (guiManager.accountType != AccountType.STUDENT) {
-                    setupListenerForObjectButton(objectButton, user, counter);
-                    counter += 1;
+                if (getGuiManager().getAccountType() != AccountType.STUDENT || user.getUserId() == getGuiManager().getClient().getUserId()) {
+                    setupListenerForObjectButton(objectButton, user);
                 }
                 this.objectList.add(objectButton);
             }
         }
     }
 
-    private void setupListenerForObjectButton(JButton objectButton, Object object, int n) {
-        initPopups(1);
+    private void setupListenerForObjectButton(JButton objectButton, Object object) {
         if (showGroups) {
-            objectButton.addActionListener(e -> {
-                if (popupCounter.get(n) % 2 == 0) {
-                    GroupButtonPanel groupButtonPanel = new GroupButtonPanel(guiManager);
-                    groupButtonPanel.terminateButton.addActionListener(e1 -> {
-                        terminateGroup((Group) object);
-                        objectList.remove(objectButton);
-                        popups.get(n).hide();
-                    });
-                    groupButtonPanel.watchButton.addActionListener(e2 -> watchGroup((Group) object));
-                    Point point = new Point(objectButton.getX() + objectButton.getWidth(), objectButton.getY());
-                    SwingUtilities.convertPointToScreen(point, objectList);
-                    popups.get(n).hide();
-                    popups.set(n, factory.getPopup(guiManager, groupButtonPanel, point.x, point.y));
-                    popups.get(n).show();
-                } else {
-                    popups.get(n).hide();
-                }
-                incrementPopupCounter(n);
-                revalidate();
-            });
+            GroupButtonPanel groupButtonPanel = new GroupButtonPanel(getGuiManager());
+            groupButtonPanel.setGroup((Group) object);
+            setupStandardPopup(objectButton, groupButtonPanel);
         } else {
-            objectButton.addActionListener(e -> {
-                if (popupCounter.get(n) % 2 == 0) {
-                    UserButtonPanel userButtonPanel = new UserButtonPanel(guiManager);
-                    userButtonPanel.kickButton.addActionListener(e1 -> {
-                        ObjectListPanel.this.removeStudent((User) object);
-                        ObjectListPanel.this.objectList.remove(objectButton);
-                        popups.get(n).hide();
-                    });
-                    Point point = new Point(objectButton.getX() + objectButton.getWidth(), objectButton.getY());
-                    SwingUtilities.convertPointToScreen(point, objectList);
-                    popups.get(n).hide();
-                    popups.set(n, factory.getPopup(guiManager, userButtonPanel, point.x, point.y));
-                    popups.get(n).show();
-                } else {
-                    popups.get(n).hide();
-                }
-                incrementPopupCounter(n);
-                revalidate();
-            });
-        }
-    }
-
-    private void removeStudent(User user) {
-        Session session = guiManager.currentSession;
-        session.getParticipants().remove((Integer) user.getId());
-        try {
-            guiManager.getClient().server.sendSession(session, session.getId(), true);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void terminateGroup(Group group) {
-        Session session = guiManager.currentSession;
-        session.getGroups().remove((Integer) group.getId());
-        try {
-            guiManager.getClient().server.sendSession(session, session.getId(), true);
-            guiManager.getClient().server.deleteGroup(group.getId());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void watchGroup(Group group) {
-        try {
-            guiManager.currentGroup = guiManager.getClient().groupManager.loadGroup(group.getId());
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        guiManager.currentGroup.getParticipants().add(guiManager.getClient().userid);
-        try {
-            guiManager.getClient().server.sendGroup(guiManager.currentGroup, guiManager.currentGroup.getId(), true);
-        } catch (RemoteException e) {
-            e.printStackTrace();
+            UserButtonPanel userButtonPanel = new UserButtonPanel(getGuiManager());
+            userButtonPanel.setUser((User) object);
+            setupStandardPopup(objectButton, userButtonPanel);
         }
     }
 

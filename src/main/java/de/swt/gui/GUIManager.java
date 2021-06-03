@@ -41,7 +41,7 @@ public class GUIManager extends JFrame {
 
     private int drawableObjectCounter;
 
-    private WorkspaceState state;
+    private WorkspaceState workspaceState;
 
     public GUIManager(Language language) {
         super("E-Learning Software");
@@ -54,7 +54,7 @@ public class GUIManager extends JFrame {
         this.childrenGUI = new ArrayList<>();
         this.drawableObjectCounter = 0;
 
-        this.state = WorkspaceState.EDITING;
+        this.workspaceState = WorkspaceState.EDITING;
     }
 
     public void setupGUIS() {

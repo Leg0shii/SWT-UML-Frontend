@@ -9,6 +9,8 @@ import de.swt.logic.session.Session;
 import de.swt.logic.user.User;
 import de.swt.util.AccountType;
 import de.swt.util.NextDate;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -21,32 +23,61 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
+@Setter
+@Getter
 public class GradePanel extends GUI {
     private Course course;
     private JPanel mainPanel;
-    public JButton enterButton;
-    public JButton editButton;
+    private JButton enterButton;
+    private JButton editButton;
     private JLabel dateLabel;
     private JLabel teacherLabel;
     private JLabel nextDateLabel;
     private JLabel thisTeacherLabel;
     private JLabel gradeHeaderLabel;
-    public int grade;
     private final EditClassroomPanel editClassroomPanel;
     private final AdminEditClassroomPanel adminEditClassroomPanel;
 
     public GradePanel(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.add(mainPanel);
-        switch (guiManager.language) {
+        switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Beitreten", "Bearbeiten", "Lehrer", "Termin", "Klasse");
             case ENGLISH -> setupGUI("Enter", "Edit", "Teacher", "Date", "Grade");
         }
-        setupActionListeners(guiManager.accountType);
+        setupListeners();
 
         this.editClassroomPanel = new EditClassroomPanel(guiManager);
         this.adminEditClassroomPanel = new AdminEditClassroomPanel(guiManager);
+    }
+
+    @Override
+    public void updateGUI() {
+        this.gradeHeaderLabel.setText(gradeHeaderLabel.getText().split(" ")[0] + " " + course.getGrade() + " " + course.getGradeName());
+        try {
+            User teacher = getGuiManager().getClient().getUserManager().load(course.getTeacherId());
+            this.thisTeacherLabel.setText(teacher.getFullName());
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        String date = getNextSessionDate();
+        this.nextDateLabel.setText(date);
+        this.editClassroomPanel.setCourse(course);
+        this.adminEditClassroomPanel.setCourse(course);
+    }
+
+    @Override
+    public void setupListeners() {
+        switch (getGuiManager().getAccountType()) {
+            case ADMIN -> {
+                setupStandardPopup(editButton, adminEditClassroomPanel);
+                enterButton.addActionListener(e -> enterFunction());
+            }
+            case STUDENT -> enterButton.addActionListener(e -> enterFunction());
+            case TEACHER -> {
+                setupStandardPopup(editButton, editClassroomPanel);
+                enterButton.addActionListener(e -> enterFunction());
+            }
+        }
     }
 
     private void setupGUI(String enter, String edit, String teacher, String date, String grade) {
@@ -55,106 +86,6 @@ public class GradePanel extends GUI {
         this.teacherLabel.setText(teacher);
         this.dateLabel.setText(date);
         this.gradeHeaderLabel.setText(grade + " ");
-        initPopups(1);
-    }
-
-    public void updateGUI(Course course) {
-        this.course = course;
-        this.gradeHeaderLabel.setText(gradeHeaderLabel.getText().split(" ")[0] + " " + course.getGrade() + " " + course.getName());
-        this.grade = course.getGrade();
-        this.thisTeacherLabel.setText(course.getTeacher().getFullName());
-        String date = getNextSessionDate();
-        this.nextDateLabel.setText(date);
-        this.editClassroomPanel.setCourse(course);
-        this.adminEditClassroomPanel.setCourse(course);
-    }
-
-    private void initForAccountType() {
-        removeAllListeners();
-        setupActionListeners(guiManager.accountType);
-    }
-
-    private void removeAllListeners() {
-        editButton.removeAll();
-        enterButton.removeAll();
-    }
-
-    public void setupActionListeners(AccountType accountType) {
-        switch (accountType) {
-            case ADMIN -> {
-                this.editButton.addActionListener(e1 -> {
-                    Point point = new Point(this.editButton.getX() - 2, 0);
-                    SwingUtilities.convertPointToScreen(point, this);
-                    adminEditClassroomPanel.setPreferredSize(new Dimension(this.getWidth() + 1, this.getHeight() + 1));
-                    adminEditClassroomPanel.cancelButton.addActionListener(e11 -> popups.get(0).hide());
-                    adminEditClassroomPanel.deleteButton.addActionListener(e12 -> {
-                        adminEditClassroomPanel.deleteFunction();
-                        popups.get(0).hide();
-                    });
-                    adminEditClassroomPanel.migrateButton.addActionListener(e13 -> {
-                        adminEditClassroomPanel.migrateFunction();
-                        popups.get(0).hide();
-                    });
-                    adminEditClassroomPanel.resetButton.addActionListener(e14 -> {
-                        adminEditClassroomPanel.resetFunction();
-                        popups.get(0).hide();
-                    });
-                    popups.set(0, factory.getPopup(guiManager, adminEditClassroomPanel, point.x, point.y));
-                    popups.get(0).show();
-                });
-                this.enterButton.addActionListener(e2 -> this.enterFunction());
-            }
-            case TEACHER -> {
-                this.editButton.addActionListener(e1 -> {
-                    Point point = new Point(this.editButton.getX() - 2, 0);
-                    SwingUtilities.convertPointToScreen(point, this);
-                    editClassroomPanel.setPreferredSize(new Dimension(this.getWidth(), this.getHeight()));
-                    editClassroomPanel.cancelButton.addActionListener(e11 -> popups.get(0).hide());
-                    editClassroomPanel.doneButton.addActionListener(e12 -> {
-                        editClassroomPanel.doneFunction();
-                        popups.get(0).hide();
-                    });
-                    popups.set(0, factory.getPopup(guiManager, editClassroomPanel, point.x, point.y));
-                    popups.get(0).show();
-                });
-                this.enterButton.addActionListener(e2 -> this.enterFunction());
-            }
-            case STUDENT -> {
-                this.enterButton.addActionListener(e3 -> this.enterFunction());
-            }
-        }
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
-    public JPanel getMainPanel() {
-        return mainPanel;
-    }
-
-    public String getNextDate() {
-        return nextDateLabel.getText();
-    }
-
-    public User getThisTeacher() {
-        return course.getTeacher();
-    }
-
-    public String getGradePlusGradeName() {
-        return course.getGrade() + " " + course.getName();
-    }
-
-    public EditClassroomPanel getEditClassroomPanel() {
-        return editClassroomPanel;
-    }
-
-    public AdminEditClassroomPanel getAdminEditClassroomPanel() {
-        return adminEditClassroomPanel;
     }
 
     private String getNextSessionDate() {
@@ -180,39 +111,79 @@ public class GradePanel extends GUI {
     }
 
     private void enterFunction() {
-        try {
-            if (guiManager.accountType.equals(AccountType.TEACHER) || guiManager.getClient().userManager.loadUser(guiManager.getClient().userid).getCourse().contains(course.getId())) {
-                Session session = guiManager.getClient().sessionManager.getSessionFromTeacherId(course.getTeacherID());
-                if (session == null) {
-                    if (guiManager.accountType.equals(AccountType.TEACHER)) {
-                        Session newSession = new Session();
-                        newSession.getMaster().add(guiManager.getClient().userid);
-                        newSession.setRemainingTime(System.currentTimeMillis() + (120 * 60000));
-                        newSession.getParticipants().add(guiManager.getClient().userid);
-                        newSession = guiManager.getClient().server.sendSession(newSession, -1, true);
-                        guiManager.switchToWorkspaceGUI();
-                        guiManager.currentSession = newSession;
-                    } else {
-                        enterButton.setBackground(Color.RED);
-                        switch (guiManager.language) {
-                            case ENGLISH:
-                                enterButton.setText("Session not yet open");
-                            case GERMAN:
-                                enterButton.setText("Session nicht offen");
-                        }
+        if (getGuiManager().getAccountType().equals(AccountType.TEACHER)) {
+            Session session = getGuiManager().getClient().getSessionManager().getSessionFromTeacherId(getGuiManager().getClient().getUserId());
+            if (session != null) {
+                session.getUserIds().add(getGuiManager().getClient().getUserId());
+                try {
+                    getGuiManager().getClient().getServer().updateSession(session);
+                    getGuiManager().switchToWorkspaceGUI();
+                    enterButton.setBackground(UIManager.getColor("JButton"));
+                } catch (RemoteException e) {
+                    switch (getGuiManager().getLanguage()) {
+                        case GERMAN -> enterButton.setText("Beitreten schlug fehl");
+                        case ENGLISH -> enterButton.setText("Entering failed");
                     }
-                } else {
-                    session.getParticipants().add(guiManager.getClient().userid);
-                    session = guiManager.getClient().server.sendSession(session, -1, true);
-                    guiManager.switchToWorkspaceGUI();
-                    guiManager.currentSession = session;
+                    enterButton.setBackground(Color.RED);
+                }
+            } else if (course.getTeacherId() == getGuiManager().getClient().getUserId()) {
+                session = new Session();
+                session.getMasterIds().add(getGuiManager().getClient().getUserId());
+                session.setRemainingTime(System.currentTimeMillis() + (120 * 60000));
+                session.getUserIds().add(getGuiManager().getClient().getUserId());
+                try {
+                    getGuiManager().getClient().getServer().updateSession(session);
+                    getGuiManager().switchToWorkspaceGUI();
+                    enterButton.setBackground(UIManager.getColor("JButton"));
+                } catch (RemoteException e) {
+                    switch (getGuiManager().getLanguage()) {
+                        case GERMAN -> enterButton.setText("Session eröffnen schlug fehl");
+                        case ENGLISH -> enterButton.setText("Creating Session failed");
+                    }
+                    enterButton.setBackground(Color.RED);
                 }
             } else {
-                guiManager.getClient().server.sendRequest(guiManager.getClient().userid, course.getTeacherID());
+                switch (getGuiManager().getLanguage()) {
+                    case GERMAN -> enterButton.setText("Keine Berechtigung");
+                    case ENGLISH -> enterButton.setText("No Rights");
+                }
+                enterButton.setBackground(Color.RED);
             }
-
-        } catch (SQLException | RemoteException throwables) {
-            throwables.printStackTrace();
+        } else {
+            Session session = getGuiManager().getClient().getSessionManager().getSessionFromTeacherId(getGuiManager().getClient().getUserId());
+            if (session != null) {
+                if (course.getUserIds().contains(getGuiManager().getClient().getUserId())) {
+                    session.getUserIds().add(getGuiManager().getClient().getUserId());
+                    try {
+                        getGuiManager().getClient().getServer().updateSession(session);
+                        getGuiManager().switchToWorkspaceGUI();
+                        enterButton.setBackground(UIManager.getColor("JButton"));
+                    } catch (RemoteException e) {
+                        switch (getGuiManager().getLanguage()) {
+                            case GERMAN -> enterButton.setText("Beitreten schlug fehl");
+                            case ENGLISH -> enterButton.setText("Entering failed");
+                        }
+                        enterButton.setBackground(Color.RED);
+                    }
+                } else {
+                    try {
+                        getGuiManager().getClient().getServer().sendRequest(getGuiManager().getClient().getUserId(), session.getMasterIds().get(0));
+                        enterButton.setBackground(UIManager.getColor("JButton"));
+                    } catch (RemoteException e) {
+                        switch (getGuiManager().getLanguage()) {
+                            case GERMAN -> enterButton.setText("Anfrage schicken fehlgeschlagen");
+                            case ENGLISH -> enterButton.setText("Sending request failed");
+                        }
+                        enterButton.setBackground(Color.RED);
+                    }
+                }
+            } else {
+                switch (getGuiManager().getLanguage()) {
+                    case GERMAN -> enterButton.setText("Session nicht offen");
+                    case ENGLISH -> enterButton.setText("Session not open");
+                }
+                enterButton.setBackground(Color.RED);
+            }
         }
     }
 

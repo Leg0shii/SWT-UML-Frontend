@@ -10,7 +10,7 @@ import java.awt.*;
 @Getter
 public abstract class GUI extends JPanel {
     private GUIManager guiManager;
-    JPanel mainPanel;
+    private JPanel mainPanel;
 
     public GUI(GUIManager guiManager){
         this.guiManager = guiManager;
@@ -22,4 +22,11 @@ public abstract class GUI extends JPanel {
     abstract public void updateGUI();
 
     abstract public void setupListeners();
+
+    public void setupStandardPopup(JButton button, GUI popup){
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.add(popup);
+        button.setComponentPopupMenu(popupMenu);
+        button.addActionListener(e -> button.getComponentPopupMenu().show(button, 0, 0));
+    }
 }

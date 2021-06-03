@@ -5,17 +5,12 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.logic.group.Group;
-import de.swt.logic.session.Session;
-import de.swt.util.Language;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class CreateGroupPanel extends GUI {
     public JPanel mainPanel;
@@ -23,7 +18,6 @@ public class CreateGroupPanel extends GUI {
     private JTextField sizeTextField;
     private JTextField durationTextField;
     public JButton createButton;
-    public JButton cancelButton;
     private JLabel headerLabel;
     private JLabel numberLabel;
     private JLabel sizeLabel;
@@ -32,38 +26,30 @@ public class CreateGroupPanel extends GUI {
 
     public CreateGroupPanel(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new GridLayout(1, 1));
-        this.add(mainPanel);
-
-        switch (guiManager.language) {
-            case GERMAN -> setupGUI("Gruppen erstellen", "Anzahl", "Gruppengröße", "Öffnungsdauer", "in Minuten", "Erstellen", "Abbrechen");
-            case ENGLISH -> setupGUI("Create Groups", "Count", "Size", "Duration", "in minutes", "Create", "Cancel");
+        switch (guiManager.getLanguage()) {
+            case GERMAN -> setupGUI("Gruppen erstellen", "Anzahl", "Gruppengröße", "Öffnungsdauer", "in Minuten", "Erstellen");
+            case ENGLISH -> setupGUI("Create Groups", "Count", "Size", "Duration", "in minutes", "Create");
         }
 
         setupListeners();
     }
 
-    private void setupGUI(String header, String number, String size, String duration, String unit, String create, String cancel) {
+    private void setupGUI(String header, String number, String size, String duration, String unit, String create) {
         this.headerLabel.setText(header);
         this.numberLabel.setText(number);
         this.sizeLabel.setText(size);
         this.durationLabel.setText(duration);
         this.unitLabel.setText(unit);
         this.createButton.setText(create);
-        this.cancelButton.setText(cancel);
     }
 
     public void updateGUI() {
-
+        revalidate();
     }
 
-    // TODO: add Cancel Button Action Listener in PopUp superclass
-    private void setupListeners() {
+    @Override
+    public void setupListeners() {
         this.createButton.addActionListener(e -> createFunction());
-    }
-
-    private void initForAccountType() {
-
     }
 
     public int getNumberText() {
@@ -81,20 +67,14 @@ public class CreateGroupPanel extends GUI {
     private void createFunction() {
         for (int i = 0; i < getNumberText(); i++) {
             Group group = new Group();
-            group.setCourseID(guiManager.currentSession.getId());
+            group.setSessionId(getGuiManager().getClient().getCurrentSession().getSessionId());
             group.setTimeTillTermination(System.currentTimeMillis() + (getDurationText() * 60000L));
             group.setMaxGroupSize(getSizeText());
-            group.setParticipants(new ArrayList<>());
             try {
-                Group group1 = guiManager.getClient().server.sendGroup(group, -1, true);
-                if (group1 == null) {
-                    i--;
-                } else {
-                    guiManager.getClient().groupManager.cacheAllGroupData();
-                    guiManager.updateGUIS();
-                }
+                getGuiManager().getClient().getServer().updateGroup(group);
+                createButton.setBackground(UIManager.getColor("JButton"));
             } catch (RemoteException e) {
-                e.printStackTrace();
+                createButton.setBackground(Color.RED);
             }
         }
     }
@@ -142,12 +122,9 @@ public class CreateGroupPanel extends GUI {
         unitLabel = new JLabel();
         unitLabel.setText("Label");
         mainPanel.add(unitLabel, new GridConstraints(3, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        cancelButton = new JButton();
-        cancelButton.setText("Button");
-        mainPanel.add(cancelButton, new GridConstraints(4, 3, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         createButton = new JButton();
         createButton.setText("Button");
-        mainPanel.add(createButton, new GridConstraints(4, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainPanel.add(createButton, new GridConstraints(4, 0, 1, 5, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         numberLabel.setLabelFor(numberTextField);
         sizeLabel.setLabelFor(sizeTextField);
         durationLabel.setLabelFor(durationTextField);
