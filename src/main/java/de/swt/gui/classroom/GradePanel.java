@@ -40,14 +40,16 @@ public class GradePanel extends GUI {
 
     public GradePanel(GUIManager guiManager) {
         super(guiManager);
+        this.add(mainPanel);
         switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Beitreten", "Bearbeiten", "Lehrer", "Termin", "Klasse");
             case ENGLISH -> setupGUI("Enter", "Edit", "Teacher", "Date", "Grade");
         }
-        setupListeners();
 
         this.editClassroomPanel = new EditClassroomPanel(guiManager);
         this.adminEditClassroomPanel = new AdminEditClassroomPanel(guiManager);
+
+        setupListeners();
     }
 
     @Override
@@ -69,12 +71,12 @@ public class GradePanel extends GUI {
     public void setupListeners() {
         switch (getGuiManager().getAccountType()) {
             case ADMIN -> {
-                setupStandardPopup(editButton, adminEditClassroomPanel);
+                setupMatchingPopup(editButton, adminEditClassroomPanel, this);
                 enterButton.addActionListener(e -> enterFunction());
             }
             case STUDENT -> enterButton.addActionListener(e -> enterFunction());
             case TEACHER -> {
-                setupStandardPopup(editButton, editClassroomPanel);
+                setupMatchingPopup(editButton, editClassroomPanel, this);
                 enterButton.addActionListener(e -> enterFunction());
             }
         }
@@ -204,7 +206,6 @@ public class GradePanel extends GUI {
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(5, 4, new Insets(0, 0, 0, 0), -1, -1));
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         gradeHeaderLabel = new JLabel();
         gradeHeaderLabel.setHorizontalAlignment(0);
         gradeHeaderLabel.setText("Klasse 10 b");

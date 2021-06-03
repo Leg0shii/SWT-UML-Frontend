@@ -36,12 +36,11 @@ public class ResizingGUI extends GUI {
 
     public ResizingGUI(GUIManager guiManager, ResizableObject associatedObject) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         this.associatedObject = associatedObject;
         colorChooser = new JColorChooser();
 
-        switch (guiManager.language) {
+        switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Beschreibung", "Liniendicke", "Farbe", "Farbe auswählen", "Breite", "Höhe");
             case ENGLISH -> setupGUI("Description", "Line Thickness", "Color", "Choose Color", "Width", "Height");
         }
@@ -73,12 +72,12 @@ public class ResizingGUI extends GUI {
         colorChooser.setPreviewPanel(new JPanel());
 
         this.widthSlider.setMinimum(10);
-        this.widthSlider.setMaximum(guiManager.getWidth() / 2);
+        this.widthSlider.setMaximum(getGuiManager().getWidth() / 2);
         this.widthSlider.setMinorTickSpacing(1);
         this.widthSlider.setPaintLabels(true);
 
         this.heightSlider.setMinimum(10);
-        this.heightSlider.setMaximum(3 * guiManager.getHeight() / 4);
+        this.heightSlider.setMaximum(3 * getGuiManager().getHeight() / 4);
         this.heightSlider.setMinorTickSpacing(1);
         this.heightSlider.setPaintLabels(true);
 
@@ -88,10 +87,9 @@ public class ResizingGUI extends GUI {
         this.colorChooser.setColor(associatedObject.color);
         this.descriptionTextField.setText(associatedObject.description);
         this.descriptionTextField.setEditable(true);
-
-        initPopups(1);
     }
 
+    @Override
     public void updateGUI() {
         this.description = associatedObject.description;
         this.color = associatedObject.color;
@@ -103,7 +101,8 @@ public class ResizingGUI extends GUI {
         this.mainPanel.revalidate();
     }
 
-    private void setupListeners() {
+    @Override
+    public void setupListeners() {
         descriptionTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -123,17 +122,12 @@ public class ResizingGUI extends GUI {
                 updateGUI();
             }
         });
-        colorButton.addActionListener(e -> {
-            if (popupCounter.get(0) % 2 == 0) {
-                Point point = new Point(getX() + getWidth(), getY());
-                SwingUtilities.convertPointToScreen(point, getParent());
-                popups.set(0, factory.getPopup(guiManager, colorChooser, point.x, point.y));
-                popups.get(0).show();
-            } else {
-                popups.get(0).hide();
-            }
-            incrementPopupCounter(0);
-        });
+
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.add(colorChooser);
+        colorButton.setComponentPopupMenu(popupMenu);
+        colorButton.addActionListener(e -> colorButton.getComponentPopupMenu().show(associatedObject, 0, 0));
+
         scaleSlider.addChangeListener(e -> {
             associatedObject.updateComponent(description, convertSliderValue(scaleSlider.getValue()), color, width, height);
             updateGUI();
@@ -173,7 +167,6 @@ public class ResizingGUI extends GUI {
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(5, 6, new Insets(5, 5, 5, 5), -1, -1));
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         descriptionLabel = new JLabel();
         descriptionLabel.setText("Label");
         mainPanel.add(descriptionLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -208,4 +201,5 @@ public class ResizingGUI extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

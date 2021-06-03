@@ -26,6 +26,7 @@ public class AdminEditClassroomPanel extends GUI {
 
     public AdminEditClassroomPanel(GUIManager guiManager) {
         super(guiManager);
+        this.add(mainPanel);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         this.setBorder(BorderFactory.createEtchedBorder());

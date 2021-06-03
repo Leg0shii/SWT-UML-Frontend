@@ -27,31 +27,25 @@ public class WorkspaceGUI extends GUI {
     private JButton sendTaskButton;
     private final ObjectListPanel objectListPanel;
     private final DrawablePanel drawablePanel;
-    private Group selectedGroup;
     private final SymbolListPanel symbolListPanel;
 
     public WorkspaceGUI(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
-        this.objectListPanelPanel.setLayout(new BoxLayout(objectListPanelPanel, BoxLayout.X_AXIS));
-        this.menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.X_AXIS));
-        this.midPanel.setLayout(new BoxLayout(midPanel, BoxLayout.X_AXIS));
-        this.rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.X_AXIS));
+        this.objectListPanelPanel.setLayout(new GridLayout(1, 1));
+        this.menuPanel.setLayout(new GridLayout(1, 1));
+        this.midPanel.setLayout(new GridLayout(1, 1));
+        this.rightPanel.setLayout(new GridLayout(1, 1));
         this.objectListPanel = new ObjectListPanel(guiManager);
         this.drawablePanel = new DrawablePanel(guiManager);
         this.symbolListPanel = new SymbolListPanel(guiManager);
 
-        switch (guiManager.language) {
+        switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Schreibansicht", "Annotierungsansicht", "Abmelden", "Lösung einreichen");
             case ENGLISH -> setupGUI("Writing View", "Annotation View", "Logout", "Send Solution");
         }
 
         setupListeners();
-
-        this.guiManager = guiManager;
-
-        initPopups(3);
     }
 
     private void setupGUI(String write, String annotate, String logout, String sendTask) {
@@ -63,46 +57,29 @@ public class WorkspaceGUI extends GUI {
         this.sendTaskButton.setText(sendTask);
         this.rightPanel.add(symbolListPanel);
 
-        this.menuPanel.add(new Menu(guiManager));
+        this.menuPanel.add(new Menu(getGuiManager()));
+        initForAccountType();
     }
 
+    @Override
     public void updateGUI() {
-        ArrayList<User> users = new ArrayList<>();
-        if (guiManager.currentGroup != null) {
-            for (int id : guiManager.currentGroup.getParticipants()) {
-                if (guiManager.getClient().userManager.getUserHashMap().containsKey(id)) {
-                    users.add(guiManager.getClient().userManager.getUserHashMap().get(id));
-                }
-            }
-            this.drawablePanel.updateGUI();
-            this.objectListPanel.updateGUI(guiManager.getRelevantGroups(), users);
-            this.initForAccountType();
-            this.initForWorkspaceState();
-        } else if (guiManager.currentSession != null) {
-            for (int id : guiManager.currentSession.getParticipants()) {
-                if (guiManager.getClient().userManager.getUserHashMap().containsKey(id)) {
-                    users.add(guiManager.getClient().userManager.getUserHashMap().get(id));
-                }
-            }
-            this.drawablePanel.updateGUI();
-            this.objectListPanel.updateGUI(guiManager.getRelevantGroups(), users);
-            this.initForAccountType();
-            this.initForWorkspaceState();
-        }
-
+        drawablePanel.updateGUI();
+        objectListPanel.updateGUI();
+        symbolListPanel.updateGUI();
+        initForWorkspaceState();
+        revalidate();
     }
 
     private void initForWorkspaceState() {
-        switch (guiManager.state) {
-            case VIEWING: {
+        switch (getGuiManager().getWorkspaceState()) {
+            case VIEWING -> {
                 this.mainPanel.removeAll();
                 this.mainPanel.revalidate();
                 this.mainPanel.add(midPanel, BorderLayout.CENTER);
                 this.drawablePanel.removeEditingOptions();
                 this.mainPanel.revalidate();
-                break;
             }
-            case ANNOTATING: {
+            case ANNOTATING -> {
                 this.mainPanel.removeAll();
                 this.mainPanel.revalidate();
                 this.mainPanel.add(leftPanel, BorderLayout.WEST);
@@ -112,9 +89,8 @@ public class WorkspaceGUI extends GUI {
                 this.symbolListPanel.addAnnotationsOptions();
                 this.symbolListPanel.removeEditingOptions();
                 this.drawablePanel.addEditingOptions();
-                break;
             }
-            case EDITING: {
+            case EDITING -> {
                 this.mainPanel.removeAll();
                 this.mainPanel.revalidate();
                 this.mainPanel.add(leftPanel, BorderLayout.WEST);
@@ -124,106 +100,45 @@ public class WorkspaceGUI extends GUI {
                 this.symbolListPanel.removeAnnotationOptions();
                 this.symbolListPanel.addEditingOptions();
                 this.drawablePanel.addEditingOptions();
-                break;
             }
         }
     }
 
-    private void setupListeners() {
+    @Override
+    public void setupListeners() {
         this.logoutButton.addActionListener(e -> logout());
-        this.writeRadioButton.addActionListener(e1 -> {
-            if (isAnnotate()) {
-                annotationRadioButton.setSelected(false);
-            }
-        });
-        this.annotationRadioButton.addActionListener(e2 -> {
-            if (isWrite()) {
-                writeRadioButton.setSelected(false);
-            }
-        });
-        this.sendTaskButton.addActionListener(e3 -> {
-            if (popupCounter.get(0) % 2 == 0) {
-                SubmitTaskPanel submitTaskPanel = new SubmitTaskPanel(guiManager);
-                submitTaskPanel.yesButton.addActionListener(e21 -> {
-                    submitTaskPanel.yesFunction();
-                    popups.get(0).hide();
-                    incrementPopupCounter(0);
-                });
-                submitTaskPanel.noButton.addActionListener(e22 -> {
-                    popups.get(0).hide();
-                    incrementPopupCounter(0);
-                });
-                Point point = new Point(sendTaskButton.getX() + sendTaskButton.getWidth(), sendTaskButton.getY());
-                SwingUtilities.convertPointToScreen(point, this.leftPanel);
-                popups.get(0).hide();
-                popups.set(0, factory.getPopup(this.leftPanel, submitTaskPanel, point.x, point.y));
-                popups.get(0).show();
-            } else {
-                popups.get(0).hide();
-            }
-            incrementPopupCounter(0);
-        });
+        setupPopupToTheRight(sendTaskButton, new SubmitTaskPanel(getGuiManager()));
     }
 
     private void initForAccountType() {
-        if (guiManager.accountType != AccountType.STUDENT) {
+        if (getGuiManager().getAccountType() != AccountType.STUDENT) {
             this.leftPanel.remove(sendTaskButton);
         }
-        if (guiManager.accountType == AccountType.STUDENT) {
+        if (getGuiManager().getAccountType() == AccountType.STUDENT) {
             this.leftPanel.remove(annotationRadioButton);
             this.leftPanel.remove(writeRadioButton);
         }
     }
 
     private void logout() {
-        // logs out user
-        guiManager.switchToLoginGUI();
-    }
-
-    public boolean isWrite() {
-        return writeRadioButton.isSelected();
-    }
-
-    public boolean isAnnotate() {
-        return annotationRadioButton.isSelected();
+        getGuiManager().switchToLoginGUI();
     }
 
     public void sendRequest(User user) {
-        RequestPanel requestPanel = new RequestPanel(guiManager);
-        requestPanel.updateGUI(user);
-        Point point = new Point(rightPanel.getX() - rightPanel.getWidth(), rightPanel.getY() + rightPanel.getHeight() - 100);
-        SwingUtilities.convertPointToScreen(point, this.midPanel);
-        popups.get(1).hide();
-        popups.set(1, factory.getPopup(this, requestPanel, point.x, point.y));
-        popups.get(1).show();
-        requestPanel.denyButton.addActionListener(e1 -> {
-            requestPanel.denyFunction();
-            popups.get(1).hide();
-        });
-        requestPanel.acceptButton.addActionListener(e2 -> {
-            requestPanel.acceptFunction();
-            popups.get(1).hide();
-        });
+        RequestPanel requestPanel = new RequestPanel(getGuiManager());
+        requestPanel.setUser(user);
+        requestPanel.updateGUI();
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.add(requestPanel);
+        popupMenu.show(getGuiManager(), getGuiManager().getWidth() - 100, getGuiManager().getHeight() - 100);
     }
 
     public void sendTaskProposition() {
-        SelectGroupPanel selectGroupPanel = new SelectGroupPanel(guiManager);
+        SelectGroupPanel selectGroupPanel = new SelectGroupPanel(getGuiManager());
         selectGroupPanel.updateGUI();
-        Point point = new Point(midPanel.getX() + midPanel.getWidth() / 2, midPanel.getY() + midPanel.getHeight() / 4);
-        SwingUtilities.convertPointToScreen(point, this);
-        popups.get(2).hide();
-        popups.set(2, factory.getPopup(this, selectGroupPanel, point.x, point.y));
-        popups.get(2).show();
-        selectGroupPanel.startTaskButton.addActionListener(e -> {
-            guiManager.currentGroup = selectGroupPanel.getSelectedGroup();
-            guiManager.currentGroup.getParticipants().add(guiManager.getClient().userid);
-            try {
-                guiManager.getClient().server.sendGroup(guiManager.currentGroup, guiManager.currentGroup.getId(), true);
-            } catch (RemoteException remoteException) {
-                remoteException.printStackTrace();
-            }
-            popups.get(2).hide();
-        });
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.add(selectGroupPanel);
+        popupMenu.show(getGuiManager(), getGuiManager().getWidth() / 2, 100);
     }
 
     public void setTimeTilLTermination(int minutes) {
@@ -234,16 +149,12 @@ public class WorkspaceGUI extends GUI {
         this.drawablePanel.setTask(task);
     }
 
-    public void addToDrawPanel(JComponent component) {
-        drawablePanel.addToDrawPanel(component);
+    public void addToDrawPanel(DrawableObject object) {
+        drawablePanel.addToDrawPanel(object);
     }
 
     public boolean removeLastDrawnObject() {
         return drawablePanel.removeLastDrawnObject();
-    }
-
-    public Group getSelectedGroup() {
-        return selectedGroup;
     }
 
     public DrawableObject[] getDrawnObjects() {
@@ -260,6 +171,14 @@ public class WorkspaceGUI extends GUI {
 
     public void removeAllIndexedObjects(DrawableObject[] objects) {
         drawablePanel.removeAllIndexedObjects(objects);
+    }
+
+    public void removeLastObject() {
+        drawablePanel.removeLastObject();
+    }
+
+    public int increaseObjectCounter() {
+        return drawablePanel.increaseObjectCounter();
     }
 
     {
@@ -306,6 +225,10 @@ public class WorkspaceGUI extends GUI {
         rightPanel = new JPanel();
         rightPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         mainPanel.add(rightPanel, BorderLayout.EAST);
+        ButtonGroup buttonGroup;
+        buttonGroup = new ButtonGroup();
+        buttonGroup.add(writeRadioButton);
+        buttonGroup.add(annotationRadioButton);
     }
 
     /**
@@ -315,6 +238,4 @@ public class WorkspaceGUI extends GUI {
         return mainPanel;
     }
 
-    public int increaseObjectCounter() {
-    }
 }

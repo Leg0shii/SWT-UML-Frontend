@@ -8,7 +8,6 @@ import de.swt.manager.CommandObject;
 import javax.swing.*;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;

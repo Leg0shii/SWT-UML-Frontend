@@ -4,52 +4,50 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
-import de.swt.util.Language;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.io.File;
 
 public class SubmitTaskPanel extends GUI {
     private JPanel mainPanel;
-    public JButton yesButton;
-    public JButton noButton;
+    private JButton yesButton;
     private JLabel checkLabel;
 
     public SubmitTaskPanel(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
 
-        switch (guiManager.language) {
-            case GERMAN -> setupGUI("Sicher?", "Ja", "Nein");
-            case ENGLISH -> setupGUI("Sure?", "Yes", "No");
+        switch (guiManager.getLanguage()) {
+            case GERMAN -> setupGUI("Sicher?", "Ja");
+            case ENGLISH -> setupGUI("Sure?", "Yes");
         }
 
         setupListeners();
     }
 
-    private void setupGUI(String check, String yes, String no) {
+    private void setupGUI(String check, String yes) {
         this.checkLabel.setText(check);
         this.yesButton.setText(yes);
-        this.noButton.setText(no);
     }
 
+    @Override
     public void updateGUI() {
 
     }
 
-    private void setupListeners() {
-
+    @Override
+    public void setupListeners() {
+        yesButton.addActionListener(e -> yesFunction());
     }
 
     private void initForAccountType() {
 
     }
 
-    // TODO: Implemented by other Group
     public void yesFunction() {
-
+        getGuiManager().saveWorkspace(new File("taskOutput.ser"));
     }
 
     {
@@ -69,17 +67,13 @@ public class SubmitTaskPanel extends GUI {
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(2, 2, new Insets(5, 5, 5, 5), -1, -1));
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         yesButton = new JButton();
         yesButton.setText("Button");
-        mainPanel.add(yesButton, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainPanel.add(yesButton, new GridConstraints(1, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         checkLabel = new JLabel();
         checkLabel.setHorizontalAlignment(0);
         checkLabel.setText("Label");
         mainPanel.add(checkLabel, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        noButton = new JButton();
-        noButton.setText("Button");
-        mainPanel.add(noButton, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
@@ -88,4 +82,5 @@ public class SubmitTaskPanel extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

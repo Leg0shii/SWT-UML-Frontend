@@ -21,13 +21,10 @@ public abstract class DrawableObject extends Draggable {
     public String description;
     public int textWidth;
     public int textHeight;
-    public transient Popup popup;
-    public transient PopupFactory factory;
-    public transient int popupCounter;
     public transient GUIManager guiManager;
     public transient GUI popupPanel;
     private final int[] id;
-    private DrawableObject thisObject;
+    private final DrawableObject thisObject;
 
     public DrawableObject(Color color, double scale, String description) {
         this.color = color;
@@ -57,28 +54,24 @@ public abstract class DrawableObject extends Draggable {
     }
 
     private void setupListeners() {
-        this.addMouseListener(new MouseAdapter() {
+        addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (popupCounter % 2 == 0) {
-                    popupPanel = createPopup();
-                    Point point = new Point(getX() + getWidth(), getY());
-                    SwingUtilities.convertPointToScreen(point, getParent());
-                    popup = factory.getPopup(guiManager, popupPanel, point.x, point.y);
-                    popup.show();
-                } else {
-                    popup.hide();
-                    popupPanel.closeAllPopups();
-                }
-                popupCounter++;
+                super.mouseClicked(e);
+                JPopupMenu popupMenu = new JPopupMenu();
+                popupMenu.add(popupPanel);
+                add(popupMenu);
+                popupMenu.show(thisObject,0,0);
             }
         });
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
                 super.mouseDragged(e);
-                if (wantsToChange) {
-                    guiManager.syncSingleObject(thisObject);
+                if (guiManager.getClient().getCurrentSession().getSessionId() == -1 ) {
+                    if (wantsToChange) {
+                        guiManager.syncSingleObject(thisObject);
+                    }
                 }
             }
         });
@@ -86,7 +79,9 @@ public abstract class DrawableObject extends Draggable {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                guiManager.syncSingleObject(thisObject);
+                if (guiManager.getClient().getCurrentSession().getSessionId() == -1 ) {
+                    guiManager.syncSingleObject(thisObject);
+                }
             }
         });
     }
@@ -94,11 +89,9 @@ public abstract class DrawableObject extends Draggable {
     public void init(GUIManager guiManager) {
         this.guiManager = guiManager;
         this.wantsToChange = false;
-        this.factory = PopupFactory.getSharedInstance();
-        this.popupCounter = 0;
-        System.out.println(Arrays.toString(this.id));
+        this.popupPanel = createPopup();
         if (Arrays.equals(this.id, new int[2])){
-            id[0] = guiManager.getClient().userid;
+            id[0] = guiManager.getClient().getUserId();
             id[1] = guiManager.increaseObjectCounter();
         }
         super.initListeners();
@@ -111,14 +104,6 @@ public abstract class DrawableObject extends Draggable {
         }
         for (MouseListener listener : this.getMouseListeners()) {
             this.removeMouseListener(listener);
-        }
-    }
-
-    public void closeAllPopups() {
-        if (popup != null) {
-            popup.hide();
-            popupPanel.closeAllPopups();
-            popupCounter = 0;
         }
     }
 

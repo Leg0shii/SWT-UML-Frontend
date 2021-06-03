@@ -4,22 +4,26 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
+import de.swt.logic.user.User;
 import de.swt.util.Language;
+import lombok.Setter;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.rmi.RemoteException;
 
+@Setter
 public class UserButtonPanel extends GUI {
     private JPanel mainPanel;
-    public JButton kickButton;
+    private JButton kickButton;
+    private User user;
 
     public UserButtonPanel(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
 
-        switch (guiManager.language) {
+        switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Kicken");
             case ENGLISH -> setupGUI("Kick");
         }
@@ -35,12 +39,18 @@ public class UserButtonPanel extends GUI {
 
     }
 
-    private void setupListeners() {
-
+    public void setupListeners() {
+        kickButton.addActionListener(e -> kickFunction());
     }
 
-    private void initForAccountType() {
-
+    private void kickFunction() {
+        getGuiManager().getClient().getCurrentSession().getUserIds().remove((Integer) user.getUserId());
+        try {
+            getGuiManager().getClient().getServer().updateSession(getGuiManager().getClient().getCurrentSession());
+            kickButton.setBackground(UIManager.getColor("JButton"));
+        } catch (RemoteException e) {
+            kickButton.setBackground(Color.RED);
+        }
     }
 
     {
@@ -60,7 +70,6 @@ public class UserButtonPanel extends GUI {
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(1, 1, new Insets(5, 5, 5, 5), -1, -1));
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         kickButton = new JButton();
         kickButton.setText("Button");
         mainPanel.add(kickButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -72,4 +81,5 @@ public class UserButtonPanel extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

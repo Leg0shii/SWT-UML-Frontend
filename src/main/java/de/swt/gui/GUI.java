@@ -12,21 +12,63 @@ public abstract class GUI extends JPanel {
     private GUIManager guiManager;
     private JPanel mainPanel;
 
-    public GUI(GUIManager guiManager){
+    public GUI(GUIManager guiManager) {
+        super();
         this.guiManager = guiManager;
-        this.setLayout(new GridLayout(1,1));
-        this.add(mainPanel);
-        setupListeners();
+        this.setLayout(new GridLayout(1, 1));
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            setupListeners();
+        }).start();
+
     }
 
     abstract public void updateGUI();
 
     abstract public void setupListeners();
 
-    public void setupStandardPopup(JButton button, GUI popup){
+    public void setupPopupOnTop(JButton button, GUI popup) {
         JPopupMenu popupMenu = new JPopupMenu();
         popupMenu.add(popup);
         button.setComponentPopupMenu(popupMenu);
-        button.addActionListener(e -> button.getComponentPopupMenu().show(button, 0, 0));
+        popupMenu.pack();
+        button.getComponentPopupMenu().show(getGuiManager(), 0, 0);
+        button.getComponentPopupMenu().setVisible(false);
+        button.addActionListener(e -> button.getComponentPopupMenu().show(button, button.getWidth() / 2 - popupMenu.getWidth() / 2, button.getHeight()-popupMenu.getHeight()));
+    }
+
+    public void setupPopupBelow(JButton button, GUI popup) {
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.add(popup);
+        button.setComponentPopupMenu(popupMenu);
+        popupMenu.pack();
+        button.getComponentPopupMenu().show(getGuiManager(), 0, 0);
+        button.getComponentPopupMenu().setVisible(false);
+        button.addActionListener(e -> button.getComponentPopupMenu().show(button, button.getWidth() / 2 - popupMenu.getWidth() / 2, 0));
+    }
+
+    public void setupPopupToTheRight(JButton button, GUI popup) {
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.add(popup);
+        button.setComponentPopupMenu(popupMenu);
+        popupMenu.pack();
+        button.getComponentPopupMenu().show(getGuiManager(), 0, 0);
+        button.getComponentPopupMenu().setVisible(false);
+        button.addActionListener(e -> button.getComponentPopupMenu().show(button, 0,button.getHeight()/2-popupMenu.getHeight()/2));
+    }
+
+    public void setupMatchingPopup(JButton button, GUI popup, GUI match){
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.add(popup);
+        button.setComponentPopupMenu(popupMenu);
+        popupMenu.pack();
+        popupMenu.setPreferredSize(new Dimension(match.getWidth(), match.getHeight()));
+        button.getComponentPopupMenu().show(getGuiManager(), 0, 0);
+        button.getComponentPopupMenu().setVisible(false);
+        button.addActionListener(e -> button.getComponentPopupMenu().show(match, 0,0));
     }
 }

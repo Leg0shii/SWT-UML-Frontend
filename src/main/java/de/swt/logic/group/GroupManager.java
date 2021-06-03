@@ -16,15 +16,15 @@ public class GroupManager extends Manager<Group> {
         if (getHashMap().containsKey(id)) {
             return getHashMap().get(id);
         } else {
-            ResultSet resultSet = getMySQL().query("SELECT * FROM groups WHERE groupId = " + id + ");");
+            ResultSet resultSet = getMySQL().query("SELECT * FROM groups WHERE groupId = " + id + ";");
             resultSet.next();
             Group newGroup = new Group();
             newGroup.setGroupId(id);
             newGroup.setMaxGroupSize(resultSet.getInt("maxGroupSize"));
             newGroup.setTimeTillTermination(resultSet.getLong("timeTillTermination"));
-            resultSet = getMySQL().query("SELECT userId FROM userInGroup WHERE groupId = " + id + ");");
+            resultSet = getMySQL().query("SELECT userId FROM userInGroup WHERE groupId = " + id + ";");
             newGroup.setUserIds(getIds(resultSet, "userId"));
-            resultSet = getMySQL().query("SELECT sessionId FROM groupInSession WHERE groupId = " + id + ");");
+            resultSet = getMySQL().query("SELECT sessionId FROM groupInSession WHERE groupId = " + id + ";");
             resultSet.next();
             newGroup.setSessionId(resultSet.getInt("sessionId"));
 

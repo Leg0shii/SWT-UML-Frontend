@@ -30,12 +30,11 @@ public class StandardGUI extends GUI {
 
     public StandardGUI(GUIManager guiManager, DrawableObject associatedObject) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         this.associatedObject = associatedObject;
         colorChooser = new JColorChooser();
 
-        switch (guiManager.language) {
+        switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Beschreibung", "Skalierung", "Farbe", "Farbe auswählen");
             case ENGLISH -> setupGUI("Description", "Scale", "Color", "Choose Color");
         }
@@ -58,8 +57,6 @@ public class StandardGUI extends GUI {
         for (AbstractColorChooserPanel panel : colorChooser.getChooserPanels()) {
             if (!panel.getDisplayName().equals("HSV")) {
                 colorChooser.removeChooserPanel(panel);
-            } else {
-                panel.setBorder(BorderFactory.createEtchedBorder());
             }
         }
         colorChooser.setPreviewPanel(new JPanel());
@@ -68,8 +65,6 @@ public class StandardGUI extends GUI {
         this.colorChooser.setColor(associatedObject.color);
         this.descriptionTextField.setText(associatedObject.description);
         this.descriptionTextField.setEditable(true);
-
-        initPopups(1);
     }
 
     public void updateGUI() {
@@ -81,7 +76,8 @@ public class StandardGUI extends GUI {
         this.mainPanel.revalidate();
     }
 
-    private void setupListeners() {
+    @Override
+    public void setupListeners() {
         descriptionTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -101,17 +97,10 @@ public class StandardGUI extends GUI {
                 updateGUI();
             }
         });
-        colorButton.addActionListener(e -> {
-            if (popupCounter.get(0) % 2 == 0) {
-                Point point = new Point(getX() + getWidth(), getY());
-                SwingUtilities.convertPointToScreen(point, getParent());
-                popups.set(0, factory.getPopup(guiManager, colorChooser, point.x, point.y));
-                popups.get(0).show();
-            } else {
-                popups.get(0).hide();
-            }
-            incrementPopupCounter(0);
-        });
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.add(colorChooser);
+        colorButton.setComponentPopupMenu(popupMenu);
+        colorButton.addActionListener(e -> colorButton.getComponentPopupMenu().show(associatedObject, 0, 0));
         scaleSlider.addChangeListener(e -> {
             associatedObject.updateComponent(description, convertSliderValue(scaleSlider.getValue()), color);
             updateGUI();
@@ -143,7 +132,6 @@ public class StandardGUI extends GUI {
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(3, 2, new Insets(5, 5, 5, 5), -1, -1));
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         scaleLabel = new JLabel();
         scaleLabel.setText("Label");
         mainPanel.add(scaleLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -168,4 +156,5 @@ public class StandardGUI extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

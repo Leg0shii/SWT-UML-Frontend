@@ -16,17 +16,17 @@ public class SessionManager extends Manager<Session> {
         if (getHashMap().containsKey(id)) {
             return getHashMap().get(id);
         } else {
-            ResultSet resultSet = getMySQL().query("SELECT * FROM sessions WHERE sessionId = " + id + ");");
+            ResultSet resultSet = getMySQL().query("SELECT * FROM sessions WHERE sessionId = " + id + ";");
             resultSet.next();
             Session newSession = new Session();
             newSession.setSessionId(id);
             newSession.setRemainingTime(resultSet.getLong("remainingTime"));
-            resultSet = getMySQL().query("SELECT userId FROM userInSession WHERE sessionId = " + id + ");");
+            resultSet = getMySQL().query("SELECT userId FROM userInSession WHERE sessionId = " + id + ";");
             newSession.setUserIds(getIds(resultSet, "userId"));
-            resultSet = getMySQL().query("SELECT groupId FROM groupInSession WHERE sessionId = " + id + ");");
+            resultSet = getMySQL().query("SELECT groupId FROM groupInSession WHERE sessionId = " + id + ";");
             newSession.setGroupIds(getIds(resultSet, "groupId"));
-            resultSet = getMySQL().query("SELECT masterId FROM masterInSession WHERE sessionId = " + id + ");");
-            newSession.setMasterIds(getIds(resultSet, "masterId"));
+            resultSet = getMySQL().query("SELECT userId FROM masterInSession WHERE sessionId = " + id + ";");
+            newSession.setMasterIds(getIds(resultSet, "userId"));
 
             getHashMap().put(id, newSession);
 

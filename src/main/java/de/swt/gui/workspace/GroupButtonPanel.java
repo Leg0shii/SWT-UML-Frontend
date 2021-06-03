@@ -24,6 +24,7 @@ public class GroupButtonPanel extends GUI {
 
     public GroupButtonPanel(GUIManager guiManager) {
         super(guiManager);
+        this.add(mainPanel);
 
         switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Terminieren", "Zuschauen");
@@ -40,7 +41,7 @@ public class GroupButtonPanel extends GUI {
 
     @Override
     public void updateGUI() {
-        if (getGuiManager().getClient().getCurrentGroup() != null){
+        if (getGuiManager().getClient().getCurrentGroup() != null) {
             switch (getGuiManager().getLanguage()) {
                 case GERMAN -> setupGUI("Terminieren", "Verlassen");
                 case ENGLISH -> setupGUI("Terminate", "Leave");
@@ -58,7 +59,7 @@ public class GroupButtonPanel extends GUI {
     public void setupListeners() {
         watchButton.removeAll();
         terminateButton.removeAll();
-        if (getGuiManager().getClient().getCurrentGroup() != null){
+        if (getGuiManager().getClient().getCurrentGroup() != null) {
             terminateButton.addActionListener(e -> terminateFunction());
             watchButton.addActionListener(e -> watchFunction());
         } else {
@@ -86,7 +87,7 @@ public class GroupButtonPanel extends GUI {
         }
     }
 
-    private void watchFunction(){
+    private void watchFunction() {
         group.getUserIds().add(getGuiManager().getClient().getUserId());
         try {
             getGuiManager().getClient().getServer().updateGroup(group);
@@ -113,7 +114,6 @@ public class GroupButtonPanel extends GUI {
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(2, 1, new Insets(5, 5, 5, 5), -1, -1));
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         watchButton = new JButton();
         watchButton.setText("Button");
         mainPanel.add(watchButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -128,4 +128,5 @@ public class GroupButtonPanel extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

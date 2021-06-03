@@ -34,6 +34,7 @@ public class ObjectListPanel extends GUI {
 
     public ObjectListPanel(GUIManager guiManager) {
         super(guiManager);
+        this.add(mainPanel);
         this.objectScrollPanel.setViewportView(objectList);
         this.objectList.setLayout(new GridLayout(0, 1));
         this.groupsList = new ArrayList<>();
@@ -57,29 +58,31 @@ public class ObjectListPanel extends GUI {
 
     @Override
     public void updateGUI() {
-        groupsList.clear();
-        users.clear();
-        groupsList = getGuiManager().getRelevantGroups();
-        ArrayList<Integer> userIds = getGuiManager().getClient().getCurrentSession().getUserIds();
-        for (int id : userIds) {
-            try {
-                users.add(getGuiManager().getClient().getUserManager().load(id));
-            } catch (SQLException exception) {
-                exception.printStackTrace();
+        if (groupsList.size() != getGuiManager().getRelevantGroups().size() || users.size() != getGuiManager().getClient().getCurrentSession().getUserIds().size()) {
+            groupsList.clear();
+            users.clear();
+            groupsList = getGuiManager().getRelevantGroups();
+            ArrayList<Integer> userIds = getGuiManager().getClient().getCurrentSession().getUserIds();
+            for (int id : userIds) {
+                try {
+                    users.add(getGuiManager().getClient().getUserManager().load(id));
+                } catch (SQLException exception) {
+                    exception.printStackTrace();
+                }
             }
+            if (groupsList.isEmpty()) {
+                showGroups = false;
+            }
+            setupObjectButtons();
+            if (showGroups) {
+                this.headerLabel.setText(this.groups);
+                this.switchButton.setText(this.participants);
+            } else {
+                this.headerLabel.setText(this.participants);
+                this.switchButton.setText(this.groups);
+            }
+            revalidate();
         }
-        if (groupsList.isEmpty()) {
-            showGroups = false;
-        }
-        setupObjectButtons();
-        if (showGroups) {
-            this.headerLabel.setText(this.groups);
-            this.switchButton.setText(this.participants);
-        } else {
-            this.headerLabel.setText(this.participants);
-            this.switchButton.setText(this.groups);
-        }
-        revalidate();
     }
 
     @Override
@@ -88,13 +91,15 @@ public class ObjectListPanel extends GUI {
         popupMenu.add(new CreateGroupPanel(getGuiManager()));
         switchButton.setComponentPopupMenu(popupMenu);
         this.switchButton.addActionListener(e1 -> {
-                if (!groupsList.isEmpty()) {
-                    showGroups = !showGroups;
-                    updateGUI();
-                } else {
-                    switchButton.getComponentPopupMenu().show(switchButton,0,0);
+                    if (getGuiManager().getClient().getCurrentSession().getSessionId() != -1) {
+                        if (!groupsList.isEmpty()) {
+                            showGroups = !showGroups;
+                            updateGUI();
+                        } else {
+                            switchButton.getComponentPopupMenu().show(switchButton, 0, 0);
+                        }
+                    }
                 }
-            }
         );
     }
 
@@ -129,11 +134,11 @@ public class ObjectListPanel extends GUI {
         if (showGroups) {
             GroupButtonPanel groupButtonPanel = new GroupButtonPanel(getGuiManager());
             groupButtonPanel.setGroup((Group) object);
-            setupStandardPopup(objectButton, groupButtonPanel);
+            setupPopupToTheRight(objectButton, groupButtonPanel);
         } else {
             UserButtonPanel userButtonPanel = new UserButtonPanel(getGuiManager());
             userButtonPanel.setUser((User) object);
-            setupStandardPopup(objectButton, userButtonPanel);
+            setupPopupToTheRight(objectButton, userButtonPanel);
         }
     }
 

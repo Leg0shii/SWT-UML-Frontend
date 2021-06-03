@@ -44,6 +44,7 @@ public class Client {
 
         instance = this;
         loggedIn = false;
+        currentSession = new Session();
         dbManager = new DBManager();
         mySQL = dbManager.connectToDB();
 
@@ -65,8 +66,8 @@ public class Client {
             timer.schedule(new ReadCommandList(), 1000, 10);
         }).start();
 
-        guiManager.getLoginGUI().loginButton.setEnabled(true);
-        guiManager.getLoginGUI().loginButton.setBackground(guiManager.getLoginGUI().loginButton.getBackground().brighter());
+        guiManager.getLoginGUI().getLoginButton().setEnabled(true);
+        guiManager.getLoginGUI().getLoginButton().setBackground(guiManager.getLoginGUI().getLoginButton().getBackground().brighter());
     }
 
     public void onDisable() {
@@ -76,9 +77,9 @@ public class Client {
             server.updateUser(user);
             if (currentSession != null) {
                 if (user.getAccountType().equals(AccountType.TEACHER)) {
-                    currentSession.getMasterIds().remove(userId);
+                    currentSession.getMasterIds().remove((Integer) userId);
                 } else {
-                    currentSession.getUserIds().remove(userId);
+                    currentSession.getUserIds().remove((Integer) userId);
                 }
                 server.updateSession(currentSession);
             }

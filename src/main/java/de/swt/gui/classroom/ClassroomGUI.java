@@ -5,7 +5,6 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.swt.gui.GUIManager;
 import de.swt.gui.GUI;
 import de.swt.logic.course.Course;
-import de.swt.logic.user.User;
 import de.swt.util.AccountType;
 
 import javax.swing.*;
@@ -35,6 +34,7 @@ public class ClassroomGUI extends GUI {
 
     public ClassroomGUI(GUIManager guiManager) {
         super(guiManager);
+        this.add(mainPanel);
         switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Klasse 11", "Klasse 10", "Klasse 12", "Abmelden", "Klassenraum erstellen", "Privater Arbeitsplatz");
             case ENGLISH -> setupGUI("Grade 11", "Grade 10", "Grade 12", "Logout", "Create Classroom", "Private Workspace");
@@ -58,22 +58,25 @@ public class ClassroomGUI extends GUI {
         this.scrollPanel11.setViewportView(gradePanel11);
         this.gradePanel12.setLayout(new GridLayout(0, 1));
         this.scrollPanel12.setViewportView(gradePanel12);
+
     }
 
     public void updateGUI() {
-        removeAllGradePanels();
-        updateGradePanels();
-        for (GradePanel gradePanel : gradePanels) {
-            switch (gradePanel.getCourse().getGrade()) {
-                case 10 -> gradePanel10.add(gradePanel);
-                case 11 -> gradePanel11.add(gradePanel);
-                case 12 -> gradePanel12.add(gradePanel);
+        int numOfGroups = getGuiManager().getClient().getCourseManager().getHashMap().size();
+        if (numOfGroups != gradePanels.size()) {
+            removeAllGradePanels();
+            updateGradePanels();
+            for (GradePanel gradePanel : gradePanels) {
+                switch (gradePanel.getCourse().getGrade()) {
+                    case 10 -> gradePanel10.add(gradePanel);
+                    case 11 -> gradePanel11.add(gradePanel);
+                    case 12 -> gradePanel12.add(gradePanel);
+                }
+                gradePanel.updateGUI();
             }
-            gradePanel.updateGUI();
+            this.initForAccountType();
+            this.revalidate();
         }
-        createClassroomPanel.updateGUI();
-        this.initForAccountType();
-        this.revalidate();
     }
 
     @Override
@@ -82,9 +85,9 @@ public class ClassroomGUI extends GUI {
         JPopupMenu supportPopup = new JPopupMenu();
         supportPopup.add(supportLabel);
         supportButton.setComponentPopupMenu(supportPopup);
-        this.supportButton.addActionListener(e -> supportButton.getComponentPopupMenu().show(supportPopup, 0, 0));
+        this.supportButton.addActionListener(e -> supportButton.getComponentPopupMenu().show(supportButton, 25, -25));
 
-        setupStandardPopup(createClassroomButton, createClassroomPanel);
+        setupPopupOnTop(createClassroomButton, createClassroomPanel);
 
         this.logoutButton.addActionListener(e2 -> logout());
         this.privateWorkspaceButton.addActionListener(e3 -> privateWorkspaceFunction());
@@ -204,12 +207,12 @@ public class ClassroomGUI extends GUI {
         logoutButton = new JButton();
         logoutButton.setText("Button");
         subPanel.add(logoutButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        createClassroomButton = new JButton();
-        createClassroomButton.setText("Button");
-        subPanel.add(createClassroomButton, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         supportButton = new JButton();
         supportButton.setText("Button");
         subPanel.add(supportButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        createClassroomButton = new JButton();
+        createClassroomButton.setText("Button");
+        subPanel.add(createClassroomButton, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
@@ -218,4 +221,5 @@ public class ClassroomGUI extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

@@ -17,7 +17,6 @@ import java.util.ArrayList;
 
 public class CreateClassroomPanel extends GUI {
     private JPanel mainPanel;
-    private JComboBox<String> gradeComboBox;
     private JTextField gradeNameTextField;
     private JTextField teacherTextField;
     private JTextField dateTextField;
@@ -27,9 +26,11 @@ public class CreateClassroomPanel extends GUI {
     private JLabel teacherLabel;
     private JLabel dateLabel;
     private JLabel errorLabel;
+    private JTextField gradeTextField;
 
     public CreateClassroomPanel(GUIManager guiManager) {
         super(guiManager);
+        this.add(mainPanel);
         switch (guiManager.getLanguage()) {
             case GERMAN -> this.setupGUI("Klassenstufe", "Klassenname", "Lehrer", "Termin", "Fertig");
             case ENGLISH -> this.setupGUI("Grade", "Grade name", "Teacher", "Date", "Done");
@@ -52,9 +53,6 @@ public class CreateClassroomPanel extends GUI {
         this.teacherLabel.setText(teacher);
         this.dateLabel.setText(date);
         this.doneButton.setText(done);
-        this.gradeComboBox.addItem("10");
-        this.gradeComboBox.addItem("11");
-        this.gradeComboBox.addItem("12");
     }
 
     private String getGradeName() {
@@ -74,7 +72,10 @@ public class CreateClassroomPanel extends GUI {
         Course newCourse = new Course();
 
         try {
-            newCourse.setGrade(gradeComboBox.getSelectedIndex() + 10);
+            newCourse.setGrade(Integer.parseInt(gradeTextField.getText()));
+            if (newCourse.getGrade() < 10 || newCourse.getGrade() > 12) {
+                throw new Exception();
+            }
             newCourse.setTeacherId(Integer.parseInt(getTeacher()));
             newCourse.setDates(NextDate.getDateFromString(getDate()));
             newCourse.setGradeName(getGradeName());
@@ -86,10 +87,12 @@ public class CreateClassroomPanel extends GUI {
                 case ENGLISH -> errorLabel.setText("Please fill out everything!");
             }
             doneButton.setBackground(Color.RED);
+            return;
         }
 
         try {
             getGuiManager().getClient().getServer().updateCourse(newCourse);
+            errorLabel.setText("");
             doneButton.setBackground(UIManager.getColor("JButton"));
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -118,8 +121,6 @@ public class CreateClassroomPanel extends GUI {
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(6, 3, new Insets(5, 5, 5, 5), -1, -1));
-        gradeComboBox = new JComboBox();
-        mainPanel.add(gradeComboBox, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         gradeLabel = new JLabel();
         gradeLabel.setHorizontalAlignment(2);
         gradeLabel.setText("Label");
@@ -148,7 +149,8 @@ public class CreateClassroomPanel extends GUI {
         errorLabel = new JLabel();
         errorLabel.setText("");
         mainPanel.add(errorLabel, new GridConstraints(5, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        gradeLabel.setLabelFor(gradeComboBox);
+        gradeTextField = new JTextField();
+        mainPanel.add(gradeTextField, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         gradeNameLabel.setLabelFor(gradeNameTextField);
         teacherLabel.setLabelFor(teacherTextField);
         dateLabel.setLabelFor(dateTextField);

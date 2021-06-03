@@ -60,8 +60,8 @@ public class GUIManager extends JFrame {
     public void setupGUIS() {
         this.loginGUI = new LoginGUI(this);
         this.childrenGUI.add(loginGUI);
-        loginGUI.loginButton.setEnabled(false);
-        loginGUI.loginButton.setBackground(loginGUI.loginButton.getBackground().darker());
+        loginGUI.getLoginButton().setEnabled(false);
+        loginGUI.getLoginButton().setBackground(loginGUI.getLoginButton().getBackground().darker());
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 try {
@@ -74,7 +74,13 @@ public class GUIManager extends JFrame {
     }
 
     public void secondSetup() {
-        User user = client.getUserManager().getHashMap().get(client.getUserId());
+        User user = null;
+        try {
+            user = client.getUserManager().load(client.getUserId());
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        assert user != null;
         this.accountType = user.getAccountType();
         this.classroomGUI = new ClassroomGUI(this);
         this.childrenGUI.add(classroomGUI);
@@ -86,9 +92,11 @@ public class GUIManager extends JFrame {
 
     public void updateGUIS() {
         try {
-            this.classroomGUI.updateGUI();
+            if (workspaceGUI != null){
+                this.classroomGUI.updateGUI();
+                this.workspaceGUI.updateGUI();
+            }
             this.loginGUI.updateGUI();
-            this.workspaceGUI.updateGUI();
             this.revalidate();
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -231,7 +239,7 @@ public class GUIManager extends JFrame {
         ArrayList<Integer> list = client.getCurrentSession().getGroupIds();
         for (Integer id : list){
             try {
-                groups.add((Group) client.getGroupManager().load(id));
+                groups.add(client.getGroupManager().load(id));
             } catch (SQLException exception) {
                 exception.printStackTrace();
             }
@@ -280,5 +288,9 @@ public class GUIManager extends JFrame {
 
     public void setTask(String toString) {
         workspaceGUI.setTask(toString);
+    }
+
+    public void removeLastObject() {
+        workspaceGUI.removeLastObject();
     }
 }

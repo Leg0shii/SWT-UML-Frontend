@@ -22,6 +22,7 @@ public class RequestPanel extends GUI {
 
     public RequestPanel(GUIManager guiManager) {
         super(guiManager);
+        this.add(mainPanel);
 
         switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI(" möchte beitreten", "Akzeptieren", "Verweigern");
@@ -84,7 +85,6 @@ public class RequestPanel extends GUI {
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(2, 2, new Insets(5, 5, 5, 5), -1, -1));
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         requestLabel = new JLabel();
         requestLabel.setHorizontalAlignment(0);
         requestLabel.setText("Label");
@@ -103,4 +103,5 @@ public class RequestPanel extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

@@ -29,6 +29,8 @@ public class CreateTaskPanel extends GUI {
 
     public CreateTaskPanel(GUIManager guiManager) {
         super(guiManager);
+        this.add(mainPanel);
+        this.setPreferredSize(new Dimension(250, 200));
         this.filePanel.setLayout(new BoxLayout(filePanel, BoxLayout.X_AXIS));
         this.taskScrollPanel.setViewportView(taskTextArea);
 
@@ -61,7 +63,7 @@ public class CreateTaskPanel extends GUI {
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Serializable", "ser");
         fileChooser.setFileFilter(filter);
-        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+        if (fileChooser.showOpenDialog(getGuiManager()) == JFileChooser.APPROVE_OPTION) {
             this.selectedFile = fileChooser.getSelectedFile();
             if (selectedFile.getName().length() > 10) {
                 this.selectedFileLabel.setText(selectedFile.getName().substring(0, 10) + "... " + selectedFile.getName().substring(selectedFile.getName().lastIndexOf(".")));
@@ -80,14 +82,16 @@ public class CreateTaskPanel extends GUI {
     }
 
     public void createFunction() {
-        String task = getTaskText();
-        try {
-            byte[] workspaceBytes = FileUtils.readFileToByteArray(getSelectedFile());
-            byte[] taskBytes = task.getBytes(StandardCharsets.UTF_8);
-            getGuiManager().getClient().getServer().sendTask(workspaceBytes, taskBytes, getGuiManager().getClient().getUserId());
-            createButton.setBackground(UIManager.getColor("JButton"));
-        } catch (IOException e) {
-            createButton.setBackground(Color.RED);
+        if (getGuiManager().getClient().getCurrentSession().getSessionId() != -1) {
+            String task = getTaskText();
+            try {
+                byte[] workspaceBytes = FileUtils.readFileToByteArray(getSelectedFile());
+                byte[] taskBytes = task.getBytes(StandardCharsets.UTF_8);
+                getGuiManager().getClient().getServer().sendTask(workspaceBytes, taskBytes, getGuiManager().getClient().getUserId());
+                createButton.setBackground(UIManager.getColor("JButton"));
+            } catch (IOException e) {
+                createButton.setBackground(Color.RED);
+            }
         }
     }
 
@@ -108,7 +112,6 @@ public class CreateTaskPanel extends GUI {
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(4, 7, new Insets(5, 5, 5, 5), -1, -1));
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         headerLabel = new JLabel();
         headerLabel.setHorizontalAlignment(0);
         headerLabel.setText("Label");

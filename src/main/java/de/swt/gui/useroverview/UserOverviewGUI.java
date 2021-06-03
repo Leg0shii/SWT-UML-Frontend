@@ -21,11 +21,13 @@ public class UserOverviewGUI extends GUI {
 
     }
 
+    @Override
     public void updateGUI() {
 
     }
 
-    private void setupListeners() {
+    @Override
+    public void setupListeners() {
 
     }
 

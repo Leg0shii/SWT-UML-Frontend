@@ -26,6 +26,7 @@ public class CreateGroupPanel extends GUI {
 
     public CreateGroupPanel(GUIManager guiManager) {
         super(guiManager);
+        this.add(mainPanel);
         switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Gruppen erstellen", "Anzahl", "Gruppengröße", "Öffnungsdauer", "in Minuten", "Erstellen");
             case ENGLISH -> setupGUI("Create Groups", "Count", "Size", "Duration", "in minutes", "Create");
@@ -96,7 +97,6 @@ public class CreateGroupPanel extends GUI {
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(5, 5, new Insets(5, 5, 5, 5), -1, -1));
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         headerLabel = new JLabel();
         headerLabel.setHorizontalAlignment(0);
         headerLabel.setText("Label");

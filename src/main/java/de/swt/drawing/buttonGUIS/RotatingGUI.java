@@ -5,7 +5,6 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.swt.drawing.objects.RotatableObject;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
-import de.swt.util.Language;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -38,12 +37,11 @@ public class RotatingGUI extends GUI {
 
     public RotatingGUI(GUIManager guiManager, RotatableObject associatedObject) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
         this.associatedObject = associatedObject;
         colorChooser = new JColorChooser();
 
-        switch (guiManager.language) {
+        switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Beschreibung", "Skalierung", "Farbe", "Farbe auswählen", "Rotation", "Pfeilspitze rechts");
             case ENGLISH -> setupGUI("Description", "Scale", "Color", "Choose Color", "Rotation", "Arrow Head on the right");
         }
@@ -85,10 +83,9 @@ public class RotatingGUI extends GUI {
         this.colorChooser.setColor(associatedObject.color);
         this.descriptionTextField.setText(associatedObject.description);
         this.descriptionTextField.setEditable(true);
-
-        initPopups(1);
     }
 
+    @Override
     public void updateGUI() {
         this.description = associatedObject.description;
         this.color = associatedObject.color;
@@ -101,7 +98,8 @@ public class RotatingGUI extends GUI {
         this.mainPanel.revalidate();
     }
 
-    private void setupListeners() {
+    @Override
+    public void setupListeners() {
         descriptionTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -121,17 +119,11 @@ public class RotatingGUI extends GUI {
                 updateGUI();
             }
         });
-        colorButton.addActionListener(e -> {
-            if (popupCounter.get(0) % 2 == 0) {
-                Point point = new Point(getX() + getWidth(), getY());
-                SwingUtilities.convertPointToScreen(point, getParent());
-                popups.set(0, factory.getPopup(guiManager, colorChooser, point.x, point.y));
-                popups.get(0).show();
-            } else {
-                popups.get(0).hide();
-            }
-            incrementPopupCounter(0);
-        });
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.add(colorChooser);
+        colorButton.setComponentPopupMenu(popupMenu);
+        colorButton.addActionListener(e -> colorButton.getComponentPopupMenu().show(associatedObject, 0, 0));
+
         scaleSlider.addChangeListener(e -> {
             associatedObject.updateComponent(description, convertSliderValue(scaleSlider.getValue()), color, startYOffset, endYOffset, switchSides);
             updateGUI();
@@ -143,11 +135,10 @@ public class RotatingGUI extends GUI {
         rotationSlider.addChangeListener(e -> {
             if (rotationSlider.getValue() >= 0) {
                 associatedObject.updateComponent(description, scale, color, startYOffset, (int) (rotationSlider.getValue() * scale), switchSides);
-                updateGUI();
             } else {
                 associatedObject.updateComponent(description, scale, color, (int) abs(rotationSlider.getValue() * scale), endYOffset, switchSides);
-                updateGUI();
             }
+            updateGUI();
         });
         arrowHeadOrientationCheckBox.addChangeListener(e -> {
             associatedObject.updateComponent(description, scale, color, startYOffset, endYOffset, arrowHeadOrientationCheckBox.isSelected());
@@ -176,7 +167,6 @@ public class RotatingGUI extends GUI {
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(5, 6, new Insets(5, 5, 5, 5), -1, -1));
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         descriptionLabel = new JLabel();
         descriptionLabel.setText("Label");
         mainPanel.add(descriptionLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -209,4 +199,5 @@ public class RotatingGUI extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

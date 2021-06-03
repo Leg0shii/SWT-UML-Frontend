@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.List;
 
 public class SelectGroupPanel extends GUI {
@@ -20,6 +21,7 @@ public class SelectGroupPanel extends GUI {
 
     public SelectGroupPanel(GUIManager guiManager) {
         super(guiManager);
+        this.add(mainPanel);
 
         switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Wähle deine Gruppe", "Aufgabe beginnen");
@@ -34,38 +36,29 @@ public class SelectGroupPanel extends GUI {
         this.startTaskButton.setText(beginTask);
     }
 
+    @Override
     public void updateGUI() {
         this.selectGroupComboBox.removeAllItems();
-        for (Group group : guiManager.getClient().groupManager.getGroups()) {
-            this.selectGroupComboBox.addItem(group.getId());
+        for (int groupId : getGuiManager().getClient().getCurrentSession().getGroupIds()) {
+            this.selectGroupComboBox.addItem(groupId);
         }
     }
 
-    private void setupListeners() {
-        startTaskButton.addActionListener(e -> {
-            Group selectedGroup = getSelectedGroup();
-            selectedGroup.getParticipants().add(guiManager.getClient().userid);
-            try {
-                guiManager.getClient().server.sendGroup(selectedGroup, selectedGroup.getId(), true);
-            } catch (RemoteException remoteException) {
-                remoteException.printStackTrace();
-            }
-            guiManager.currentGroup = selectedGroup;
-        });
+    @Override
+    public void setupListeners() {
+        startTaskButton.addActionListener(e -> startTaskFunction());
     }
 
-    private void initForAccountType() {
-
-    }
-
-    public Group getSelectedGroup() {
-        String selectedNumber = String.valueOf(this.selectGroupComboBox.getSelectedItem());
-        for (Group group : guiManager.getClient().groupManager.getGroups()) {
-            if (group.getId() == Integer.parseInt(selectedNumber)) {
-                return group;
-            }
+    private void startTaskFunction() {
+        int selectedNumber = Integer.parseInt(String.valueOf(this.selectGroupComboBox.getSelectedItem()));
+        try {
+            Group group = getGuiManager().getClient().getGroupManager().load(selectedNumber);
+            group.getUserIds().add(getGuiManager().getClient().getUserId());
+            getGuiManager().getClient().getServer().updateGroup(group);
+            startTaskButton.setBackground(UIManager.getColor("JButton"));
+        } catch (SQLException | RemoteException exception) {
+            startTaskButton.setBackground(Color.RED);
         }
-        return null;
     }
 
     {
@@ -85,7 +78,6 @@ public class SelectGroupPanel extends GUI {
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(2, 2, new Insets(5, 5, 5, 5), -1, -1));
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         selectGroupLabel = new JLabel();
         selectGroupLabel.setText("Label");
         mainPanel.add(selectGroupLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -103,4 +95,5 @@ public class SelectGroupPanel extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

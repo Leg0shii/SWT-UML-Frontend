@@ -1,6 +1,5 @@
 package de.swt.gui.workspace;
 
-import com.formdev.flatlaf.icons.*;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -9,19 +8,12 @@ import de.swt.drawing.objects.ThumbDown;
 import de.swt.drawing.objects.ThumbUp;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
-import org.kordamp.ikonli.IkonliIkonProvider;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignL;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignT;
 import org.kordamp.ikonli.swing.FontIcon;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Objects;
 
 /**
  * <div>Icons from <a href="https://kordamp.org/ikonli/cheat-sheet-fluentui.html" title="Kordamp">Kordamp</a></div>
@@ -37,7 +29,6 @@ public class SymbolListPanel extends GUI {
 
     public SymbolListPanel(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
 
         setupListeners();
@@ -69,20 +60,22 @@ public class SymbolListPanel extends GUI {
         clearButton.setIcon(icon4);
 
         this.symbolPanel.setLayout(new FlowLayout());
-        this.symbolPanel.add(new ActorButton(guiManager));
-        this.symbolPanel.add(new UseCaseButton(guiManager));
-        this.symbolPanel.add(new ArrowButton(guiManager));
-        this.symbolPanel.add(new DottedArrowButton(guiManager));
-        this.symbolPanel.add(new SystemBoxButton(guiManager));
+        this.symbolPanel.add(new ActorButton(getGuiManager()));
+        this.symbolPanel.add(new UseCaseButton(getGuiManager()));
+        this.symbolPanel.add(new ArrowButton(getGuiManager()));
+        this.symbolPanel.add(new DottedArrowButton(getGuiManager()));
+        this.symbolPanel.add(new SystemBoxButton(getGuiManager()));
 
         updateGUI();
     }
 
+    @Override
     public void updateGUI() {
-        symbolPanel.setPreferredSize(new Dimension(3 * guiManager.getWidth() / 16, guiManager.getHeight()));
+        symbolPanel.setPreferredSize(new Dimension(3 * getGuiManager().getWidth() / 16, getGuiManager().getHeight()));
     }
 
-    private void setupListeners() {
+    @Override
+    public void setupListeners() {
         addAnnotationsOptions();
         clearButton.addActionListener(e4 -> deleteLastDrawnObject());
     }
@@ -100,27 +93,22 @@ public class SymbolListPanel extends GUI {
         if (!(thumbsDownButton.getActionListeners().length > 0)) {
             thumbsUpButton.addActionListener(e1 -> drawThumbUp());
             thumbsDownButton.addActionListener(e2 -> drawThumbDown());
-            thumbsUpButton.setBackground(thumbsUpButton.getBackground().brighter());
-            thumbsDownButton.setBackground(thumbsDownButton.getBackground().brighter());
+            thumbsUpButton.setBackground(UIManager.getColor("JButton"));
+            thumbsDownButton.setBackground(UIManager.getColor("JButton"));
         }
     }
 
-    private void initForAccountType() {
-
-    }
-
     private void drawThumbUp() {
-        guiManager.addToDrawPanel(new ThumbUp(50, 50, Color.black, 1, ""));
+        getGuiManager().addToDrawPanel(new ThumbUp(50, 50, Color.black, 1, ""));
     }
 
     private void drawThumbDown() {
-        guiManager.addToDrawPanel(new ThumbDown(50, 50, Color.black, 1, ""));
+        getGuiManager().addToDrawPanel(new ThumbDown(50, 50, Color.black, 1, ""));
     }
 
     private void deleteLastDrawnObject() {
-        guiManager.removeLastDrawnObject();
+        getGuiManager().removeLastObject();
     }
-
 
     public void removeEditingOptions() {
         this.mainPanel.remove(symbolPanel);
@@ -147,7 +135,6 @@ public class SymbolListPanel extends GUI {
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout(0, 0));
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         symbolPanel = new JPanel();
         symbolPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         mainPanel.add(symbolPanel, BorderLayout.CENTER);

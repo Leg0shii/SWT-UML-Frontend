@@ -6,14 +6,18 @@ import com.intellij.uiDesigner.core.Spacer;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.logic.user.User;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.rmi.RemoteException;
 
+@Getter
+@Setter
 public class LoginGUI extends GUI {
     private JPanel mainPanel;
-    public JButton loginButton;
+    private JButton loginButton;
     private JTextField usernameTextField;
     private JPasswordField passwordField;
     private JLabel loginLabel;
@@ -24,6 +28,7 @@ public class LoginGUI extends GUI {
 
     public LoginGUI(GUIManager guiManager) {
         super(guiManager);
+        this.add(mainPanel);
         subPanel.setBorder(BorderFactory.createEtchedBorder());
         switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Anmeldung", "Nutzername:", "Passwort:", "Anmelden");
@@ -72,6 +77,7 @@ public class LoginGUI extends GUI {
         User user = getGuiManager().getClient().getUserManager().login(loginID, password);
         if (user != null) {
             user.setActive(true);
+            getGuiManager().getClient().setUserId(user.getUserId());
             try {
                 getGuiManager().getClient().getServer().updateUser(user);
             } catch (RemoteException e) {
@@ -129,8 +135,9 @@ public class LoginGUI extends GUI {
         loginButton.setText("Button");
         subPanel.add(loginButton, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         errorLabel = new JLabel();
+        errorLabel.setHorizontalAlignment(0);
         errorLabel.setText("");
-        subPanel.add(errorLabel, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        subPanel.add(errorLabel, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
         mainPanel.add(spacer1, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         final Spacer spacer2 = new Spacer();

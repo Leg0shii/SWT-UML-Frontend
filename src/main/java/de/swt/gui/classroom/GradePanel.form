@@ -6,7 +6,7 @@
       <xy x="38" y="17" width="647" height="411"/>
     </constraints>
     <properties/>
-    <border type="etched"/>
+    <border type="none"/>
     <children>
       <component id="3900e" class="javax.swing.JLabel" binding="gradeHeaderLabel">
         <constraints>

@@ -8,19 +8,12 @@
     <properties/>
     <border type="none"/>
     <children>
-      <component id="82d87" class="javax.swing.JComboBox" binding="gradeComboBox">
-        <constraints>
-          <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties/>
-      </component>
       <component id="9667a" class="javax.swing.JLabel" binding="gradeLabel">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <horizontalAlignment value="2"/>
-          <labelFor value="82d87"/>
           <text value="Label"/>
         </properties>
       </component>
@@ -93,6 +86,14 @@
         <properties>
           <text value=""/>
         </properties>
+      </component>
+      <component id="7f40d" class="javax.swing.JTextField" binding="gradeTextField">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties/>
       </component>
     </children>
   </grid>

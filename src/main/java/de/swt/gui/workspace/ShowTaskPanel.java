@@ -4,35 +4,32 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
+import lombok.Setter;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
+@Setter
 public class ShowTaskPanel extends GUI {
     private JPanel mainPanel;
-    private JLabel taskLabel;
+    private JTextPane taskPane;
+    private String task;
 
     public ShowTaskPanel(GUIManager guiManager) {
         super(guiManager);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.add(mainPanel);
 
         setupListeners();
     }
 
-    private void setupGUI() {
+    @Override
+    public void updateGUI() {
+        taskPane.setText(task);
     }
 
-    public void updateGUI(String task) {
-        this.taskLabel.setText(task);
-    }
-
-    private void setupListeners() {
-    }
-
-    private void initForAccountType() {
-
+    @Override
+    public void setupListeners() {
     }
 
     {
@@ -52,11 +49,9 @@ public class ShowTaskPanel extends GUI {
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(1, 1, new Insets(5, 5, 5, 5), -1, -1));
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        taskLabel = new JLabel();
-        taskLabel.setHorizontalAlignment(0);
-        taskLabel.setText("Label");
-        mainPanel.add(taskLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        taskPane = new JTextPane();
+        taskPane.setEditable(false);
+        mainPanel.add(taskPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
     }
 
     /**
@@ -65,4 +60,5 @@ public class ShowTaskPanel extends GUI {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

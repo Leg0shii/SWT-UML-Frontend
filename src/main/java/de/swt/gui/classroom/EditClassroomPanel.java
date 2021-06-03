@@ -5,86 +5,87 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.logic.course.Course;
-import de.swt.logic.user.User;
 import lombok.Setter;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.rmi.RemoteException;
-import java.sql.SQLException;
-import java.util.ArrayList;
 
 @Setter
 public class EditClassroomPanel extends GUI {
-    private JButton doneButton;
+    private JButton addButton;
     private JPanel mainPanel;
     private JTextField studentTextField;
-    private JComboBox<String> studentComboBox;
-    private JLabel studentComboBoxLabel;
     private JLabel studentTextFieldLabel;
+    private JButton removeButton;
     private Course course;
 
     public EditClassroomPanel(GUIManager guiManager) {
         super(guiManager);
+        this.add(mainPanel);
         switch (guiManager.getLanguage()) {
-            case GERMAN -> this.setupGUI("<html>Schüler <br> hinzufügen</html>", "<html>Schüler <br> entfernen</html>", "Übernehmen");
-            case ENGLISH -> this.setupGUI("Add student", "Remove student", "Commit");
+            case GERMAN -> this.setupGUI("<html>Schüler <br> hinzufügen</html>", "Hinzufügen", "Entfernen");
+            case ENGLISH -> this.setupGUI("Add student", "Add", "Remove");
         }
     }
 
-    private void setupGUI(String student, String students, String done) {
+    private void setupGUI(String student, String done, String remove) {
         this.studentTextFieldLabel.setText(student);
-        this.studentComboBoxLabel.setText(students);
-        this.doneButton.setText(done);
+        this.addButton.setText(done);
+        this.removeButton.setText(remove);
     }
 
     public void updateGUI() {
-        ArrayList<Integer> studentIds = course.getUserIds();
-        ArrayList<User> students = new ArrayList<>();
-        for (int id : studentIds) {
-            try {
-                students.add(getGuiManager().getClient().getUserManager().load(id));
-            } catch (SQLException exception) {
-                exception.printStackTrace();
-            }
-        }
-        this.studentComboBox.removeAllItems();
-        this.studentComboBox.addItem("");
-        for (User student : students) {
-            this.studentComboBox.addItem(student.getUserId() + " " + student.getSurname());
-        }
+
     }
 
     @Override
     public void setupListeners() {
-        doneButton.addActionListener(e -> doneFunction());
+        addButton.addActionListener(e -> addFunction());
+        removeButton.addActionListener(e -> removeFunction());
     }
 
-    public String getStudentToAdd() {
-        return studentTextField.getText();
-    }
-
-    public String getStudentToRemove() {
-        return (String) studentComboBox.getSelectedItem();
-    }
-
-    public void doneFunction() {
+    private void removeFunction() {
         int userId;
 
-        if (!getStudentToAdd().equals("")) {
-            userId = Integer.parseInt(getStudentToAdd());
-            course.getUserIds().add(userId);
-        }
-        if (!getStudentToRemove().equals("")) {
-            userId = Integer.parseInt(getStudentToRemove());
-            course.getUserIds().remove(userId);
+        userId = Integer.parseInt(getStudent());
+        if (course.getUserIds().contains(userId)) {
+            course.getUserIds().remove((Integer) userId);
+            removeButton.updateUI();
+        } else {
+            removeButton.setBackground(Color.RED);
+            return;
         }
 
         try {
             getGuiManager().getClient().getServer().updateCourse(course);
+            removeButton.updateUI();
         } catch (RemoteException e) {
             e.printStackTrace();
+            removeButton.setBackground(Color.RED);
+        }
+    }
+
+    public String getStudent() {
+        return studentTextField.getText();
+    }
+
+    public void addFunction() {
+        int userId;
+
+        userId = Integer.parseInt(getStudent());
+        if (course.getUserIds().contains(userId)) {
+            addButton.setBackground(Color.RED);
+            return;
+        }
+        course.getUserIds().add(userId);
+
+        try {
+            getGuiManager().getClient().getServer().updateCourse(course);
+            addButton.updateUI();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            addButton.setBackground(Color.RED);
         }
     }
 
@@ -105,23 +106,19 @@ public class EditClassroomPanel extends GUI {
      */
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayoutManager(3, 3, new Insets(0, 0, 0, 0), -1, -1));
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        mainPanel.setLayout(new GridLayoutManager(2, 4, new Insets(0, 0, 0, 0), -1, -1));
         studentTextFieldLabel = new JLabel();
         studentTextFieldLabel.setText("Label");
         mainPanel.add(studentTextFieldLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         studentTextField = new JTextField();
-        mainPanel.add(studentTextField, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        studentComboBox = new JComboBox();
-        mainPanel.add(studentComboBox, new GridConstraints(1, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        studentComboBoxLabel = new JLabel();
-        studentComboBoxLabel.setText("Label");
-        mainPanel.add(studentComboBoxLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        doneButton = new JButton();
-        doneButton.setText("Button");
-        mainPanel.add(doneButton, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainPanel.add(studentTextField, new GridConstraints(0, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        addButton = new JButton();
+        addButton.setText("Button");
+        mainPanel.add(addButton, new GridConstraints(1, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        removeButton = new JButton();
+        removeButton.setText("Button");
+        mainPanel.add(removeButton, new GridConstraints(1, 2, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         studentTextFieldLabel.setLabelFor(studentTextField);
-        studentComboBoxLabel.setLabelFor(studentComboBox);
     }
 
     /**

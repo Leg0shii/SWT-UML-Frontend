@@ -17,7 +17,7 @@ public class UserManager extends Manager<User> {
         if (getHashMap().containsKey(id)) {
             return getHashMap().get(id);
         } else {
-            ResultSet resultSet = getMySQL().query("SELECT * FROM users WHERE userId = " + id + ");");
+            ResultSet resultSet = getMySQL().query("SELECT * FROM users WHERE userId = " + id + ";");
             resultSet.next();
             User newUser = new User();
             newUser.setUserId(id);
@@ -44,7 +44,7 @@ public class UserManager extends Manager<User> {
     public User login(int userId, String password){
         User user = null;
         try {
-            ResultSet resultSet = getMySQL().query("SELECT uPassword FROM users WHERE userId = " + userId + ");");
+            ResultSet resultSet = getMySQL().query("SELECT uPassword FROM users WHERE userId = " + userId + ";");
             if (resultSet.next()){
                 if (resultSet.getString("uPassword").equals(password)){
                     user = load(userId);
