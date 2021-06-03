@@ -24,6 +24,7 @@ public class Synchronizer extends TimerTask {
             server.getUserManager().cacheAllData();
             server.getSessionManager().cacheAllData();
         } catch (SQLException exception){
+            exception.printStackTrace();
             System.out.println("Server failed to Synchronize with DataBase");
         }
     }
