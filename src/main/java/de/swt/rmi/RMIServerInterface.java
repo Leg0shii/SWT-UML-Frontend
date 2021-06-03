@@ -27,6 +27,8 @@ public interface RMIServerInterface extends Remote {
 
     void deleteSession(int sessionId) throws RemoteException;
 
+    void deleteCourse(int courseId) throws RemoteException;
+
     void sendTask(byte[] workspaceBytes, byte[] taskBytes, int id) throws RemoteException;
 
     void updateWorkspaceFile(byte[] bytes, int id) throws RemoteException;
