@@ -1,22 +1,17 @@
 package de.swt.rmi;
 
 import de.swt.Server;
-import de.swt.database.DBManager;
 import de.swt.logic.course.Course;
-import de.swt.logic.course.CourseManager;
 import de.swt.logic.group.Group;
-import de.swt.logic.group.GroupManager;
 import de.swt.logic.session.Session;
-import de.swt.logic.session.SessionManager;
 import de.swt.logic.user.User;
-import de.swt.logic.user.UserManager;
 import de.swt.manager.ServerCommandManager;
-import de.swt.manager.UserCommandMananger;
+import de.swt.manager.UserCommandManager;
 import de.swt.manager.CommandObject;
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -24,23 +19,44 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
     public int port;
     private final ServerCommandManager serverCommandManager;
-    private final UserCommandMananger userCommandMananger;
+    private final UserCommandManager userCommandMananger;
+    private final Server server;
 
     public RMIServer() throws RemoteException {
         this.port = 1099;
         this.serverCommandManager = Server.getInstance().getServerCommandManager();
-        this.userCommandMananger = Server.getInstance().getUserCommandMananger();
+        this.userCommandMananger = Server.getInstance().getUserCommandManager();
+        this.server = Server.getInstance();
     }
 
     @Override
-    public LinkedBlockingQueue<CommandObject> accessCommandQueue(int userid) throws RemoteException {
+    public LinkedBlockingQueue<CommandObject> accessCommandQueue(int userId) throws RemoteException {
         HashMap<Integer, LinkedBlockingQueue<CommandObject>> userCommandQueue = userCommandMananger.getUserCommandQueue();
-        LinkedBlockingQueue<CommandObject> userCommands = userCommandQueue.get(userid);
+        LinkedBlockingQueue<CommandObject> userCommands = new LinkedBlockingQueue<>(userCommandQueue.get(userId));
 
         // reset command list
-        userCommandQueue.remove(userid);
-        userCommandQueue.put(userid, new LinkedBlockingQueue<>());
+        userCommandQueue.get(userId).clear();
         return userCommands;
+    }
+
+    @Override
+    public HashMap<Integer, Course> getCourses() throws RemoteException {
+        return server.getCourseManager().getHashMap();
+    }
+
+    @Override
+    public HashMap<Integer, User> getUsers() throws RemoteException {
+        return server.getUserManager().getHashMap();
+    }
+
+    @Override
+    public HashMap<Integer, Group> getGroups() throws RemoteException {
+        return server.getGroupManager().getHashMap();
+    }
+
+    @Override
+    public HashMap<Integer, Session> getSessions() throws RemoteException {
+        return server.getSessionManager().getHashMap();
     }
 
     @Override
@@ -115,7 +131,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     }
 
     @Override
-    public void deleteCourse(int groupId){
+    public void deleteCourse(int groupId) {
         CommandObject serverCommand = new CommandObject();
         serverCommand.setCommand("DG:" + groupId);
         serverCommandManager.getServerCommandQueue().add(serverCommand);

@@ -11,12 +11,11 @@ import de.swt.logic.session.SessionManager;
 import de.swt.logic.user.User;
 import de.swt.logic.user.UserManager;
 import de.swt.manager.CommandObject;
-import de.swt.manager.UserCommandMananger;
+import de.swt.manager.UserCommandManager;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -31,7 +30,7 @@ public class ServerCommandWorker extends TimerTask {
     private final GroupManager groupManager;
     private final SessionManager sessionManager;
     private final DBManager dbManager;
-    private final UserCommandMananger userCommandMananger;
+    private final UserCommandManager userCommandMananger;
     private LinkedBlockingQueue<CommandObject> serverCommandQueue;
 
 
@@ -43,13 +42,12 @@ public class ServerCommandWorker extends TimerTask {
         this.groupManager = server.getGroupManager();
         this.sessionManager = server.getSessionManager();
         this.dbManager = server.getDbManager();
-        this.userCommandMananger = server.getUserCommandMananger();
+        this.userCommandMananger = server.getUserCommandManager();
     }
 
     @Override
     public void run() {
-        while (serverCommandQueue.peek() != null){
-            System.out.println(serverCommandQueue);
+        while (serverCommandQueue.peek() != null) {
             evaluateCommand(serverCommandQueue.poll());
         }
     }
@@ -70,16 +68,16 @@ public class ServerCommandWorker extends TimerTask {
         switch (keyArgs[0]) {
             case "UU" -> {
                 User user = (User) updatedObject;
-                dbManager.updateUser(user);
+                userManager.cacheSingleData(dbManager.updateUser(user));
             }
             case "CU" -> {
                 Course course = (Course) updatedObject;
-                dbManager.updateCourse(course);
+                courseManager.cacheSingleData(dbManager.updateCourse(course));
             }
             case "SU" -> {
                 Session session = (Session) updatedObject;
                 if (session.getMasterIds().size() > 0) {
-                    dbManager.updateSession(session);
+                    sessionManager.cacheSingleData(dbManager.updateSession(session));
                 } else {
                     CommandObject serverCommand = new CommandObject();
                     serverCommand.setCommand("DS:" + session.getSessionId());
@@ -88,11 +86,9 @@ public class ServerCommandWorker extends TimerTask {
             }
             case "GU" -> {
                 Group group = (Group) updatedObject;
-                int groupId = dbManager.updateGroup(group);
+                groupManager.cacheSingleData(dbManager.updateGroup(group));
                 try {
-                    Session session = server.getSessionManager().load(group.getSessionId());
-                    session.getGroupIds().add(groupId);
-                    dbManager.updateSession(session);
+                    sessionManager.cacheSingleData(dbManager.updateSession(sessionManager.load(group.getSessionId())));
                 } catch (SQLException exception) {
                     exception.printStackTrace();
                 }
@@ -108,7 +104,11 @@ public class ServerCommandWorker extends TimerTask {
                                 System.out.println("[" + originId + "]: workspace update group ping.");
                                 commandObject.setCommand("FU:");
                                 commandObject.setWorkspaceFileBytes(workspaceBytes);
-                                userCommandQueue.get(ids).add(commandObject);
+                                try {
+                                    userCommandQueue.get(ids).put(commandObject);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                         return;
@@ -122,7 +122,11 @@ public class ServerCommandWorker extends TimerTask {
                                 System.out.println("[" + originId + "]: workspace update session ping.");
                                 commandObject.setCommand("FU:");
                                 commandObject.setWorkspaceFileBytes(workspaceBytes);
-                                userCommandQueue.get(ids).add(commandObject);
+                                try {
+                                    userCommandQueue.get(ids).put(commandObject);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }
@@ -148,23 +152,35 @@ public class ServerCommandWorker extends TimerTask {
                 if (userManager.getHashMap().containsKey(destinationId)) {
                     System.out.println("[" + originId + ", " + destinationId + "]: teacher to user accept ping.");
                     userCommand.setCommand("AN:" + answer);
-                    userCommandQueue.get(originId).add(userCommand);
+                    userCommand.setOriginId(originId);
+                    userCommandQueue.get(destinationId).add(userCommand);
                 }
             }
             case "DG" -> {
                 int groupId = Integer.parseInt(args[0]);
 
                 dbManager.deleteGroup(groupId);
+                groupManager.deleteSingleData(groupId);
             }
             case "DS" -> {
                 int sessionId = Integer.parseInt(args[0]);
-
+                try {
+                    Session session = sessionManager.load(sessionId);
+                    for (int groupId : session.getGroupIds()) {
+                        dbManager.deleteGroup(groupId);
+                        groupManager.deleteSingleData(groupId);
+                    }
+                } catch (SQLException exception) {
+                    exception.printStackTrace();
+                }
                 dbManager.deleteSession(sessionId);
+                sessionManager.deleteSingleData(sessionId);
             }
             case "DC" -> {
                 int courseId = Integer.parseInt(args[0]);
 
                 dbManager.deleteCourse(courseId);
+                courseManager.deleteSingleData(courseId);
             }
             case "ST" -> {
                 HashMap<Integer, LinkedBlockingQueue<CommandObject>> userCommandQueue = userCommandMananger.getUserCommandQueue();
@@ -174,7 +190,7 @@ public class ServerCommandWorker extends TimerTask {
                     if (userId == originId) {
                         continue;
                     }
-                    System.out.println("[" + originId + "]: sending task ping.");
+                    System.out.println("[" + originId + ", " + userId + "]: sending task ping.");
                     userCommand.setCommand("ST:");
                     userCommand.setWorkspaceFileBytes(workspaceBytes);
                     userCommand.setTaskBytes(taskBytes);

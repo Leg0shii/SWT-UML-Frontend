@@ -1,9 +1,11 @@
 package de.swt.database;
 
+import de.swt.Server;
 import de.swt.logic.course.Course;
 import de.swt.logic.group.Group;
 import de.swt.logic.session.Session;
 import de.swt.logic.user.User;
+import de.swt.manager.CommandObject;
 import de.swt.util.AccountType;
 
 import java.sql.ResultSet;
@@ -14,6 +16,11 @@ import java.util.Date;
 public class DBManager {
 
     private AsyncMySQL mySQL;
+    private final Server server;
+
+    public DBManager() {
+        server = Server.getInstance();
+    }
 
     private void connectToDB() {
 
@@ -121,6 +128,7 @@ public class DBManager {
         mySQL.update("DELETE FROM groupInSession;");
         mySQL.update("DELETE FROM sessions;");
         mySQL.update("DELETE FROM groups;");
+        mySQL.update("UPDATE users SET active = false");
     }
 
     public int updateUser(User user) {
@@ -195,9 +203,11 @@ public class DBManager {
             } else {
                 mySQL.update("INSERT INTO groups (timeTillTermination, maxGroupSize) VALUES (" + timeTillTermination + ", " + maxGroupSize + ");");
                 groupId = addID();
+                mySQL.update("INSERT INTO groupInSession (sessionId, groupId) VALUES (" + group.getSessionId() + ", " + groupId + ");");
             }
-            for (int userId : participants)
+            for (int userId : participants) {
                 mySQL.update("INSERT INTO userInGroup (userId, groupId) VALUES (" + userId + ", " + groupId + ");");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -205,19 +215,21 @@ public class DBManager {
     }
 
     public void deleteGroup(int groupId) {
+        mySQL.update("DELETE FROM userInGroup WHERE groupId = " + groupId + ";");
+        mySQL.update("DELETE FROM groupInSession WHERE groupId = " + groupId + ";");
         mySQL.update("DELETE FROM groups WHERE groupId = " + groupId + ";");
-        mySQL.update("DELETE FROM userInGroups WHERE groupId = " + groupId + ";");
     }
 
     public void deleteSession(int sessionId) {
-        mySQL.update("DELETE FROM sessions WHERE sessionId = " + sessionId + ";");
         mySQL.update("DELETE FROM userInSession WHERE sessionId = " + sessionId + ";");
+        mySQL.update("DELETE FROM masterInSession WHERE sessionId =  " + sessionId + ";");
+        mySQL.update("DELETE FROM sessions WHERE sessionId = " + sessionId + ";");
     }
 
     public void deleteCourse(int courseId) {
-        mySQL.update("DELETE FROM courses WHERE courseId = " + courseId + ";");
         mySQL.update("DELETE FROM userInCourse WHERE courseId = " + courseId + ";");
         mySQL.update("DELETE FROM dateInCourse WHERE courseId = " + courseId + ";");
+        mySQL.update("DELETE FROM courses WHERE courseId = " + courseId + ";");
     }
 
     public int updateSession(Session session) {
@@ -235,7 +247,6 @@ public class DBManager {
                 mySQL.update("UPDATE sessions SET remainingTime = " + remainingTime + " WHERE sessionId = " + sessionId + ";");
                 mySQL.update("DELETE FROM userInSession WHERE sessionId = " + sessionId + ";");
                 mySQL.update("DELETE FROM masterInSession WHERE sessionId = " + sessionId + ";");
-                mySQL.update("DELETE FROM groupInSession WHERE sessionId = " + sessionId + ";");
             } else {
                 mySQL.update("INSERT INTO sessions (remainingTime) VALUES (" + remainingTime + ");");
                 sessionId = addID();
@@ -244,8 +255,6 @@ public class DBManager {
                 mySQL.update("INSERT INTO userInSession (sessionId, userId) VALUES (" + sessionId + ", " + participant + ");");
             for (int master : masters)
                 mySQL.update("INSERT INTO masterInSession (sessionId, userId) VALUES (" + sessionId + ", " + master + ");");
-            for (int group : groups)
-                mySQL.update("INSERT INTO groupInSession (sessionId, groupId) VALUES (" + sessionId + ", " + group + ");");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
