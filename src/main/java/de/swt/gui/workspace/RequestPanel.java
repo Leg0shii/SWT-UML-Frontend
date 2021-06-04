@@ -29,7 +29,6 @@ public class RequestPanel extends GUI {
             case ENGLISH -> setupGUI(" wants to join", "Accept", "Deny");
         }
 
-        setupListeners();
     }
 
     @Override

@@ -58,12 +58,7 @@ public class Client {
 
         new Thread(() -> {
             Timer timer = new Timer();
-            timer.schedule(new Synchronizer(), 0, 1000);
-        }).start();
-
-        new Thread(() -> {
-            Timer timer = new Timer();
-            timer.schedule(new ReadCommandList(), 1000, 10);
+            timer.schedule(new Synchronizer(), 0, 10);
         }).start();
 
         guiManager.getLoginGUI().getLoginButton().setEnabled(true);
@@ -71,20 +66,23 @@ public class Client {
     }
 
     public void onDisable() {
-        try {
-            User user = userManager.load(userId);
-            user.setActive(false);
-            server.updateUser(user);
-            if (currentSession != null) {
-                if (user.getAccountType().equals(AccountType.TEACHER)) {
-                    currentSession.getMasterIds().remove((Integer) userId);
-                } else {
-                    currentSession.getUserIds().remove((Integer) userId);
+        if (userId != 0) {
+            try {
+                User user = userManager.load(userId);
+                user.setActive(false);
+                server.updateUser(user);
+                if (currentSession.getSessionId() != -1) {
+                    if (user.getAccountType().equals(AccountType.TEACHER)) {
+                        currentSession.getMasterIds().remove((Integer) userId);
+                        currentSession.getUserIds().remove((Integer) userId);
+                    } else {
+                        currentSession.getUserIds().remove((Integer) userId);
+                    }
+                    server.updateSession(currentSession);
                 }
-                server.updateSession(currentSession);
+            } catch (SQLException | RemoteException exception) {
+                exception.printStackTrace();
             }
-        } catch (SQLException | RemoteException exception) {
-            exception.printStackTrace();
         }
     }
 
@@ -92,4 +90,10 @@ public class Client {
         return instance;
     }
 
+    public void onLogin() {
+        new Thread(() -> {
+            Timer timer = new Timer();
+            timer.schedule(new ReadCommandList(), 1000, 10);
+        }).start();
+    }
 }

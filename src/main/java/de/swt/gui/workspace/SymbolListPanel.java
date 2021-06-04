@@ -31,7 +31,6 @@ public class SymbolListPanel extends GUI {
         super(guiManager);
         this.add(mainPanel);
 
-        setupListeners();
         setupGUI();
     }
 

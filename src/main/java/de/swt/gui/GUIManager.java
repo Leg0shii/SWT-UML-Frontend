@@ -160,7 +160,7 @@ public class GUIManager extends JFrame {
         try {
             var fileOutputStream = new FileOutputStream(file);
             var objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            var allComponents = new Component[2][2];
+            var allComponents = new DrawableObject[2][2];
             allComponents[0] = this.getDrawnObjects();
             allComponents[1] = this.getAnnotations();
             objectOutputStream.writeObject(allComponents);
@@ -193,7 +193,7 @@ public class GUIManager extends JFrame {
             FileUtils.writeByteArrayToFile(file, input);
             var fileInputStream = new FileInputStream(file);
             var objectInputStream = new ObjectInputStream(fileInputStream);
-            var list = (Component[][]) objectInputStream.readObject();
+            var list = (DrawableObject[][]) objectInputStream.readObject();
             var objects = (DrawableObject[]) list[0];
             var annotations = (DrawableObject[]) list[1];
             objectInputStream.close();
@@ -208,19 +208,22 @@ public class GUIManager extends JFrame {
 
     public void syncSingleObject(DrawableObject object) {
         try {
+            JPopupMenu popupMenu = object.getComponentPopupMenu();
+            object.setComponentPopupMenu(null);
             var file = new File("output.ser");
             var fileOutputStream = new FileOutputStream(file);
             var objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            var allComponents = new Component[2][2];
+            var allComponents = new DrawableObject[2][2];
             if (!object.getClass().getSimpleName().matches("Thumb.*")) {
-                allComponents[0] = new Component[]{object};
+                allComponents[0] = new DrawableObject[]{object};
             } else {
-                allComponents[1] = new Component[]{object};
+                allComponents[1] = new DrawableObject[]{object};
             }
             objectOutputStream.writeObject(allComponents);
             objectOutputStream.close();
             var outByteArray = FileUtils.readFileToByteArray(file);
             client.getServer().updateWorkspaceFile(outByteArray, client.getUserId());
+            object.setComponentPopupMenu(popupMenu);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -256,7 +259,7 @@ public class GUIManager extends JFrame {
                 public void run() {
 
                     long time;
-                    if (client.getCurrentSession() != null) {
+                    if (client.getCurrentSession().getSessionId() != -1) {
                         time = client.getCurrentSession().getRemainingTime();
                         if (client.getCurrentGroup() != null) {
                             time = client.getCurrentGroup().getTimeTillTermination();

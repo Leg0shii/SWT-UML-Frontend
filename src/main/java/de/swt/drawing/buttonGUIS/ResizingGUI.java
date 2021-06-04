@@ -126,7 +126,9 @@ public class ResizingGUI extends GUI {
         JPopupMenu popupMenu = new JPopupMenu();
         popupMenu.add(colorChooser);
         colorButton.setComponentPopupMenu(popupMenu);
-        colorButton.addActionListener(e -> colorButton.getComponentPopupMenu().show(associatedObject, 0, 0));
+        popupMenu.setVisible(true);
+        popupMenu.setVisible(false);
+        colorButton.addActionListener(e -> colorButton.getComponentPopupMenu().show(associatedObject, associatedObject.getWidth(), associatedObject.getHeight() / 2 - popupMenu.getHeight() / 2));
 
         scaleSlider.addChangeListener(e -> {
             associatedObject.updateComponent(description, convertSliderValue(scaleSlider.getValue()), color, width, height);

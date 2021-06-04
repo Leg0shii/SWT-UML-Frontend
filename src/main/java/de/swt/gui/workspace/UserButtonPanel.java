@@ -28,7 +28,6 @@ public class UserButtonPanel extends GUI {
             case ENGLISH -> setupGUI("Kick");
         }
 
-        setupListeners();
     }
 
     private void setupGUI(String kick) {

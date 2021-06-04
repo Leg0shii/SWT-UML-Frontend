@@ -6,6 +6,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.logic.user.User;
+import de.swt.util.Client;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -76,17 +77,26 @@ public class LoginGUI extends GUI {
         String password = getPassword();
         User user = getGuiManager().getClient().getUserManager().login(loginID, password);
         if (user != null) {
-            user.setActive(true);
-            getGuiManager().getClient().setUserId(user.getUserId());
-            try {
-                getGuiManager().getClient().getServer().updateUser(user);
-            } catch (RemoteException e) {
-                e.printStackTrace();
+            if (!user.isActive()) {
+                user.setActive(true);
+                getGuiManager().getClient().setUserId(user.getUserId());
+                Client.getInstance().onLogin();
+                try {
+                    getGuiManager().getClient().getServer().updateUser(user);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                getGuiManager().secondSetup();
+                getGuiManager().switchToClassRoomGUI();
+                errorLabel.setText("");
+                loginButton.setBackground(UIManager.getColor("JButton"));
+            } else {
+                switch (getGuiManager().getLanguage()) {
+                    case GERMAN -> errorLabel.setText("Anmelden Fehlgeschlagen!");
+                    case ENGLISH -> errorLabel.setText("Login failed!");
+                }
+                loginButton.setBackground(Color.RED);
             }
-            getGuiManager().secondSetup();
-            getGuiManager().switchToClassRoomGUI();
-            errorLabel.setText("");
-            loginButton.setBackground(UIManager.getColor("JButton"));
         } else {
             switch (getGuiManager().getLanguage()) {
                 case GERMAN -> errorLabel.setText("Anmelden Fehlgeschlagen!");

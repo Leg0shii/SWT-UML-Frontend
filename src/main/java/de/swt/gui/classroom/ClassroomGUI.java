@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ClassroomGUI extends GUI {
@@ -66,7 +67,8 @@ public class ClassroomGUI extends GUI {
         if (numOfGroups != gradePanels.size()) {
             removeAllGradePanels();
             updateGradePanels();
-            for (GradePanel gradePanel : gradePanels) {
+            ArrayList<GradePanel> copyGradePanels = new ArrayList<>(gradePanels);
+            for (GradePanel gradePanel : copyGradePanels) {
                 switch (gradePanel.getCourse().getGrade()) {
                     case 10 -> gradePanel10.add(gradePanel);
                     case 11 -> gradePanel11.add(gradePanel);
@@ -99,7 +101,8 @@ public class ClassroomGUI extends GUI {
 
     public void updateGradePanels() {
         gradePanels.clear();
-        for (Course course : getGuiManager().getClient().getCourseManager().getHashMap().values()) {
+        ArrayList<Course> courses = new ArrayList<>(getGuiManager().getClient().getCourseManager().getHashMap().values());
+        for (Course course : courses) {
             GradePanel gradePanel = new GradePanel(getGuiManager());
             gradePanel.setCourse(course);
             gradePanels.add(gradePanel);
@@ -126,7 +129,7 @@ public class ClassroomGUI extends GUI {
 
     public void initForAccountType() {
         if (getGuiManager().getAccountType() == AccountType.STUDENT) {
-            this.mainPanel.remove(createClassroomButton);
+            this.subPanel.remove(createClassroomButton);
             removeEditButtonsFromGradePanels();
         }
     }
@@ -182,21 +185,21 @@ public class ClassroomGUI extends GUI {
         gradePanel10 = new JPanel();
         gradePanel10.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         scrollPanel10.setViewportView(gradePanel10);
-        gradePanel10.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        gradePanel10.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         scrollPanel11 = new JScrollPane();
         mainPanel.add(scrollPanel11, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         scrollPanel11.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         gradePanel11 = new JPanel();
         gradePanel11.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         scrollPanel11.setViewportView(gradePanel11);
-        gradePanel11.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        gradePanel11.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         scrollPanel12 = new JScrollPane();
         mainPanel.add(scrollPanel12, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         scrollPanel12.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         gradePanel12 = new JPanel();
         gradePanel12.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         scrollPanel12.setViewportView(gradePanel12);
-        gradePanel12.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        gradePanel12.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         subPanel = new JPanel();
         subPanel.setLayout(new GridLayoutManager(2, 3, new Insets(5, 5, 5, 5), -1, -1));
         mainPanel.add(subPanel, new GridConstraints(2, 0, 2, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));

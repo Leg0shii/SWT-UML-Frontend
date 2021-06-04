@@ -11,13 +11,14 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SelectGroupPanel extends GUI {
     private JPanel mainPanel;
-    private JComboBox<Integer> selectGroupComboBox;
     public JButton startTaskButton;
     private JLabel selectGroupLabel;
+    private JSlider groupSlider;
 
     public SelectGroupPanel(GUIManager guiManager) {
         super(guiManager);
@@ -28,7 +29,6 @@ public class SelectGroupPanel extends GUI {
             case ENGLISH -> setupGUI("Select your Group", "Start Task");
         }
 
-        setupListeners();
     }
 
     private void setupGUI(String selectGroup, String beginTask) {
@@ -38,9 +38,14 @@ public class SelectGroupPanel extends GUI {
 
     @Override
     public void updateGUI() {
-        this.selectGroupComboBox.removeAllItems();
-        for (int groupId : getGuiManager().getClient().getCurrentSession().getGroupIds()) {
-            this.selectGroupComboBox.addItem(groupId);
+        ArrayList<Integer> groups = getGuiManager().getClient().getCurrentSession().getGroupIds();
+        if (!groups.isEmpty()) {
+            groupSlider.setMinimum(groups.get(0));
+            groupSlider.setMaximum(groups.get(groups.size() - 1));
+            groupSlider.setPaintTicks(true);
+            groupSlider.setSnapToTicks(true);
+            groupSlider.setPaintLabels(true);
+            groupSlider.setMajorTickSpacing(1);
         }
     }
 
@@ -50,7 +55,7 @@ public class SelectGroupPanel extends GUI {
     }
 
     private void startTaskFunction() {
-        int selectedNumber = Integer.parseInt(String.valueOf(this.selectGroupComboBox.getSelectedItem()));
+        int selectedNumber = groupSlider.getValue();
         try {
             Group group = getGuiManager().getClient().getGroupManager().load(selectedNumber);
             group.getUserIds().add(getGuiManager().getClient().getUserId());
@@ -81,12 +86,14 @@ public class SelectGroupPanel extends GUI {
         selectGroupLabel = new JLabel();
         selectGroupLabel.setText("Label");
         mainPanel.add(selectGroupLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        selectGroupComboBox = new JComboBox();
-        mainPanel.add(selectGroupComboBox, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         startTaskButton = new JButton();
         startTaskButton.setText("Button");
         mainPanel.add(startTaskButton, new GridConstraints(1, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        selectGroupLabel.setLabelFor(selectGroupComboBox);
+        groupSlider = new JSlider();
+        groupSlider.setPaintLabels(true);
+        groupSlider.setPaintTicks(true);
+        groupSlider.setSnapToTicks(true);
+        mainPanel.add(groupSlider, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**

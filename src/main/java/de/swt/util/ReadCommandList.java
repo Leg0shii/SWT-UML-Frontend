@@ -27,7 +27,9 @@ public class ReadCommandList extends TimerTask {
         try {
             LinkedBlockingQueue<CommandObject> commands = client.getServer().accessCommandQueue(client.getUserId());
             if (commands != null) {
-                for (CommandObject command : commands) evaluteCommand(command);
+                while (commands.peek() != null){
+                    evaluteCommand(commands.poll());
+                }
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -93,10 +95,10 @@ public class ReadCommandList extends TimerTask {
                     client.getGuiManager().clearDrawingPanel();
                     client.getGuiManager().syncWorkspace(workspaceBytes);
                     client.getGuiManager().sendTaskProposition();
-                    client.getGuiManager().setTask(Arrays.toString(taskBytes));
+                    client.getGuiManager().setTask(new String(taskBytes));
                     System.out.println("Task proposition received");
-                } catch (Exception ignored) {
-
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }

@@ -30,8 +30,6 @@ public class GroupButtonPanel extends GUI {
             case GERMAN -> setupGUI("Terminieren", "Zuschauen");
             case ENGLISH -> setupGUI("Terminate", "Watch");
         }
-
-        setupListeners();
     }
 
     private void setupGUI(String terminate, String watch) {
@@ -41,7 +39,7 @@ public class GroupButtonPanel extends GUI {
 
     @Override
     public void updateGUI() {
-        if (getGuiManager().getClient().getCurrentGroup() != null) {
+        if (getGuiManager().getClient().getCurrentGroup() == group) {
             switch (getGuiManager().getLanguage()) {
                 case GERMAN -> setupGUI("Terminieren", "Verlassen");
                 case ENGLISH -> setupGUI("Terminate", "Leave");
@@ -59,19 +57,21 @@ public class GroupButtonPanel extends GUI {
     public void setupListeners() {
         watchButton.removeAll();
         terminateButton.removeAll();
-        if (getGuiManager().getClient().getCurrentGroup() != null) {
-            terminateButton.addActionListener(e -> terminateFunction());
-            watchButton.addActionListener(e -> watchFunction());
-        } else {
-            terminateButton.addActionListener(e -> terminateFunction());
-            watchButton.addActionListener(e -> leaveFunction());
-        }
+        terminateButton.addActionListener(e -> terminateFunction());
+        watchButton.addActionListener(e -> {
+            if (getGuiManager().getClient().getCurrentGroup() != group) {
+                watchFunction();
+            } else {
+                leaveFunction();
+            }
+        });
     }
 
     private void leaveFunction() {
-        group.getUserIds().remove(getGuiManager().getClient().getUserId());
+        group.getUserIds().remove((Integer) getGuiManager().getClient().getUserId());
         try {
             getGuiManager().getClient().getServer().updateGroup(group);
+            getGuiManager().getClient().setCurrentGroup(null);
             watchButton.setBackground(UIManager.getColor("JButton"));
         } catch (RemoteException e) {
             watchButton.setBackground(Color.RED);
@@ -88,6 +88,20 @@ public class GroupButtonPanel extends GUI {
     }
 
     private void watchFunction() {
+        if (group.getUserIds().contains(getGuiManager().getClient().getUserId())) {
+            return;
+        }
+        if (getGuiManager().getClient().getCurrentGroup() != null) {
+            getGuiManager().getClient().getCurrentGroup().getUserIds().remove((Integer) getGuiManager().getClient().getUserId());
+            try {
+                getGuiManager().getClient().getServer().updateGroup(getGuiManager().getClient().getCurrentGroup());
+                getGuiManager().getClient().setCurrentGroup(null);
+                watchButton.setBackground(UIManager.getColor("JButton"));
+            } catch (RemoteException e) {
+                watchButton.setBackground(Color.RED);
+                return;
+            }
+        }
         group.getUserIds().add(getGuiManager().getClient().getUserId());
         try {
             getGuiManager().getClient().getServer().updateGroup(group);

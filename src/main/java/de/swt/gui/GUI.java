@@ -36,9 +36,9 @@ public abstract class GUI extends JPanel {
         popupMenu.add(popup);
         button.setComponentPopupMenu(popupMenu);
         popupMenu.pack();
-        button.getComponentPopupMenu().show(getGuiManager(), 0, 0);
-        button.getComponentPopupMenu().setVisible(false);
-        button.addActionListener(e -> button.getComponentPopupMenu().show(button, button.getWidth() / 2 - popupMenu.getWidth() / 2, button.getHeight()-popupMenu.getHeight()));
+        popupMenu.setVisible(true);
+        popupMenu.setVisible(false);
+        button.addActionListener(e -> button.getComponentPopupMenu().show(button, button.getWidth() / 2 - popupMenu.getWidth() / 2, button.getHeight() - popupMenu.getHeight()));
     }
 
     public void setupPopupBelow(JButton button, GUI popup) {
@@ -46,8 +46,8 @@ public abstract class GUI extends JPanel {
         popupMenu.add(popup);
         button.setComponentPopupMenu(popupMenu);
         popupMenu.pack();
-        button.getComponentPopupMenu().show(getGuiManager(), 0, 0);
-        button.getComponentPopupMenu().setVisible(false);
+        popupMenu.setVisible(true);
+        popupMenu.setVisible(false);
         button.addActionListener(e -> button.getComponentPopupMenu().show(button, button.getWidth() / 2 - popupMenu.getWidth() / 2, 0));
     }
 
@@ -56,19 +56,17 @@ public abstract class GUI extends JPanel {
         popupMenu.add(popup);
         button.setComponentPopupMenu(popupMenu);
         popupMenu.pack();
-        button.getComponentPopupMenu().show(getGuiManager(), 0, 0);
-        button.getComponentPopupMenu().setVisible(false);
-        button.addActionListener(e -> button.getComponentPopupMenu().show(button, 0,button.getHeight()/2-popupMenu.getHeight()/2));
+        popupMenu.setVisible(true);
+        popupMenu.setVisible(false);
+        button.addActionListener(e -> button.getComponentPopupMenu().show(button, button.getWidth(), button.getHeight() / 2 - popupMenu.getHeight() / 2));
     }
 
-    public void setupMatchingPopup(JButton button, GUI popup, GUI match){
+    public void setupMatchingPopup(JButton button, GUI popup, GUI match) {
         JPopupMenu popupMenu = new JPopupMenu();
         popupMenu.add(popup);
         button.setComponentPopupMenu(popupMenu);
         popupMenu.pack();
         popupMenu.setPreferredSize(new Dimension(match.getWidth(), match.getHeight()));
-        button.getComponentPopupMenu().show(getGuiManager(), 0, 0);
-        button.getComponentPopupMenu().setVisible(false);
-        button.addActionListener(e -> button.getComponentPopupMenu().show(match, 0,0));
+        button.addActionListener(e -> button.getComponentPopupMenu().show(match, 0, 0));
     }
 }

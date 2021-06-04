@@ -35,7 +35,6 @@ public class DrawablePanel extends GUI {
             case ENGLISH -> setupGUI("Create Task", "Remaining Time:  Minutes", "Show Task");
         }
 
-        setupListeners();
         initForAccountType();
         showTaskPanel = new ShowTaskPanel(getGuiManager());
 

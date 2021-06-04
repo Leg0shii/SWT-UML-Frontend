@@ -10,11 +10,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public abstract class DrawableObject extends Draggable {
+public abstract class DrawableObject extends Draggable implements Serializable {
     public Color color;
     public double scale;
     public int offset;
@@ -24,7 +25,8 @@ public abstract class DrawableObject extends Draggable {
     public transient GUIManager guiManager;
     public transient GUI popupPanel;
     private final int[] id;
-    private final DrawableObject thisObject;
+    private transient DrawableObject thisObject;
+    private transient JPopupMenu popupMenu;
 
     public DrawableObject(Color color, double scale, String description) {
         this.color = color;
@@ -32,7 +34,6 @@ public abstract class DrawableObject extends Draggable {
         this.description = description;
         this.offset = 5;
         this.id = new int[2];
-        thisObject = this;
     }
 
     public void updateComponent(String description, double scale, Color color) {
@@ -54,48 +55,43 @@ public abstract class DrawableObject extends Draggable {
     }
 
     private void setupListeners() {
+        popupMenu = new JPopupMenu();
+        popupMenu.add(createPopup());
+        thisObject.setComponentPopupMenu(popupMenu);
+        popupMenu.pack();
+        popupMenu.setVisible(true);
+        popupMenu.setVisible(false);
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                JPopupMenu popupMenu = new JPopupMenu();
-                popupMenu.add(popupPanel);
-                add(popupMenu);
-                popupMenu.show(thisObject,0,0);
-            }
-        });
-        addMouseMotionListener(new MouseAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                super.mouseDragged(e);
-                if (guiManager.getClient().getCurrentSession().getSessionId() == -1 ) {
-                    if (wantsToChange) {
-                        guiManager.syncSingleObject(thisObject);
-                    }
+                thisObject.getComponentPopupMenu().show(thisObject,thisObject.getWidth(),thisObject.getHeight()/2-popupMenu.getHeight()/2);
                 }
-            }
-        });
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                if (guiManager.getClient().getCurrentSession().getSessionId() == -1 ) {
-                    guiManager.syncSingleObject(thisObject);
-                }
-            }
         });
     }
 
     public void init(GUIManager guiManager) {
         this.guiManager = guiManager;
+        this.thisObject = this;
         this.wantsToChange = false;
         this.popupPanel = createPopup();
-        if (Arrays.equals(this.id, new int[2])){
+        if (Arrays.equals(this.id, new int[2])) {
             id[0] = guiManager.getClient().getUserId();
             id[1] = guiManager.increaseObjectCounter();
         }
         super.initListeners();
         setupListeners();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (guiManager.getClient().getCurrentSession().getSessionId() != -1) {
+                    if (wantsToChange) {
+                        guiManager.syncSingleObject(thisObject);
+                    }
+                }
+            }
+        }, 0, 33);
     }
 
     public void removeInteraction() {

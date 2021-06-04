@@ -7,11 +7,21 @@ import de.swt.logic.user.User;
 import de.swt.manager.CommandObject;
 
 import java.rmi.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public interface RMIServerInterface extends Remote {
 
-    LinkedBlockingQueue<CommandObject> accessCommandQueue(int userid) throws RemoteException;
+    LinkedBlockingQueue<CommandObject> accessCommandQueue(int userId) throws RemoteException;
+
+    HashMap<Integer, Course> getCourses() throws RemoteException;
+
+    HashMap<Integer, User> getUsers() throws RemoteException;
+
+    HashMap<Integer, Group> getGroups() throws RemoteException;
+
+    HashMap<Integer, Session> getSessions() throws RemoteException;
 
     void updateUser(User user) throws RemoteException;
 

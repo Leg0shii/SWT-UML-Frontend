@@ -48,8 +48,6 @@ public class GradePanel extends GUI {
 
         this.editClassroomPanel = new EditClassroomPanel(guiManager);
         this.adminEditClassroomPanel = new AdminEditClassroomPanel(guiManager);
-
-        setupListeners();
     }
 
     @Override
@@ -113,8 +111,8 @@ public class GradePanel extends GUI {
     }
 
     private void enterFunction() {
+        Session session = getGuiManager().getClient().getSessionManager().getSessionFromTeacherId(course.getTeacherId());
         if (getGuiManager().getAccountType().equals(AccountType.TEACHER)) {
-            Session session = getGuiManager().getClient().getSessionManager().getSessionFromTeacherId(getGuiManager().getClient().getUserId());
             if (session != null) {
                 session.getUserIds().add(getGuiManager().getClient().getUserId());
                 try {
@@ -152,7 +150,6 @@ public class GradePanel extends GUI {
                 enterButton.setBackground(Color.RED);
             }
         } else {
-            Session session = getGuiManager().getClient().getSessionManager().getSessionFromTeacherId(getGuiManager().getClient().getUserId());
             if (session != null) {
                 if (course.getUserIds().contains(getGuiManager().getClient().getUserId())) {
                     session.getUserIds().add(getGuiManager().getClient().getUserId());

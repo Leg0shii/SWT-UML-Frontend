@@ -39,7 +39,6 @@ public class CreateTaskPanel extends GUI {
             case ENGLISH -> setupGUI("Task", "Picture", "Create");
         }
 
-        setupListeners();
     }
 
     private void setupGUI(String header, String picture, String create) {

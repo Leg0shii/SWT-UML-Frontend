@@ -5,50 +5,48 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.swt.gui.GUI;
 import de.swt.gui.GUIManager;
 import de.swt.logic.group.Group;
-import de.swt.logic.session.Session;
 import de.swt.logic.user.User;
 import de.swt.util.AccountType;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 public class ObjectListPanel extends GUI {
     private JPanel mainPanel;
     private JButton switchButton;
-    private JPanel objectList;
+    private JPanel objectButtons;
     private JLabel headerLabel;
     private JScrollPane objectScrollPanel;
     private String participants;
     private String groups;
     private String group;
     private boolean showGroups;
-    private List<Group> groupsList;
-    private List<User> users;
+    private ArrayList<JButton> userButtons;
+    private ArrayList<JButton> groupButtons;
 
     public ObjectListPanel(GUIManager guiManager) {
         super(guiManager);
         this.add(mainPanel);
-        this.objectScrollPanel.setViewportView(objectList);
-        this.objectList.setLayout(new GridLayout(0, 1));
-        this.groupsList = new ArrayList<>();
-        this.users = new ArrayList<>();
+        this.objectScrollPanel.setViewportView(objectButtons);
+        this.objectButtons.setLayout(new GridLayout(0, 1));
+        userButtons = new ArrayList<>();
+        groupButtons = new ArrayList<>();
+        showGroups = false;
 
         switch (guiManager.getLanguage()) {
             case GERMAN -> setupGUI("Teilnehmer", "Gruppen", "Gruppe");
             case ENGLISH -> setupGUI("Participants", "Groups", "Group");
         }
 
-        setupListeners();
     }
 
     private void setupGUI(String participants, String groups, String group) {
+        this.switchButton.setText(groups);
+        this.headerLabel.setText(participants);
         this.participants = participants;
         this.groups = groups;
         this.group = group;
@@ -58,31 +56,47 @@ public class ObjectListPanel extends GUI {
 
     @Override
     public void updateGUI() {
-        if (groupsList.size() != getGuiManager().getRelevantGroups().size() || users.size() != getGuiManager().getClient().getCurrentSession().getUserIds().size()) {
-            groupsList.clear();
-            users.clear();
-            groupsList = getGuiManager().getRelevantGroups();
-            ArrayList<Integer> userIds = getGuiManager().getClient().getCurrentSession().getUserIds();
-            for (int id : userIds) {
-                try {
-                    users.add(getGuiManager().getClient().getUserManager().load(id));
-                } catch (SQLException exception) {
-                    exception.printStackTrace();
-                }
+        ArrayList<Group> relevantGroups = getGuiManager().getRelevantGroups();
+        ArrayList<Integer> relevantUserIds = getGuiManager().getClient().getCurrentSession().getUserIds();
+        ArrayList<User> relevantUsers = new ArrayList<>();
+        for (Integer userId : relevantUserIds) {
+            try {
+                relevantUsers.add(getGuiManager().getClient().getUserManager().load(userId));
+            } catch (SQLException exception) {
+                exception.printStackTrace();
             }
-            if (groupsList.isEmpty()) {
-                showGroups = false;
-            }
-            setupObjectButtons();
-            if (showGroups) {
-                this.headerLabel.setText(this.groups);
-                this.switchButton.setText(this.participants);
-            } else {
-                this.headerLabel.setText(this.participants);
-                this.switchButton.setText(this.groups);
-            }
-            revalidate();
         }
+        if (showGroups) {
+            this.headerLabel.setText(this.groups);
+            this.switchButton.setText(this.participants);
+        } else {
+            this.headerLabel.setText(this.participants);
+            this.switchButton.setText(this.groups);
+        }
+        if (relevantUsers.size() == userButtons.size() && relevantGroups.size() == groupButtons.size()) {
+            return;
+        }
+        userButtons.clear();
+        for (User user : relevantUsers) {
+            userButtons.add(setupUserButton(user));
+        }
+        groupButtons.clear();
+        for (Group group : relevantGroups) {
+            groupButtons.add(setupGroupButton(group));
+        }
+        objectButtons.removeAll();
+        if (showGroups) {
+            for (JButton button : groupButtons) {
+                objectButtons.add(button);
+            }
+        } else {
+            for (JButton button : userButtons) {
+                objectButtons.add(button);
+            }
+        }
+        initForAccountType();
+        revalidate();
+        repaint();
     }
 
     @Override
@@ -90,13 +104,26 @@ public class ObjectListPanel extends GUI {
         JPopupMenu popupMenu = new JPopupMenu();
         popupMenu.add(new CreateGroupPanel(getGuiManager()));
         switchButton.setComponentPopupMenu(popupMenu);
+        popupMenu.setVisible(true);
+        popupMenu.setVisible(false);
         this.switchButton.addActionListener(e1 -> {
                     if (getGuiManager().getClient().getCurrentSession().getSessionId() != -1) {
-                        if (!groupsList.isEmpty()) {
+                        if (!groupButtons.isEmpty()) {
                             showGroups = !showGroups;
-                            updateGUI();
+                            objectButtons.removeAll();
+                            if (showGroups) {
+                                for (JButton button : groupButtons) {
+                                    objectButtons.add(button);
+                                }
+                            } else {
+                                for (JButton button : userButtons) {
+                                    objectButtons.add(button);
+                                }
+                            }
+                            revalidate();
+                            repaint();
                         } else {
-                            switchButton.getComponentPopupMenu().show(switchButton, 0, 0);
+                            switchButton.getComponentPopupMenu().show(switchButton, 0, switchButton.getHeight() / 2 - popupMenu.getHeight() / 2);
                         }
                     }
                 }
@@ -106,41 +133,32 @@ public class ObjectListPanel extends GUI {
     public void initForAccountType() {
         if (getGuiManager().getAccountType().equals(AccountType.STUDENT)) {
             this.mainPanel.remove(switchButton);
-        }
-    }
-
-    private void setupObjectButtons() {
-        this.objectList.removeAll();
-        if (showGroups) {
-            for (Group group : groupsList) {
-                JButton objectButton = new JButton();
-                objectButton.setText(this.group + " " + group.getGroupId());
-                setupListenerForObjectButton(objectButton, group);
-                this.objectList.add(objectButton);
-            }
-        } else {
-            for (User user : users) {
-                JButton objectButton = new JButton();
-                objectButton.setText(user.getFullName());
-                if (getGuiManager().getAccountType() != AccountType.STUDENT || user.getUserId() == getGuiManager().getClient().getUserId()) {
-                    setupListenerForObjectButton(objectButton, user);
+            for (JButton button : userButtons) {
+                if (button.getActionListeners().length > 0) {
+                    button.removeActionListener(button.getActionListeners()[0]);
                 }
-                this.objectList.add(objectButton);
             }
         }
     }
 
-    private void setupListenerForObjectButton(JButton objectButton, Object object) {
-        if (showGroups) {
-            GroupButtonPanel groupButtonPanel = new GroupButtonPanel(getGuiManager());
-            groupButtonPanel.setGroup((Group) object);
-            setupPopupToTheRight(objectButton, groupButtonPanel);
-        } else {
-            UserButtonPanel userButtonPanel = new UserButtonPanel(getGuiManager());
-            userButtonPanel.setUser((User) object);
-            setupPopupToTheRight(objectButton, userButtonPanel);
+    private JButton setupUserButton(User user) {
+        JButton button = new JButton(user.getFullName());
+        UserButtonPanel userButtonPanel = new UserButtonPanel(getGuiManager());
+        userButtonPanel.setUser(user);
+        if (user.getUserId() != getGuiManager().getClient().getUserId()) {
+            setupPopupToTheRight(button, userButtonPanel);
         }
+        return button;
     }
+
+    private JButton setupGroupButton(Group group) {
+        JButton button = new JButton(this.group + " " + group.getGroupId());
+        GroupButtonPanel groupButtonPanel = new GroupButtonPanel(getGuiManager());
+        groupButtonPanel.setGroup(group);
+        setupPopupToTheRight(button, groupButtonPanel);
+        return button;
+    }
+
 
     {
 // GUI initializer generated by IntelliJ IDEA GUI Designer
@@ -168,10 +186,10 @@ public class ObjectListPanel extends GUI {
         objectScrollPanel.setVerticalScrollBarPolicy(20);
         mainPanel.add(objectScrollPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         objectScrollPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        objectList = new JPanel();
-        objectList.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        objectScrollPanel.setViewportView(objectList);
-        objectList.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        objectButtons = new JPanel();
+        objectButtons.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        objectScrollPanel.setViewportView(objectButtons);
+        objectButtons.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         switchButton = new JButton();
         switchButton.setText("Button");
         mainPanel.add(switchButton, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));

@@ -45,7 +45,7 @@
           <grid id="cfbd0" binding="gradePanel10" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
             <constraints/>
             <properties/>
-            <border type="empty"/>
+            <border type="etched"/>
             <children/>
           </grid>
         </children>
@@ -60,7 +60,7 @@
           <grid id="4825b" binding="gradePanel11" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
             <constraints/>
             <properties/>
-            <border type="empty"/>
+            <border type="etched"/>
             <children/>
           </grid>
         </children>
@@ -75,7 +75,7 @@
           <grid id="9a8ad" binding="gradePanel12" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
             <constraints/>
             <properties/>
-            <border type="empty"/>
+            <border type="etched"/>
             <children/>
           </grid>
         </children>

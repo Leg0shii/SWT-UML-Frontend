@@ -1,10 +1,15 @@
 package de.swt.logic.session;
 
+import de.swt.logic.course.Course;
+import de.swt.logic.group.Group;
 import de.swt.manager.Manager;
 import de.swt.util.Client;
 
+import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SessionManager extends Manager<Session> {
     public SessionManager(Client client) {
@@ -37,10 +42,23 @@ public class SessionManager extends Manager<Session> {
     @Override
     public void cacheAllData() throws SQLException {
         getHashMap().clear();
+        var hashMap = new HashMap<Integer, Session>();
+        try {
+            hashMap = getClient().getServer().getSessions();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        for (Integer key : hashMap.keySet()){
+            getHashMap().put(key, hashMap.get(key));
+        }
+        /*
+        getHashMap().clear();
         ResultSet resultSet = getMySQL().query("SELECT sessionId FROM sessions;");
-        while (resultSet.next()) {
+        while (resultSet.next()){
             load(resultSet.getInt("sessionId"));
         }
+
+         */
     }
 
     public Session getSessionFromTeacherId(int teacherId){

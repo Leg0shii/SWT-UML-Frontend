@@ -2,11 +2,14 @@ package de.swt.logic.course;
 
 import de.swt.manager.Manager;
 import de.swt.util.Client;
+import lombok.Setter;
 
+import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 public class CourseManager extends Manager<Course> {
 
@@ -40,10 +43,22 @@ public class CourseManager extends Manager<Course> {
     @Override
     public void cacheAllData() throws SQLException {
         getHashMap().clear();
+        var hashMap = new HashMap<Integer, Course>();
+        try {
+            hashMap = getClient().getServer().getCourses();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        for (Integer key : hashMap.keySet()){
+            getHashMap().put(key, hashMap.get(key));
+        }
+        /*
+        getHashMap().clear();
         ResultSet resultSet = getMySQL().query("SELECT courseId FROM courses;");
-        while (resultSet.next()) {
+        while (resultSet.next()){
             load(resultSet.getInt("courseId"));
         }
+         */
     }
 
     private ArrayList<Date> getDates(ResultSet resultSet) throws SQLException {

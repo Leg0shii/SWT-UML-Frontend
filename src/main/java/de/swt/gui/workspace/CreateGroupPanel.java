@@ -31,8 +31,6 @@ public class CreateGroupPanel extends GUI {
             case GERMAN -> setupGUI("Gruppen erstellen", "Anzahl", "Gruppengröße", "Öffnungsdauer", "in Minuten", "Erstellen");
             case ENGLISH -> setupGUI("Create Groups", "Count", "Size", "Duration", "in minutes", "Create");
         }
-
-        setupListeners();
     }
 
     private void setupGUI(String header, String number, String size, String duration, String unit, String create) {

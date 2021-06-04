@@ -51,7 +51,7 @@ public class EditClassroomPanel extends GUI {
         userId = Integer.parseInt(getStudent());
         if (course.getUserIds().contains(userId)) {
             course.getUserIds().remove((Integer) userId);
-            removeButton.updateUI();
+            removeButton.setBackground(UIManager.getColor("JButton"));
         } else {
             removeButton.setBackground(Color.RED);
             return;
@@ -59,7 +59,7 @@ public class EditClassroomPanel extends GUI {
 
         try {
             getGuiManager().getClient().getServer().updateCourse(course);
-            removeButton.updateUI();
+            removeButton.setBackground(UIManager.getColor("JButton"));
         } catch (RemoteException e) {
             e.printStackTrace();
             removeButton.setBackground(Color.RED);

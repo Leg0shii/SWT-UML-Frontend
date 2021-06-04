@@ -20,7 +20,6 @@ public class ShowTaskPanel extends GUI {
         super(guiManager);
         this.add(mainPanel);
 
-        setupListeners();
     }
 
     @Override

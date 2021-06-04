@@ -24,7 +24,6 @@ public class SubmitTaskPanel extends GUI {
             case ENGLISH -> setupGUI("Sure?", "Yes");
         }
 
-        setupListeners();
     }
 
     private void setupGUI(String check, String yes) {

@@ -45,7 +45,6 @@ public class WorkspaceGUI extends GUI {
             case ENGLISH -> setupGUI("Writing View", "Annotation View", "Logout", "Send Solution");
         }
 
-        setupListeners();
     }
 
     private void setupGUI(String write, String annotate, String logout, String sendTask) {
@@ -130,7 +129,7 @@ public class WorkspaceGUI extends GUI {
         requestPanel.updateGUI();
         JPopupMenu popupMenu = new JPopupMenu();
         popupMenu.add(requestPanel);
-        popupMenu.show(getGuiManager(), getGuiManager().getWidth() - 100, getGuiManager().getHeight() - 100);
+        popupMenu.show(getGuiManager(), getGuiManager().getWidth() - 200, getGuiManager().getHeight() - 100);
     }
 
     public void sendTaskProposition() {
