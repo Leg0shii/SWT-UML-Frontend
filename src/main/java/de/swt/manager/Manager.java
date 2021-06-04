@@ -26,6 +26,19 @@ public abstract class Manager<Type> {
 
     public abstract void cacheAllData() throws SQLException;
 
+    public void cacheSingleData(int dataId){
+        getHashMap().remove(dataId);
+        try {
+            load(dataId);
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public void deleteSingleData(int dataId){
+        getHashMap().remove(dataId);
+    }
+
     public ArrayList<Integer> getIds(ResultSet resultSet, String columnName) throws SQLException {
         ArrayList<Integer> ids = new ArrayList<>();
         while (resultSet.next()) {

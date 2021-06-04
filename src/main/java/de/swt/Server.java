@@ -7,7 +7,8 @@ import de.swt.logic.group.GroupManager;
 import de.swt.logic.session.SessionManager;
 import de.swt.logic.user.UserManager;
 import de.swt.manager.ServerCommandManager;
-import de.swt.manager.UserCommandMananger;
+import de.swt.manager.UserCommandManager;
+import de.swt.manager.UserCommandManager;
 import de.swt.manager.CommandObject;
 import de.swt.rmi.InitRMIServer;
 import de.swt.util.SGCheck;
@@ -16,6 +17,7 @@ import de.swt.util.Synchronizer;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Timer;
 
@@ -26,7 +28,7 @@ public class Server {
     private static Server server;
     private DBManager dbManager;
     private AsyncMySQL mySQL;
-    private UserCommandMananger userCommandMananger;
+    private UserCommandManager userCommandManager;
     private ServerCommandManager serverCommandManager;
     private CourseManager courseManager;
     private UserManager userManager;
@@ -41,7 +43,7 @@ public class Server {
 
         server = this;
 
-        userCommandMananger = new UserCommandMananger();
+        userCommandManager = new UserCommandManager();
         serverCommandManager = new ServerCommandManager();
 
         dbManager = new DBManager();
@@ -55,10 +57,21 @@ public class Server {
         InitRMIServer initRMIServer = new InitRMIServer();
         initRMIServer.initRMIServer();
 
+        try {
+            courseManager.cacheAllData();
+            userManager.cacheAllData();
+            groupManager.cacheAllData();
+            sessionManager.cacheAllData();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        /*
         new Thread(() -> {
             Timer syncTimer = new Timer();
-            syncTimer.schedule(new Synchronizer(), 0, 1000);
+            syncTimer.schedule(new Synchronizer(), 0, 10);
         }).start();
+         */
 
         new Thread(()->{
             Timer timeCheckTimer = new Timer();

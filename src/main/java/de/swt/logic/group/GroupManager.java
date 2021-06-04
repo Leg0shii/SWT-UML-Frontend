@@ -25,8 +25,9 @@ public class GroupManager extends Manager<Group> {
             resultSet = getMySQL().query("SELECT userId FROM userInGroup WHERE groupId = " + id + ";");
             newGroup.setUserIds(getIds(resultSet, "userId"));
             resultSet = getMySQL().query("SELECT sessionId FROM groupInSession WHERE groupId = " + id + ";");
-            resultSet.next();
-            newGroup.setSessionId(resultSet.getInt("sessionId"));
+            if (resultSet.next()) {
+                newGroup.setSessionId(resultSet.getInt("sessionId"));
+            }
 
             getHashMap().put(id, newGroup);
 

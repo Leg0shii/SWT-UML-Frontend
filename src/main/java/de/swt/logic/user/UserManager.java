@@ -3,9 +3,13 @@ package de.swt.logic.user;
 import de.swt.Server;
 import de.swt.manager.Manager;
 import de.swt.util.AccountType;
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class UserManager extends Manager<User> {
     public UserManager(Server server) {
@@ -34,10 +38,18 @@ public class UserManager extends Manager<User> {
 
     @Override
     public void cacheAllData() throws SQLException {
+        ArrayList<User> knownUsers = new ArrayList<>(getHashMap().values());
+        ArrayList<User> newUsers = new ArrayList<>();
         getHashMap().clear();
         ResultSet resultSet = getMySQL().query("SELECT userId FROM users;");
         while (resultSet.next()) {
-            load(resultSet.getInt("userId"));
+            User newUser = load(resultSet.getInt("userId"));
+            if (!knownUsers.contains(newUser)){
+                newUsers.add(newUser);
+            };
+        }
+        for (User user: newUsers){
+            getServer().getUserCommandManager().getUserCommandQueue().put(user.getUserId(),new LinkedBlockingQueue<>());
         }
     }
 }
