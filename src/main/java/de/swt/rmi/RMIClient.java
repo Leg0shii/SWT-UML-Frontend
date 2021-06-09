@@ -16,8 +16,8 @@ public class RMIClient {
 
     public RMIClient() {
         this.registryName = "RMIServer"; //Name in Registry
-        //this.serverAddress = "185.181.10.193"; //Bennies Server
-        this.serverAddress = "localhost";
+        this.serverAddress = "185.181.10.193"; //Bennies Server
+        //this.serverAddress = "localhost";
         this.serverRMIPort = 1099;
     }
 

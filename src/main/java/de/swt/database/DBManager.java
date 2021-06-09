@@ -7,7 +7,7 @@ public class DBManager {
     public AsyncMySQL connectToDB() {
         AsyncMySQL mySQL;
         try {
-            mySQL = new AsyncMySQL("5.196.174.213", 3306, "root", "qexGGHZfFzWyKYE", "testdb");
+            mySQL = new AsyncMySQL("5.196.174.213", 3306, "root", "qexGGHZfFzWyKYE", "swt-31");
         } catch (SQLException | ClassNotFoundException exception) {
             exception.printStackTrace();
             return null;
