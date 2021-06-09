@@ -3,12 +3,10 @@ package de.swt.logic.user;
 import de.swt.Server;
 import de.swt.manager.Manager;
 import de.swt.util.AccountType;
-import org.apache.commons.lang3.SerializationUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class UserManager extends Manager<User> {

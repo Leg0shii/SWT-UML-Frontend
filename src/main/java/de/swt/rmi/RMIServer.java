@@ -8,7 +8,6 @@ import de.swt.logic.user.User;
 import de.swt.manager.ServerCommandManager;
 import de.swt.manager.UserCommandManager;
 import de.swt.manager.CommandObject;
-import org.apache.commons.lang3.SerializationUtils;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

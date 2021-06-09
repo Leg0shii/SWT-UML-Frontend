@@ -6,10 +6,6 @@ import de.swt.logic.group.Group;
 import de.swt.logic.group.GroupManager;
 import de.swt.logic.session.Session;
 import de.swt.logic.session.SessionManager;
-import de.swt.logic.user.User;
-import de.swt.logic.user.UserManager;
-import de.swt.manager.UserCommandManager;
-import de.swt.manager.CommandObject;
 import org.apache.commons.lang3.SerializationUtils;
 
 import java.util.ArrayList;
