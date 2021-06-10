@@ -27,10 +27,6 @@ public class SGCheck extends TimerTask {
                 sessionsToDelete.add(session);
             }
         }
-        for (Session session : sessionsToDelete){
-            dbManager.deleteSession(session.getSessionId());
-        }
-
         ArrayList<Group> groupsToDelete = new ArrayList<>();
         ArrayList<Group> groupsCopy = SerializationUtils.clone(new ArrayList<>(groupManager.getHashMap().values()));
         for (Group group : groupsCopy) {
@@ -40,6 +36,9 @@ public class SGCheck extends TimerTask {
         }
         for (Group group: groupsToDelete){
             dbManager.deleteGroup(group.getGroupId());
+        }
+        for (Session session : sessionsToDelete){
+            dbManager.deleteSession(session.getSessionId());
         }
     }
 

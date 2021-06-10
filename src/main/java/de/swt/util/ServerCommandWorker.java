@@ -197,6 +197,43 @@ public class ServerCommandWorker extends TimerTask {
                     userCommandQueue.get(userId).add(userCommand);
                 }
             }
+            case "WU" -> {
+                String state = args[0];
+                Session session = sessionManager.getSessionFromTeacherId(originId);
+                for (int userId : session.getUserIds()) {
+                    if (userId == originId) {
+                        continue;
+                    }
+                    System.out.println("[" + userId + "]: sending Workspace State ping.");
+                    CommandObject userCommand = new CommandObject();
+                    userCommand.setCommand("WU:" + state);
+                    userCommandMananger.getUserCommandQueue().get(userId).add(userCommand);
+                    if (!state.equals("VIEWING")) {
+                        if (!session.getMasterIds().contains(userId)) {
+                            session.getMasterIds().add(userId);
+                            dbManager.updateSession(session);
+                        }
+                    } else {
+                        if (session.getMasterIds().contains(userId)) {
+                            session.getMasterIds().remove((Integer) userId);
+                            dbManager.updateSession(session);
+                        }
+                    }
+                }
+            }
+            case "DO" -> {
+                int[] id = new int[]{Integer.parseInt(args[0]), Integer.parseInt(args[1])};
+                Session session = sessionManager.getSessionFromTeacherId(originId);
+                for (int userId : session.getUserIds()) {
+                    if (userId == originId) {
+                        continue;
+                    }
+                    System.out.println("[" + userId + "]: sending Delete Object ping.");
+                    CommandObject userCommand = new CommandObject();
+                    userCommand.setCommand("DO:" + id[0] + " " + id[1]);
+                    userCommandMananger.getUserCommandQueue().get(userId).add(userCommand);
+                }
+            }
         }
     }
 }

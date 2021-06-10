@@ -116,6 +116,22 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     }
 
     @Override
+    public void sendWorkspaceStateSwitch(int originId,String workspaceState) throws RemoteException {
+        CommandObject serverCommand = new CommandObject();
+        serverCommand.setOriginId(originId);
+        serverCommand.setCommand("WU:"+workspaceState);
+        serverCommandManager.getServerCommandQueue().add(serverCommand);
+    }
+
+    @Override
+    public void deleteObject(int originId,int[] id) throws RemoteException {
+        CommandObject serverCommand = new CommandObject();
+        serverCommand.setOriginId(originId);
+        serverCommand.setCommand("DO:"+id[0]+" "+id[1]);
+        serverCommandManager.getServerCommandQueue().add(serverCommand);
+    }
+
+    @Override
     public void deleteGroup(int groupId) {
         CommandObject serverCommand = new CommandObject();
         serverCommand.setCommand("DG:" + groupId);

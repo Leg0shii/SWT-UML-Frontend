@@ -26,7 +26,7 @@ public class DBManager {
 
         try {
             // usually should be imported from config file but bruh nah
-            this.mySQL = new AsyncMySQL("5.196.174.213", 3306, "root", "qexGGHZfFzWyKYE", "testdb");
+            this.mySQL = new AsyncMySQL("5.196.174.213", 3306, "root", "qexGGHZfFzWyKYE", "swt-db");
             System.out.println("Successfully connected to database!");
         } catch (SQLException | ClassNotFoundException throwables) {
             throwables.printStackTrace();
@@ -42,11 +42,11 @@ public class DBManager {
         initCourses();
         initGroups();
         initSessions();
-        resetServer();
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
                 initLinks();
+                resetServer();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -132,7 +132,11 @@ public class DBManager {
     }
 
     public int updateUser(User user) {
-
+        User oldUser = null;
+        try {
+            oldUser = server.getUserManager().load(user.getUserId());
+        } catch (SQLException ignored) {
+        }
         int userId = user.getUserId();
         AccountType accountType = user.getAccountType();
         String firstname = user.getFirstname();
@@ -152,12 +156,19 @@ public class DBManager {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            if (oldUser != null){
+                updateUser(oldUser);
+            }
         }
         return userId;
     }
 
     public int updateCourse(Course course) {
-
+        Course oldCourse = null;
+        try {
+            oldCourse = server.getCourseManager().load(course.getCourseId());
+        } catch (SQLException ignored) {
+        }
         int courseId = course.getCourseId();
         int grade = course.getGrade();
         String name = course.getGradeName();
@@ -184,12 +195,19 @@ public class DBManager {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            if (oldCourse != null){
+                updateCourse(oldCourse);
+            }
         }
         return courseId;
     }
 
     public int updateGroup(Group group) {
-
+        Group oldGroup = null;
+        try {
+            oldGroup = server.getGroupManager().load(group.getGroupId());
+        } catch (SQLException ignored) {
+        }
         int groupId = group.getGroupId();
         long timeTillTermination = group.getTimeTillTermination();
         int maxGroupSize = group.getMaxGroupSize();
@@ -210,6 +228,9 @@ public class DBManager {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            if (oldGroup != null){
+                updateGroup(oldGroup);
+            }
         }
         return groupId;
     }
@@ -233,6 +254,11 @@ public class DBManager {
     }
 
     public int updateSession(Session session) {
+        Session oldSession = null;
+        try {
+            oldSession = server.getSessionManager().load(session.getSessionId());
+        } catch (SQLException ignored) {
+        }
         int sessionId = session.getSessionId();
         long remainingTime = session.getRemainingTime();
 
@@ -257,6 +283,9 @@ public class DBManager {
                 mySQL.update("INSERT INTO masterInSession (sessionId, userId) VALUES (" + sessionId + ", " + master + ");");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+            if (oldSession != null){
+                updateSession(oldSession);
+            }
         }
         return sessionId;
     }

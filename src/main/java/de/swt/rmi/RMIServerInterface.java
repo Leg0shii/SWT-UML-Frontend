@@ -46,5 +46,8 @@ public interface RMIServerInterface extends Remote {
 
     void sendAnswer(int originId, int destinationId, int answer) throws RemoteException;
 
+    void sendWorkspaceStateSwitch(int originId, String workspaceState) throws RemoteException;
+
+    void deleteObject(int originId, int[] id) throws RemoteException;
 }
 
