@@ -146,9 +146,9 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     }
 
     @Override
-    public void deleteCourse(int groupId) {
+    public void deleteCourse(int courseId) {
         CommandObject serverCommand = new CommandObject();
-        serverCommand.setCommand("DG:" + groupId);
+        serverCommand.setCommand("DC:" + courseId);
         serverCommandManager.getServerCommandQueue().add(serverCommand);
     }
 
