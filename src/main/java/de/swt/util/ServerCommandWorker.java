@@ -77,14 +77,17 @@ public class ServerCommandWorker extends TimerTask {
         }
 
         switch (keyArgs[0]) {
+            // UU:id - Update User: updates a user object with a certain id.
             case "UU" -> {
                 User user = (User) updatedObject;
                 userManager.cacheSingleData(dbManager.updateUser(user));
             }
+            // CU:id - Update Course: updates a course object with a certain id.
             case "CU" -> {
                 Course course = (Course) updatedObject;
                 courseManager.cacheSingleData(dbManager.updateCourse(course));
             }
+            // SU:id - Update Session: updates a session object with a certain id.
             case "SU" -> {
                 Session session = (Session) updatedObject;
                 if (session.getMasterIds().size() > 0) {
@@ -95,6 +98,7 @@ public class ServerCommandWorker extends TimerTask {
                     serverCommandQueue.add(serverCommand);
                 }
             }
+            // GU:id - Update Group: updates a group object with a certain id.
             case "GU" -> {
                 Group group = (Group) updatedObject;
                 groupManager.cacheSingleData(dbManager.updateGroup(group));
@@ -104,6 +108,7 @@ public class ServerCommandWorker extends TimerTask {
                     exception.printStackTrace();
                 }
             }
+            // FU:bytes - Update Workspace Data: updates workspace data.
             case "FU" -> {
                 HashMap<Integer, LinkedBlockingQueue<CommandObject>> userCommandQueue = userCommandMananger.getUserCommandQueue();
                 CommandObject commandObject = new CommandObject();
@@ -143,6 +148,7 @@ public class ServerCommandWorker extends TimerTask {
                     }
                 }
             }
+            // RE:id - Request Ping: sends a request ping with a teacher id.
             case "RE" -> {
                 int teacherId = Integer.parseInt(args[0]);
 
@@ -154,6 +160,7 @@ public class ServerCommandWorker extends TimerTask {
                     userCommandQueue.get(teacherId).add(userCommand);
                 }
             }
+            // AN:id1;id2 - Answer Ping: sends an answer from user id1 to teacher id2.
             case "AN" -> {
                 int destinationId = Integer.parseInt(args[0]);
                 int answer = Integer.parseInt(args[1]);
@@ -167,12 +174,14 @@ public class ServerCommandWorker extends TimerTask {
                     userCommandQueue.get(destinationId).add(userCommand);
                 }
             }
+            // DG:id - Delete Group: deletes group based on id.
             case "DG" -> {
                 int groupId = Integer.parseInt(args[0]);
 
                 dbManager.deleteGroup(groupId);
                 groupManager.deleteSingleData(groupId);
             }
+            // DS:id - Delete Session: deletes session based on id.
             case "DS" -> {
                 int sessionId = Integer.parseInt(args[0]);
                 try {
@@ -187,12 +196,14 @@ public class ServerCommandWorker extends TimerTask {
                 dbManager.deleteSession(sessionId);
                 sessionManager.deleteSingleData(sessionId);
             }
+            // DC:id - Delete Course: deletes course based on id.
             case "DC" -> {
                 int courseId = Integer.parseInt(args[0]);
 
                 dbManager.deleteCourse(courseId);
                 courseManager.deleteSingleData(courseId);
             }
+            // ST:bytes1;bytes2 - Send Task: send workspace bytes and task bytes.
             case "ST" -> {
                 HashMap<Integer, LinkedBlockingQueue<CommandObject>> userCommandQueue = userCommandMananger.getUserCommandQueue();
                 CommandObject userCommand = new CommandObject();
@@ -208,6 +219,7 @@ public class ServerCommandWorker extends TimerTask {
                     userCommandQueue.get(userId).add(userCommand);
                 }
             }
+            // WU - Workspace State Ping: sends a ping to change current workspace state.
             case "WU" -> {
                 String state = args[0];
                 Session session = sessionManager.getSessionFromTeacherId(originId);
@@ -232,6 +244,7 @@ public class ServerCommandWorker extends TimerTask {
                     }
                 }
             }
+            // DO:id1;id2 - Delete Object: deletes an object based on id.
             case "DO" -> {
                 int[] id = new int[]{Integer.parseInt(args[0]), Integer.parseInt(args[1])};
                 Session session = sessionManager.getSessionFromTeacherId(originId);
