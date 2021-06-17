@@ -6,6 +6,10 @@ import java.util.Date;
 
 public class NextDate {
 
+    /**
+     * @param milliList List of dates in milliseconds.
+     * @return Smallest next date that doesnt lie further ahead then 7 days based on 7d intervalls.
+     */
     public Date getNextDate(ArrayList<Long> milliList) {
 
         int size = milliList.size();

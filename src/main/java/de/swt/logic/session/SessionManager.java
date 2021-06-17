@@ -11,6 +11,12 @@ public class SessionManager extends Manager<Session> {
         super(server);
     }
 
+    /**
+     * Is used to load in the session object from the database and saves it if not saved into the HashMap.
+     * @param id Session id.
+     * @return Session object.
+     * @throws SQLException Is thrown when there are complications with the database.
+     */
     @Override
     public Session load(int id) throws SQLException {
         if (getHashMap().containsKey(id)) {
@@ -34,6 +40,10 @@ public class SessionManager extends Manager<Session> {
         }
     }
 
+    /**
+     * Is used to load in all session objects from the database and to save them into the HashMap.
+     * @throws SQLException Is thrown when there are complications with the database.
+     */
     @Override
     public void cacheAllData() throws SQLException {
         getHashMap().clear();
@@ -43,6 +53,11 @@ public class SessionManager extends Manager<Session> {
         }
     }
 
+    /**
+     * Is used to get the session from a teacher id.
+     * @param teacherId Id of teacher.
+     * @return Session object.
+     */
     public Session getSessionFromTeacherId(int teacherId){
         for (Object object : getHashMap().values()){
             Session session = (Session) object;

@@ -39,6 +39,9 @@ public class Server {
         return server;
     }
 
+    /**
+     * Is called when the server starts
+     */
     public void onEnable() {
 
         server = this;
@@ -66,13 +69,6 @@ public class Server {
             exception.printStackTrace();
         }
 
-        /*
-        new Thread(() -> {
-            Timer syncTimer = new Timer();
-            syncTimer.schedule(new Synchronizer(), 0, 10);
-        }).start();
-         */
-
         new Thread(()->{
             Timer timeCheckTimer = new Timer();
             timeCheckTimer.schedule(new SGCheck(), 1000, 1000);
@@ -82,10 +78,6 @@ public class Server {
             Timer commandTimer = new Timer();
             commandTimer.schedule(new ServerCommandWorker(serverCommandManager.getServerCommandQueue()), 0, 10);
         }).start();
-
-    }
-
-    public void onDisable() {
 
     }
 

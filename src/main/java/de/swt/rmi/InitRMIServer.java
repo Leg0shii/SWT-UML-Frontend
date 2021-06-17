@@ -6,6 +6,9 @@ import java.rmi.registry.Registry;
 
 public class InitRMIServer {
 
+    /**
+     * Initializes the RMI server so that the clients can connect to it.
+     */
     public void initRMIServer() {
         System.setProperty("java.security.policy","file:./test.policy");
 

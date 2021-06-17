@@ -11,6 +11,12 @@ public class GroupManager extends Manager<Group> {
         super(server);
     }
 
+    /**
+     * Is used to load in the group object from the database and saves it if not saved into the HashMap.
+     * @param id Group id.
+     * @return Group object.
+     * @throws SQLException Is thrown when there are complications with the database.
+     */
     @Override
     public Group load(int id) throws SQLException {
         if (getHashMap().containsKey(id)) {
@@ -35,6 +41,10 @@ public class GroupManager extends Manager<Group> {
         }
     }
 
+    /**
+     * Is used to load in all session objects from the database and to save them into the HashMap.
+     * @throws SQLException Is thrown when there are complications with the database.
+     */
     @Override
     public void cacheAllData() throws SQLException {
         getHashMap().clear();

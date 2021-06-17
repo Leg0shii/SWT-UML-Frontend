@@ -22,10 +22,12 @@ public class DBManager {
         server = Server.getInstance();
     }
 
+    /**
+     * Is used to connect to the database.
+     */
     private void connectToDB() {
 
         try {
-            // usually should be imported from config file but bruh nah
             this.mySQL = new AsyncMySQL("5.196.174.213", 3306, "root", "qexGGHZfFzWyKYE", "swt-db");
             System.out.println("Successfully connected to database!");
         } catch (SQLException | ClassNotFoundException throwables) {
@@ -34,6 +36,10 @@ public class DBManager {
 
     }
 
+    /**
+     * Is used to generate all needed tables for the code to work.
+     * @return Working connection to the database.
+     */
     public AsyncMySQL initTables() {
 
         connectToDB();
@@ -55,6 +61,9 @@ public class DBManager {
         return mySQL;
     }
 
+    /**
+     * Initializes the groups table.
+     */
     private void initGroups() {
         // create table for groups
         mySQL.update("CREATE TABLE IF NOT EXISTS groups " +
@@ -62,6 +71,9 @@ public class DBManager {
                 "PRIMARY KEY(groupId));");
     }
 
+    /**
+     * Initializes the course table.
+     */
     private void initCourses() {
         // create table for course
         mySQL.update("CREATE TABLE IF NOT EXISTS courses " +
@@ -69,6 +81,9 @@ public class DBManager {
                 "PRIMARY KEY(courseId));");
     }
 
+    /**
+     * Initializes the users table.
+     */
     private void initUsers() {
         // create table for userdata
         mySQL.update("CREATE TABLE IF NOT EXISTS users " +
@@ -77,12 +92,18 @@ public class DBManager {
                 "PRIMARY KEY(userId));");
     }
 
+    /**
+     * Initializes the session table.
+     */
     private void initSessions() {
         mySQL.update("CREATE TABLE IF NOT EXISTS sessions " +
                 "(sessionId INT AUTO_INCREMENT, remainingTime BIGINT, " +
                 "PRIMARY KEY(sessionId));");
     }
 
+    /**
+     * Initializes the links between different tables.
+     */
     private void initLinks() {
         mySQL.update("CREATE TABLE IF NOT EXISTS userInCourse " +
                 "(userId INT NOT NULL, courseId INT NOT NULL, " +
@@ -121,6 +142,9 @@ public class DBManager {
 
     }
 
+    /**
+     * ATTENTION!!! Is used to reset the entire database.
+     */
     private void resetServer() {
         mySQL.update("DELETE FROM userInSession;");
         mySQL.update("DELETE FROM userInGroup;");
@@ -131,6 +155,11 @@ public class DBManager {
         mySQL.update("UPDATE users SET active = false");
     }
 
+    /**
+     * Is used to update a user directly into the database.
+     * @param user User object.
+     * @return Id of user.
+     */
     public int updateUser(User user) {
         User oldUser = null;
         try {
@@ -163,6 +192,11 @@ public class DBManager {
         return userId;
     }
 
+    /**
+     * Is used to update a course directly into the database.
+     * @param course Course object.
+     * @return Id of course.
+     */
     public int updateCourse(Course course) {
         Course oldCourse = null;
         try {
@@ -202,6 +236,11 @@ public class DBManager {
         return courseId;
     }
 
+    /**
+     * Is used to update a group directly into the database.
+     * @param group Group object.
+     * @return Id of group.
+     */
     public int updateGroup(Group group) {
         Group oldGroup = null;
         try {
@@ -235,24 +274,41 @@ public class DBManager {
         return groupId;
     }
 
+    /**
+     * Is used to delete a group object from the database and all its linked parts.
+     * @param groupId Id of group.
+     */
     public void deleteGroup(int groupId) {
         mySQL.update("DELETE FROM userInGroup WHERE groupId = " + groupId + ";");
         mySQL.update("DELETE FROM groupInSession WHERE groupId = " + groupId + ";");
         mySQL.update("DELETE FROM groups WHERE groupId = " + groupId + ";");
     }
 
+    /**
+     * Is used to delete a session object from the database and all its linked parts.
+     * @param sessionId Id of session.
+     */
     public void deleteSession(int sessionId) {
         mySQL.update("DELETE FROM userInSession WHERE sessionId = " + sessionId + ";");
         mySQL.update("DELETE FROM masterInSession WHERE sessionId =  " + sessionId + ";");
         mySQL.update("DELETE FROM sessions WHERE sessionId = " + sessionId + ";");
     }
 
+    /**
+     * Is used to delete a course object from the database and all its linked parts.
+     * @param courseId Id of course.
+     */
     public void deleteCourse(int courseId) {
         mySQL.update("DELETE FROM userInCourse WHERE courseId = " + courseId + ";");
         mySQL.update("DELETE FROM dateInCourse WHERE courseId = " + courseId + ";");
         mySQL.update("DELETE FROM courses WHERE courseId = " + courseId + ";");
     }
 
+    /**
+     * Is used to update a session directly into the database.
+     * @param session Session object.
+     * @return Id of session.
+     */
     public int updateSession(Session session) {
         Session oldSession = null;
         try {
@@ -290,6 +346,11 @@ public class DBManager {
         return sessionId;
     }
 
+    /**
+     * Is used to add an id to the object after it was created the first time.
+     * @return Newly created object id.
+     * @throws SQLException Is thrown when there are complications with the database.
+     */
     private int addID() throws SQLException {
         ResultSet rs1 = mySQL.query("SELECT LAST_INSERT_ID();");
         if (rs1.next()) return rs1.getInt("last_insert_id()");

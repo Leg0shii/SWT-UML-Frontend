@@ -14,6 +14,12 @@ public class UserManager extends Manager<User> {
         super(server);
     }
 
+    /**
+     * Is used to load in the user object from the database and saves it if not saved into the HashMap.
+     * @param id User id.
+     * @return User object.
+     * @throws SQLException Is thrown when there are complications with the database.
+     */
     @Override
     public User load(int id) throws SQLException {
         if (getHashMap().containsKey(id)) {
@@ -34,6 +40,10 @@ public class UserManager extends Manager<User> {
         }
     }
 
+    /**
+     * Is used to load in all user objects from the database and to save them into the HashMap.
+     * @throws SQLException Is thrown when there are complications with the database.
+     */
     @Override
     public void cacheAllData() throws SQLException {
         ArrayList<User> knownUsers = new ArrayList<>(getHashMap().values());
@@ -44,7 +54,7 @@ public class UserManager extends Manager<User> {
             User newUser = load(resultSet.getInt("userId"));
             if (!knownUsers.contains(newUser)){
                 newUsers.add(newUser);
-            };
+            }
         }
         for (User user: newUsers){
             getServer().getUserCommandManager().getUserCommandQueue().put(user.getUserId(),new LinkedBlockingQueue<>());

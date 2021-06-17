@@ -13,6 +13,10 @@ import java.util.TimerTask;
 
 public class SGCheck extends TimerTask {
 
+    /**
+     * Checks if there are session-times or group-times that are about
+     * to run out. If that's the case it will delete them.
+     */
     @Override
     public void run() {
 
@@ -31,7 +35,8 @@ public class SGCheck extends TimerTask {
         ArrayList<Group> groupsCopy = SerializationUtils.clone(new ArrayList<>(groupManager.getHashMap().values()));
         for (Group group : groupsCopy) {
             if (group.getTimeTillTermination() <= System.currentTimeMillis()) {
-                groupsToDelete.add(group);dbManager.deleteGroup(group.getGroupId());
+                groupsToDelete.add(group);
+                dbManager.deleteGroup(group.getGroupId());
             }
         }
         for (Group group: groupsToDelete){

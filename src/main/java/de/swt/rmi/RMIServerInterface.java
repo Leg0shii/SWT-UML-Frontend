@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Methods that the RMI Server offers for the clients.
+ */
 public interface RMIServerInterface extends Remote {
 
     LinkedBlockingQueue<CommandObject> accessCommandQueue(int userId) throws RemoteException;

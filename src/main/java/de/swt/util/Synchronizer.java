@@ -16,6 +16,9 @@ public class Synchronizer extends TimerTask {
         server = Server.getInstance();
     }
 
+    /**
+     * Gets all course, group, user and session data from the database.
+     */
     @Override
     public void run() {
         try {

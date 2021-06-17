@@ -34,6 +34,10 @@ public class ServerCommandWorker extends TimerTask {
     private LinkedBlockingQueue<CommandObject> serverCommandQueue;
 
 
+    /**
+     * Initializes the ServerCommandWorker with its required classes.
+     * @param serverCommandQueue Is used to store the commands that the client has to work through.
+     */
     public ServerCommandWorker(LinkedBlockingQueue<CommandObject> serverCommandQueue) {
         this.serverCommandQueue = serverCommandQueue;
         this.server = Server.getInstance();
@@ -45,6 +49,9 @@ public class ServerCommandWorker extends TimerTask {
         this.userCommandMananger = server.getUserCommandManager();
     }
 
+    /**
+     * Pushes new commands into the LinkedQueue which the client then can get.
+     */
     @Override
     public void run() {
         while (serverCommandQueue.peek() != null) {
@@ -52,6 +59,23 @@ public class ServerCommandWorker extends TimerTask {
         }
     }
 
+    /**
+     * Evaluates a command object which commands the client to do something.
+     * UU:id                    - Update User:           updates a user object with a certain id.
+     * CU:id                    - Update Course:         updates a course object with a certain id.
+     * SU:id                    - Update Session:        updates a session object with a certain id.
+     * GU:id                    - Update Group:          updates a group object with a certain id.
+     * FU:bytes                 - Update Workspace Data: updates workspace data.
+     * RE:id                    - Request Ping:          sends a request ping with a teacher id.
+     * AN:id1;id2               - Answer Ping:           sends an answer from user id1 to teacher id2.
+     * DG:id                    - Delete Group:          deletes group based on id.
+     * DS:id                    - Delete Session:        deletes session based on id.
+     * DC:id                    - Delete Course:         deletes course based on id.
+     * ST:bytes1;bytes2         - Send Task:             send workspace bytes and task bytes.
+     * WU                       - Workspace State Ping:  sends a ping to change current workspace state.
+     * DO:id1;id2               - Delete Object:         deletes an object based on id.
+     * @param command Is the command that the client receives indirectly from the server.
+     */
     private void evaluateCommand(CommandObject command) {
 
         Object updatedObject = command.getUpdatedObject();

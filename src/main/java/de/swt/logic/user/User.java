@@ -27,6 +27,10 @@ public class User implements Serializable {
         active = false;
     }
 
+    /**
+     * Is used to get the full name of a user.
+     * @return Full name of user.
+     */
     public String getFullName() {
         return (firstname + " " + surname);
     }

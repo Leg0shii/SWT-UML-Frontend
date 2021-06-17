@@ -14,6 +14,12 @@ public class CourseManager extends Manager<Course> {
         super(server);
     }
 
+    /**
+     * Is used to load in the course object from the database and saves it if not saved into the HashMap.
+     * @param id Course id.
+     * @return Course object.
+     * @throws SQLException Is thrown when there are complications with the database.
+     */
     @Override
     public Course load(int id) throws SQLException {
         if (getHashMap().containsKey(id)) {
@@ -37,6 +43,10 @@ public class CourseManager extends Manager<Course> {
         }
     }
 
+    /**
+     * Is used to load in all session objects from the database and to save them into the HashMap.
+     * @throws SQLException Is thrown when there are complications with the database.
+     */
     @Override
     public void cacheAllData() throws SQLException {
         getHashMap().clear();
@@ -46,6 +56,12 @@ public class CourseManager extends Manager<Course> {
         }
     }
 
+    /**
+     * Is used to get all dates from the result set of the database.
+     * @param resultSet Query result from database.
+     * @return ArrayList of dates.
+     * @throws SQLException Is thrown when there are complications with the database.
+     */
     private ArrayList<Date> getDates(ResultSet resultSet) throws SQLException {
         ArrayList<Date> dates = new ArrayList<>();
         while (resultSet.next()) {
