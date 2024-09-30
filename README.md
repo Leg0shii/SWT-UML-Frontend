@@ -14,3 +14,16 @@ Das Frontend unseres E-Learning-Systems ist die Benutzerschnittstelle, die mit J
 
 ## Live Vorführung
 https://drive.google.com/file/d/1wEDHZFMH6QTiZNVqovEyraouXE5jSk21/view
+
+## Nutzung
+
+Nach dem Start des Frontends können Benutzer:
+
+- Sich anmelden und ihre Rolle bestätigen.
+- Klassenzimmer erstellen, beitreten oder verlassen.
+- Aufgaben erstellen, bearbeiten und Lösungen hochladen.
+- UML-Diagramme zeichnen und bearbeiten.
+
+## Architektur
+
+Das Frontend ist modular aufgebaut, um eine einfache Erweiterung und Wartung zu ermöglichen. Der GUIManager verwaltet die verschiedenen GUI-Komponenten und sorgt für eine nahtlose Benutzererfahrung.
