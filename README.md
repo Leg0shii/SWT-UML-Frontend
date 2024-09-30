@@ -1,136 +1,72 @@
-# SWT-UML-Application
-Week 1
+# SWT-UML-Application README
 
-## Benjamin - Organization:
-- project administration
-- code assistence, verification, improvement
+## Projektübersicht
+Das SWT-UML-Application-Projekt ist eine gemeinsame Anstrengung unseres Teams, eine robuste Software zur Verwaltung und Visualisierung von UML-Diagrammen zu entwickeln. Jedes Teammitglied bringt spezielle Fähigkeiten ein, um unterschiedliche Aspekte der Anwendung zu bearbeiten.
 
-## Daniel, Joost - GUI: 
-- window API, skeleton for creating windows
-- classes for windowtypes (accept window, drawing window)
+### Team und Aufgaben:
+- **Benjamin** - Organisation:
+  - Verwaltung des Projekts
+  - Unterstützung und Verbesserung des Codes
 
-## Jakob, Patrick - S/C Communication:
-- client/server communication
-- usage of RMI for interprocesscommunication?
-- serialization of objects
+- **Daniel, Joost** - GUI:
+  - Entwicklung der API zur Fenstererstellung
+  - Implementierung verschiedener Fenstertypen wie Bestätigungs- und Zeichenfenster
 
-## Andre, Mats - Drawing:
-- draggable objects
-- create/delete objects on sidebar
-- ability to drag them onto empty screen
+- **Jakob, Patrick** - S/C Kommunikation:
+  - Aufbau der Client-/Server-Kommunikation
+  - Verwendung von RMI zur Interprozesskommunikation?
+  - Serialisierung von Objekten
 
-## Yazar, Norbert - Logic:
-- logic for classroom creation + adding students
-- logic for group creation + adding students
+- **Andre, Mats** - Zeichenfunktionen:
+  - Erstellung und Verwaltung von ziehbaren Objekten
+  - Erzeugen und Löschen von Objekten über eine Seitenleiste
 
-# Richtlinien für GUI
+- **Yazar, Norbert** - Logik:
+  - Logik zur Erstellung von Klassenräumen und Hinzufügen von Schülern
+  - Logik für die Bildung von Gruppen und das Hinzufügen von Mitgliedern
 
-# Generell
+## Richtlinien für GUI
 
-- Jede GUI Klasse folgt dem selben Aufbau: Konstruktor, setupGUI, updateGUI, setupActionListeners, eigene Methoden,
-  getters & setters, Methoden für andere Gruppen
-- Nichts hard coden was nicht hard gecoded werden muss! (Besonders im GUI Designer)
-- Jede Klasse extended GUIHelper und ist damit ein eigenständiges JPanel
+### Allgemeine Anweisungen
+- Alle GUI-Klassen folgen einer festgelegten Struktur: Konstruktor, setupGUI, updateGUI, setupActionListeners, eigene Methoden, Getter & Setter sowie Methoden für andere Gruppen.
+- Vermeidung von hart codierten Werten, besonders im GUI-Designer.
+- Jede Klasse erweitert `GUIHelper` und ist dadurch ein eigenständiges JPanel.
 
-# GUI Designer
+### GUI Designer
+- Gestaltung von Borders, Fillrules und Komponentenspezifika sollte hier erfolgen. Verwenden Sie den GridLayoutManager von IntelliJ für das mainPanel.
 
-- Borders, Fillrules und alles Component spezifische hier erledigen. Nichts im Code an sich machen!
-- GridLayoutManager von IntelliJ verwenden! (Zumindest für das mainPanel)
+### Konstruktor
+- Der Konstruktor sollte sich auf das Wesentliche beschränken: Variableninitialisierungen, Sprachwechsel, Setup-Methoden und Popupklasseninitialisierungen.
+- Der Konstruktor sollte nicht überladen sein! Die Zuweisung von Texten zu Komponenten gehört in `updateGUI`.
 
-# Konstruktor
+### SetupGUI
+- Wird direkt durch den Sprachwechsel aufgerufen, um sprachspezifische Texte einzustellen.
 
-- möglichst nur das nötigste. Als nötig gelten: Variableninitializierungen, language switch (siehe andere Klassen),
-  setup Methoden, Popupklasseninitialisierungen
-- Konstruktor nicht überladen! Die setTexts von Components gehören ins updateGUI! (siehe andere Klassen)
-- Hierher gehört auch immer!:
-  `this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS)); this.add(mainPanel);`
-- Dieser Code stellt sicher, dass auch was angezeigt wird
+### UpdateGUI
+- Für jede Klasse individuell gestaltet, um Dropdown-Menüs zu füllen und angeschlossene Popupklassen zu steuern.
 
-# setupGUI
+### SetupActionListeners
+- Initialisierung aller Listener findet hier statt.
 
-- wird vom language switch _direkt_ mit den zur Sprache passenden Texten aufgerufen (s.a.K.)
-- NICHTS WEITER HIER REIN!
+### Eigene Methoden
+- Spezifische Methoden, die zur Ausführung von GUI-bezogenen Aufgaben erforderlich sind. Bei Hauptklassen (z.B. `ClassroomGUI`) wird hier auch die `initForAccountType`-Funktion implementiert.
 
-# updateGUI
+### Getter & Setter
+- Handgeschriebene Getter und Setter, die für die Anwendungslogik wichtig sind.
 
-- Für jede Klasse individuell! Hier werden ComboBoxes etc gefüllt. Bei angeschlossenen Popupklassen werden diese auch
-  hiermit angesteuert
+### Methoden für andere Gruppen
+- Methoden, die durch Button-Drücke ausgelöst und von anderen Gruppen implementiert werden.
 
-# setupActionListeners (Oder generell nur setupListeners)
+## Richtlinien für Drawable Objects
+- Für jedes Objekt müssen zwei Klassen erstellt werden: _Object_ und _Object_ Button, die von den abstrakten Klassen `DrawableObject` und `DrawableObjectButton` erben.
 
-- Hier kommen alle Listenerinitialisierungen hinein!
+### Implementierung der abstrakten Methoden
+- Implementierung aller abstrakten Methoden ist erforderlich.
+- Die `draw` Funktionen kümmern sich um die grafische Darstellung.
+- Berechnungen zu Breite und Höhe müssen abhängig von 'scale' durchgeführt werden.
 
-# Eigene Methoden
+### Listeners und Popup-Funktionen
+- Listener werden in der `setupListeners()`-Methode des Buttons implementiert.
+- Popups werden durch die `createPopup()`-Methode im Objekt erzeugt.
 
-- Alle Methoden die für die Klasse benötigt werden um _GUI spezifische_ Dinge zu erledigen (Wichtig!)
-- Falls die Klasse eine Hauptklasse ist (Also z.B. ClassroomGUI), dann kommt hier auch eine Funktion initForAccountType
-  rein.
-
-# Getters & Setters
-
-- Hier alle (meist handgeschriebenen) Getter und Setter, die für die Anwendungslogik gebraucht werden
-- z.B. getPassword bei dem LoginGUI damit die andere Gruppe direkt das Password erhalten kann.
-- Hier also alle Methoden so angenehm wie möglich für ander Gruppen schreiben
-
-# Methoden für andere Gruppen
-
-- Hierzu gehören Methoden, die z.B. durch button presses ausgelöst werden, aber von anderen Gruppen implementiert werden
-- z.B. die enterFunction, wenn der Anwender auf den Beitreten-Button einer Klasse drückt. (In die Methode kommt dann der
-  Code von der anderen Gruppe)
-- Manche Dinge können hier schon vorher implementiert werden. z.B. Frame Wechsel oder so
-
-# Richtlinien für Drawable Objects
-
-# Generell
-
-- Für jedes Objekt müssen zwei Klassen erzeugt werden: _Object_ und _Object_ Button
-- Dafür stehen die abstrakten Klassen DrawableObject und DrawableObjectButton zur Verfügung
-- Diese werden jeweils extended!
-
-# Implementation der abstrakten Methoden
-
-- Jede abstrakte Methode ist zu implementieren
-- die jeweiligen draw Funktionen erledigen die graphische Darstellung
-- Dort kann ggf noch eine Stroke definiert werden, sonst nur Linien etc malen!
-- Außerdem bei einer Textunterschrift auch drawString(description,x,y)
-- calculateWidthAndHeight so ausfüllen, dass folgendes existiert:
-
-```
-  textWidth = g2d.getFontMetrics().stringWidth(this.description);
-  textHeight = g2d.getFontMetrics().getHeight();
-  
-  width = Wie breit sollen Bounds bzw Objekt maximal sein
-  height = Wie hoch
-  
-  Bei Button:
-  setPreferredSize(new Dimension(HIER BOUNDS));
-  this.revalidate();
-  
-  Bei Objekt:
-  this.setBounds(super.getX(), super.getY(), HIER BOUNDS);
-  
-```
-- WICHTIG: Die Berechnung zu width and height abhängig von 'scale'  machen!
-  -
-
-- Bei einem Button außerdem noch setupListeners() implementieren. Beispiel:
-```JAVA
-  @Override
-    void setupListeners() {
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                guiManager.addToDrawPanel(new Actor(50, 50, color, description, scale, guiManager));
-            }
-        });
-    }
-```
-- Bei einem Objekt createPopup() implementieren. Beispiel:
-```JAVA
-   @Override
-    GUI createPopup() {
-            StandardGUI gui = new StandardGUI(guiManager, this);
-            return gui;
-            }
-```
-- Dafür kann z.B. das 'StandardGUI' verwendet werden. Für andere Funktionalitäten als im StandardGUI muss ein neues GUI in buttonGUIS kreiert werden.
+Dieses README dokumentiert die grundlegenden Strukturen und Richtlinien unseres Projekts und soll als Anleitung für alle Entwickler dienen, die am Projekt mitwirken.
