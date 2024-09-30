@@ -10,12 +10,6 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
-# project
-swt31-server/target
-swt31-server/.idea
-
-swt31/target
-swt31/.idea
 
 # Package Files #
 *.jar
