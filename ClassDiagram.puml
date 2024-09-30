@@ -1,0 +1,204 @@
+@startuml
+class de.swt.logic.group.Group {
+- int id
+- int courseID
+- int timeTillTermination
+- int maxGroupSize
+- ArrayList<Integer> participants
+- String workspace
+}
+class de.swt.logic.course.CourseManager {
+- AsyncMySQL mySQL
+- HashMap<Integer,Course> courseHashMap
+- Server server
++ Course loadCourse(int)
++ void cacheAllCourseData()
+- ArrayList<Date> getDateFromString(String)
+- ArrayList<User> loadUsersInCourse(int)
+}
+class de.swt.logic.course.Course {
+- int id
+- int grade
+- String name
+- ArrayList<Date> dates
+- int teacherID
++ User getTeacher()
+}
+class de.swt.database.DBManager {
+- AsyncMySQL mySQL
+- void connectToDB()
++ AsyncMySQL initTables()
++ void updateUser(User)
++ void updateCourse(Course)
++ void updateGroups(Group)
++ void updateSessions(Session)
+- String participantsToString(ArrayList<Integer>)
+- String datesToString(ArrayList<Date>)
+- String courseToString(ArrayList<Integer>)
+}
+class de.swt.logic.session.Session {
+~ int id
+~ ArrayList<Integer> participants
+~ Integer master
+~ Integer remainingTime
+~ ArrayList<Integer> groups
+}
+class de.swt.Server {
++ {static} Server server
++ ServerConn serverConn
++ DBManager dbManager
++ AsyncMySQL mySQL
++ CommandManager commandManager
++ CourseManager courseManager
++ UserManager userManager
++ GroupManager groupManager
++ SessionManager sessionManager
++ {static} Server getInstance()
++ void onEnable()
++ void onDisable()
+}
+class de.swt.util.Synchronizer {
++ void run()
+}
+class de.swt.logic.group.GroupManager {
+- Server server
+- HashMap<Integer,Group> groupHashMap
++ Group loadGroup(int)
++ void cacheAllGroupData()
+- ArrayList<Integer> getParticipantsFromString(String)
+}
+interface de.swt.rmi.RMIServerInterface {
+~ TestClass testClass(TestClass)
+~ int ping(int)
+~ User sendUser(User,int,boolean)
+~ Course sendCourse(Course,int,boolean)
+~ Group sendGroup(Group,int,boolean)
+~ Session sendSession(Session,int,boolean)
+~ ArrayList<CommandObject> accessCommandQueue(int)
+~ void updateWorkspaceFile(byte[],int)
+}
+class de.swt.manager.CommandManager {
+- HashMap<Integer,ArrayList<CommandObject>> commandHashMap
+}
+class de.swt.logic.TestClass {
+- int id
+- AccountType accountType
+- String firstname
+- String surname
+- int[] course
+- boolean online
++ String getFullName()
+}
+class de.swt.logic.session.SessionManager {
+- HashMap<Integer,Session> sessionHashMap
+- Server server
++ Session loadSession(int)
++ void cacheAllSessionData()
+- ArrayList<Integer> parseParticipants(String)
+}
+class de.swt.logic.user.User {
+- int id
+- AccountType accountType
+- String firstname
+- String surname
+- ArrayList<Integer> course
+- boolean online
+- boolean isInGroup
+- boolean isInCourse
++ String getFullName()
+}
+class de.swt.logic.workspace.Workspace {
+}
+class de.swt.rmi.RMIServer {
++ int port
+- UserManager userManager
+- CourseManager courseManager
+- GroupManager groupManager
+- SessionManager sessionManager
+- Server server
++ TestClass testClass(TestClass)
++ int ping(int)
++ User sendUser(User,int,boolean)
++ Course sendCourse(Course,int,boolean)
++ Group sendGroup(Group,int,boolean)
++ Session sendSession(Session,int,boolean)
++ ArrayList<CommandObject> accessCommandQueue(int)
++ void updateWorkspaceFile(byte[],int)
+}
+class de.swt.database.AsyncMySQL {
+- ExecutorService executor
+- MySQL sql
++ void update(PreparedStatement)
++ void update(String)
++ void insert(String,Consumer<Integer>)
++ void query(PreparedStatement,Consumer<ResultSet>)
++ ResultSet query(String)
++ PreparedStatement prepare(String)
++ MySQL getMySQL()
+}
+class de.swt.database.AsyncMySQL.MySQL {
+- String host
+- String user
+- String password
+- String database
+- int port
+- Connection conn
++ void openConnection()
++ void closeConnection()
++ boolean isConnected()
++ boolean isConnected(boolean)
++ boolean reconnect()
++ Connection getConnection()
++ void queryUpdate(String)
++ void queryUpdate(PreparedStatement)
++ ResultSet query(String)
++ ResultSet query(PreparedStatement)
+}
+class de.swt.util.NextDate {
++ Date getNextDate(ArrayList<Long>)
+}
+class de.swt.manager.CommandObject {
+- String command
+- byte[] workspaceFileBytes
+}
+class de.swt.Main {
++ {static} void main(String[])
+}
+class de.swt.logic.workspace.WorkspaceManager {
+}
+class de.swt.rmi.InitRMIServer {
++ void initRMIServer()
+}
+class de.swt.util.ServerConn {
+- int serverPort
+- ServerSocket serverSocket
+- byte[] byteMessage
+- CommandManager adressManager
++ void sendBroadcastPingMessage(String)
+- byte[] convertToBytePacket(String)
++ void listenForTCP()
+- void evaluateCommand(String)
++ void listenForUDP()
++ void startServer()
+}
+class de.swt.logic.user.UserManager {
+- Server server
+- AsyncMySQL mySQL
+- HashMap<Integer,User> userHashMap
++ User loadUser(int)
++ void cacheAllUserData()
+- ArrayList<Integer> loadCourses(int)
+}
+
+
+java.io.Serializable <|.. de.swt.logic.group.Group
+java.io.Serializable <|.. de.swt.logic.course.Course
+java.util.TimerTask <|-- de.swt.util.Synchronizer
+java.rmi.Remote <|-- de.swt.rmi.RMIServerInterface
+java.io.Serializable <|.. de.swt.logic.TestClass
+java.io.Serializable <|.. de.swt.logic.user.User
+de.swt.rmi.RMIServerInterface <|.. de.swt.rmi.RMIServer
+java.rmi.server.UnicastRemoteObject <|-- de.swt.rmi.RMIServer
+de.swt.database.AsyncMySQL +.. de.swt.database.AsyncMySQL.MySQL
+java.io.Serializable <|.. de.swt.manager.CommandObject
+@enduml
